@@ -1,0 +1,8 @@
+.content-img{
+    width: 100%;
+    justify-content: center;
+    display: flex;
+}
+.content-img img{
+    width: 250px;
+}
