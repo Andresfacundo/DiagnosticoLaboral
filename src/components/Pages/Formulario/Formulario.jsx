@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import './Formulario.css'
 
 const Formulario = ({ setPaso }) => {
     const [empleador, setEmpleador] = useState({
-        tipo: "Natural",
+        tipo: "",
         nombre: "",
         identificacion: "",
         trabajadores: "",
@@ -23,25 +25,114 @@ const Formulario = ({ setPaso }) => {
         }
     };
 
+    const handleSubmit = (e) => {
+        // Optional: Add validation before navigation
+        if (!empleador.nombre || !empleador.identificacion) {
+            e.preventDefault();
+            alert("Por favor complete todos los campos obligatorios");
+        }
+    };
+
     return (
-        <div>
+        <div className="content-form">
             <h2>Información del Empleador</h2>
-            <label>
-                <input type="radio" name="tipo" value="Natural" checked={empleador.tipo === "Natural"} onChange={manejarCambio} /> Natural
-            </label>
-            <label>
-                <input type="radio" name="tipo" value="Jurídica" checked={empleador.tipo === "Jurídica"} onChange={manejarCambio} /> Jurídica
-            </label>
-            <br />
-            <input type="text" name="nombre" placeholder="Nombre o Razón Social" value={empleador.nombre} onChange={manejarCambio} />
-            <input type="text" name="identificacion" placeholder="Número de Identificación" value={empleador.identificacion} onChange={manejarCambio} />
-            <input type="number" name="trabajadores" placeholder="Número de Trabajadores" value={empleador.trabajadores} onChange={manejarCambio} />
-            <br />
-            <label><input type="checkbox" name="contratos" value="Fijo" onChange={manejarCambio} /> Término Fijo</label>
-            <label><input type="checkbox" name="contratos" value="Indefinido" onChange={manejarCambio} /> Término Indefinido</label>
-            <label><input type="checkbox" name="contratos" value="Obra" onChange={manejarCambio} /> Obra o Labor</label>
-            <br />
-            <button onClick={() => setPaso(2)}>Continuar</button>
+            
+            <div className='content-check' role="group" aria-label="Tipo de Empleador">
+                <label>
+                    <input 
+                        type="radio" 
+                        name="tipo" 
+                        value="Natural" 
+                        checked={empleador.tipo === "Natural"} 
+                        onChange={manejarCambio} 
+                        id="tipoNatural"
+                    /> 
+                    <label htmlFor="tipoNatural">Natural</label>
+                </label>
+                <label>
+                    <input 
+                        type="radio" 
+                        name="tipo" 
+                        value="Jurídica" 
+                        checked={empleador.tipo === "Jurídica"} 
+                        onChange={manejarCambio} 
+                        id="tipoJuridica"
+                    /> 
+                    <label htmlFor="tipoJuridica">Jurídica</label>
+                </label>
+            </div>
+            
+            <div className="content-input">
+                <input 
+                    className='input' 
+                    type="text" 
+                    name="nombre" 
+                    placeholder="Nombre o Razón Social" 
+                    value={empleador.nombre} 
+                    onChange={manejarCambio} 
+                    required 
+                    aria-label="Nombre o Razón Social"
+                />
+                <input 
+                    className='input'
+                    type="number" 
+                    name="identificacion" 
+                    placeholder="Número de Identificación" 
+                    value={empleador.identificacion} 
+                    onChange={manejarCambio} 
+                    required 
+                    aria-label="Número de Identificación"
+                />
+                <input 
+                    className='input'
+                    type="number" 
+                    name="trabajadores" 
+                    placeholder="Número de Trabajadores" 
+                    value={empleador.trabajadores} 
+                    onChange={manejarCambio} 
+                    min="0" 
+                    aria-label="Número de Trabajadores"
+                />
+            </div>
+            
+            <div role="group" aria-label="Tipos de Contrato" className="box-checkbox">
+                <label className="label1">
+                    <input 
+                        type="checkbox" 
+                        name="contratos" 
+                        value="Fijo" 
+                        onChange={manejarCambio} 
+                        id="contratoFijo"
+                    /> 
+                    <label htmlFor="contratoFijo">Término Fijo</label>
+                </label>
+                <label className="label1">
+                    <input 
+                        type="checkbox" 
+                        name="contratos" 
+                        value="Indefinido" 
+                        onChange={manejarCambio} 
+                        id="contratoIndefinido"
+                    /> 
+                    <label htmlFor="contratoIndefinido">Término Indefinido</label>
+                </label>
+                <label className="label1">
+                    <input 
+                        type="checkbox" 
+                        name="contratos" 
+                        value="Obra" 
+                        onChange={manejarCambio} 
+                        id="contratoObra"
+                    /> 
+                    <label htmlFor="contratoObra">Obra o Labor</label>
+                </label>
+            </div>
+            
+            <button onClick={handleSubmit}>
+                <Link to='/cuestionario'>
+                    Continuar
+                </Link>
+            </button>
         </div>
     );
 };

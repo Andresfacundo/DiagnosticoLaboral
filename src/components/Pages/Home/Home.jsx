@@ -1,15 +1,15 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import './Home.css'
 
 
 const Home = () => {
-  return (
-    <div>
-        <NavLink to='formulario' >Realizar Diagnostico</NavLink>
-        <NavLink to='preguntas' >Formular preguntas</NavLink>
-
-    </div>
-  )
+    return (
+        <div className='box-home'>
+                <NavLink to='formulario' >Realizar Diagnostico</NavLink>
+                <NavLink to='preguntas' >Formular preguntas</NavLink>
+        </div>
+    )
 }
 
 export default Home

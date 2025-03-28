@@ -2,6 +2,7 @@
     width: 100%;
     justify-content: center;
     display: flex;
+    padding: 2rem 0 2rem 0;
 }
 .content-img img{
     width: 250px;
