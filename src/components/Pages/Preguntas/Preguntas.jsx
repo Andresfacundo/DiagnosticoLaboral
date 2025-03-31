@@ -6,6 +6,7 @@ const Preguntas = () => {
     const [preguntas, setPreguntas] = useState([]);
     const [texto, setTexto] = useState("");
     const [peso, setPeso] = useState("");
+    const [categoria, setCategoria] = useState("");
     const [editando, setEditando] = useState(null);
     const [error, setError] = useState("");
 
@@ -39,7 +40,7 @@ const Preguntas = () => {
             return;
         }
 
-        const nuevaPregunta = { texto: texto.trim(), peso: Number(peso) };
+        const nuevaPregunta = { texto: texto.trim(), peso: Number(peso), categoria: categoria.trim() };
 
         try {
             if (editando) {
@@ -56,6 +57,7 @@ const Preguntas = () => {
             // Limpiar campos
             setTexto("");
             setPeso("");
+            setCategoria("");
         } catch (error) {
             console.error("Error en la operación", error);
             setError("No se pudo completar la operación. Intente nuevamente.");
@@ -77,7 +79,18 @@ const Preguntas = () => {
     const editarPregunta = (pregunta) => {
         setTexto(pregunta.texto);
         setPeso(pregunta.peso.toString());
+        setCategoria(pregunta.categoria);
         setEditando(pregunta.id);
+    };
+
+    const calcularValorRespuesta = (peso, tipo) => {
+        switch (tipo) {
+            case "Si": return peso;
+            case "Si parcialmente": return peso / 2;
+            case "No": return 0;
+            case "N/A": return 0;
+            default: return "-";
+        }
     };
 
     return (
@@ -88,26 +101,10 @@ const Preguntas = () => {
             <form onSubmit={manejarEnvio} className="preguntas-form">
                 {error && <div style={{color: 'red', marginBottom: '1rem'}}>{error}</div>}
                 
-                <input
-                    type="text"
-                    placeholder="Pregunta"
-                    value={texto}
-                    onChange={(e) => setTexto(e.target.value)}
-                    aria-label="Texto de la pregunta"
-                    required
-                />
-                <input
-                    type="number"
-                    placeholder="Peso"
-                    value={peso}
-                    onChange={(e) => setPeso(e.target.value)}
-                    aria-label="Peso de la pregunta"
-                    min="1"
-                    required
-                />
-                <button type="submit">
-                    {editando ? "Actualizar Pregunta" : "Agregar Pregunta"}
-                </button>
+                <input type="text" placeholder="Pregunta"value={texto}onChange={(e) => setTexto(e.target.value)} required />
+                <input type="number" placeholder="Peso (0-3)" value={peso} onChange={(e) => setPeso(e.target.value)} min="0" max='3'required/>
+                <input type="text" placeholder="Categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} required/>
+                <button type="submit">{editando ? "Actualizar Pregunta" : "Agregar Pregunta"}</button>
             </form>
 
             {/* Lista de preguntas */}
@@ -124,25 +121,24 @@ const Preguntas = () => {
                     <ul className="preguntas-list">
                         {preguntas.map((pregunta, index) => (
                             <li key={pregunta.id} className="preguntas-item">
-                                <div className="preguntas-item-number">{index + 1}</div>
-                                <div className="preguntas-item-text">{pregunta.texto}</div>
-                                <div className="preguntas-item-peso">{pregunta.peso}</div>
-                                <div className="preguntas-item-actions">
-                                    <button 
-                                        onClick={() => editarPregunta(pregunta)}
-                                        className="btn-editar"
-                                        aria-label={`Editar pregunta: ${pregunta.texto}`}
-                                    >
-                                        Editar
-                                    </button>
-                                    <button 
-                                        onClick={() => eliminarPregunta(pregunta.id)}
-                                        className="btn-eliminar"
-                                        aria-label={`Eliminar pregunta: ${pregunta.texto}`}
-                                    >
-                                        Eliminar
-                                    </button>
+                                <div className="gestionar-preguntas">
+                                    <div className="preguntas-item-number">{index + 1}</div>
+                                    <div className="preguntas-item-text">{pregunta.texto}</div>
+                                    <div className="preguntas-item-peso">{pregunta.peso}</div>
+                                    <div className="preguntas-item-actions">
+                                        <button onClick={() => editarPregunta(pregunta)}className="btn-editar"aria-label={`Editar pregunta: ${pregunta.texto}`}>Editar</button>
+                                        <button onClick={() => eliminarPregunta(pregunta.id)}className="btn-eliminar"aria-label={`Eliminar pregunta: ${pregunta.texto}`}>Eliminar</button>
+                                    </div>
                                 </div>
+                            <div className="content-response">
+                                <p>Respuestas</p>
+                                <div className="content-response-items">
+                                    <div className="respuesta si">Si <br /> {calcularValorRespuesta(pregunta.peso, "Si")}</div>
+                                    <div className="respuesta si-parcialmente">Si parcialmente <br /> {calcularValorRespuesta(pregunta.peso, "Si parcialmente")}</div>
+                                    <div className="respuesta no">No <br /> {calcularValorRespuesta(pregunta.peso, "No")}</div>
+                                    <div className="respuesta na">N/A <br /> {calcularValorRespuesta(pregunta.peso, "N/A")}</div>
+                                </div>
+                            </div>
                             </li>
                         ))}
                     </ul>
