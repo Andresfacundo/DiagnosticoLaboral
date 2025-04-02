@@ -52,12 +52,14 @@
 
 .preguntas-list-header {
     display: grid;
-    grid-template-columns: 0.5fr 3fr 1fr 1fr;
+    grid-template-columns: 0.5fr 3fr 1fr 1fr 1fr;
+
     background-color: #f0f0f0;
     font-weight: bold;
     padding: 0.75rem;
     margin-bottom: 0.5rem;
     border-radius: 8px;
+    /* border: 2px solid red; */
 }
 
 .preguntas-list {
@@ -84,17 +86,21 @@
 }
 .gestionar-preguntas{
     display: grid;
-    grid-template-columns: 0.5fr 3fr 1fr 1fr;
+    grid-template-columns: 0.5fr 3fr 1fr 1fr  1fr;
     align-items: center;
+    /* border: 2px solid red; */
 }
 .preguntas-item-peso{
-    padding-left: 1.6rem;
+    text-align: center;
 }
 
 .preguntas-item-actions {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
+}
+.preguntas-item-categoria{
+    text-align: center;
 }
 
 .btn-editar, .btn-eliminar {
@@ -134,12 +140,11 @@
     text-align: center;
 }
 .content-response{
-    /* border: 2px solid red; */
+
     text-align: center;
 }
 .content-response p{
    font-weight: bold;
-   /* border-top: 1px solid #9b9797; */
    padding-top: 1rem;
 }
 .content-response-items{

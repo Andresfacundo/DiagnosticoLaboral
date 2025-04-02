@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import './Formulario.css'
 
-const Formulario = ({ setPaso }) => {
+const Formulario = () => {
     const [empleador, setEmpleador] = useState({
         tipo: "",
+        tipoDocumento : "",
         nombre: "",
         identificacion: "",
         trabajadores: "",
@@ -73,6 +74,11 @@ const Formulario = ({ setPaso }) => {
                     required 
                     aria-label="Nombre o Razón Social"
                 />
+                <form action="">
+                    <select name="" id="">
+                        
+                    </select>
+                </form>
                 <input 
                     className='input'
                     type="number" 
