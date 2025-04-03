@@ -88,8 +88,11 @@
     display: grid;
     grid-template-columns: 0.5fr 3fr 1fr 1fr  1fr;
     align-items: center;
+    width: 100%;
     /* border: 2px solid red; */
+    height: 4rem;
 }
+
 .preguntas-item-peso{
     text-align: center;
 }
@@ -103,7 +106,7 @@
     text-align: center;
 }
 
-.btn-editar, .btn-eliminar {
+.btn-editar, .btn-eliminar, .btn-guardar, .btn-cancelar {
     padding: 0.5rem 0.75rem;
     border: none;
     border-radius: 6px;
@@ -113,7 +116,8 @@
     width: 100%;
 }
 
-.btn-editar {
+
+.btn-editar, .btn-guardar, .btn-cancelar {
     background-color: #DFBD7C;
 }
 
@@ -177,3 +181,17 @@
     width: 100%;
 
 }
+.respuesta  {
+    border: 1px solid #9b9797;
+    background-color: #71adf117;
+    width: 100%;
+}
+.editar-en-linea-input {
+    border: none;
+    width: 100%;
+    background-color: transparent;
+    text-align: center;
+    font-size: 15px;
+
+}
+
