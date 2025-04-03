@@ -36,6 +36,7 @@
     border-radius: 50%;
     outline: none;
     cursor: pointer;
+
     
 }
 .content-form .content-check{
@@ -47,6 +48,7 @@
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
     
 }
+
 
 /* Input Fields */
 .content-input {
@@ -126,12 +128,12 @@
 
 .content-form button a {
     color: #000;
-
     text-decoration: none;
     display: block;
     width: 100%;
     height: 100%;
 }
+
 
 /* Responsive Adjustments */
 @media screen and (max-width: 480px) {
@@ -150,4 +152,46 @@
     }
 }
 
-/* Accessibility and Focus States */
+/* Error Styling */
+.input-container {
+    position: relative;
+    width: 100%;
+}
+
+.input-error {
+    border-color: #dc3545 !important;
+}
+
+.input-error[type="radio"], .input-error[type="checkbox"] {
+    border-color: #dc3545 !important;
+}
+
+.error-inside {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #dc3545;
+
+    padding: 2px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.error-radio, .error-checkbox {
+    color: #dc3545;
+    /* font-size: 0.85rem; */
+    margin-top: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Ajustes adicionales */
+button {
+    color: black !important;
+    font-weight: 500;
+}
+
+.input::placeholder {
+    color: #757474;
+}
