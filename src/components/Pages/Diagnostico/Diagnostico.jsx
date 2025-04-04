@@ -1,611 +1,360 @@
-// import React, { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./Diagnostico.css";
 
-// const Diagnostico = () => {
-//     const navigate = useNavigate();
-//     const [resultados, setResultados] = useState(null);
-
-//     useEffect(() => {
-//         // Obtener respuestas guardadas en LocalStorage
-//         const respuestasGuardadas = JSON.parse(localStorage.getItem("respuestas"));
-
-//         if (!respuestasGuardadas) {
-//             alert("No hay respuestas guardadas. Redirigiendo...");
-//             navigate("/preguntas");
-//             return;
-//         }
-
-//         // Simular cálculo de diagnóstico (ejemplo: % de cumplimiento)
-//         let totalPreguntas = respuestasGuardadas.length;
-//         let respuestasSi = respuestasGuardadas.filter(r => r.respuesta === "Sí").length;
-//         let porcentajeCumplimiento = Math.round((respuestasSi / totalPreguntas) * 100);
-
-//         // Clasificación según porcentaje
-//         let estado = "";
-//         if (porcentajeCumplimiento >= 80) {
-//             estado = "Excelente ✅";
-//         } else if (porcentajeCumplimiento >= 50) {
-//             estado = "Aceptable ⚠️";
-//         } else {
-//             estado = "Crítico ❌";
-//         }
-
-//         // Guardar resultado
-//         setResultados({
-//             porcentaje: porcentajeCumplimiento,
-//             estado,
-//             respuestas: respuestasGuardadas
-//         });
-//     }, [navigate]);
-
-//     return (
-//         <div>
-//             <h2>Resultados del Diagnóstico</h2>
-
-//             {resultados ? (
-//                 <div>
-//                     <h3>📊 Cumplimiento: {resultados.porcentaje}%</h3>
-//                     <h4>Estado: {resultados.estado}</h4>
-
-//                     <h3>📋 Respuestas Detalladas:</h3>
-//                     <ul>
-//                         {resultados.respuestas.map((r) => (
-//                             <li key={r.id}>
-//                                 <strong>{r.respuesta === "Sí" ? "✅" : r.respuesta === "No" ? "❌" : "⚪"} {r.respuesta}</strong> - {r.comentario ? `"${r.comentario}"` : "Sin comentario"}
-//                             </li>
-//                         ))}
-//                     </ul>
-//                 </div>
-//             ) : (
-//                 <p>Cargando resultados...</p>
-//             )}
-
-//             <button onClick={() => navigate("/")}>Volver al inicio</button>
-//         </div>
-//     );
-// };
-
-// export default Diagnostico;
-
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import { 
-//   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
-//   PieChart, Pie, Cell, ResponsiveContainer 
-// } from 'recharts';
-// import './Diagnostico.css'
-
-// const ResultadosDashboard = () => {
-//   const [resultados, setResultados] = useState([]);
-//   const [contingencias, setContingencias] = useState({});
-//   const [filtros, setFiltros] = useState({
-//     categoria: '',
-//     rangoFecha: null
-//   });
-
-//   // Colores para gráficos
-//   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
-
-//   // Obtener resultados desde el backend
-//   useEffect(() => {
-//     const fetchResultados = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:3000/resultados', { 
-//           params: filtros 
-//         });
-        
-//         setResultados(response.data.resultados);
-//         procesarContingencias(response.data.resultados);
-//       } catch (error) {
-//         console.error('Error al obtener resultados', error);
-//       }
-//     };
-
-//     fetchResultados();
-//   }, [filtros]);
-
-//   // Procesar contingencias
-//   const procesarContingencias = (data) => {
-//     const contingenciasAgrupadas = {};
-
-//     data.forEach(resultado => {
-//       // Ejemplo de agrupación por categoría
-//       const categoria = resultado.categoria || 'Sin Categoría';
-      
-//       if (!contingenciasAgrupadas[categoria]) {
-//         contingenciasAgrupadas[categoria] = {
-//           total: 0,
-//           positivos: 0,
-//           negativos: 0,
-//           riesgos: []
-//         };
-//       }
-
-//       contingenciasAgrupadas[categoria].total++;
-      
-//       if (resultado.esPositivo) {
-//         contingenciasAgrupadas[categoria].positivos++;
-//       } else {
-//         contingenciasAgrupadas[categoria].negativos++;
-//       }
-
-//       // Identificar riesgos potenciales
-//       if (resultado.nivelRiesgo > 5) {
-//         contingenciasAgrupadas[categoria].riesgos.push(resultado);
-//       }
-//     });
-
-//     setContingencias(contingenciasAgrupadas);
-//   };
-
-//   // Preparar datos para gráficos
-//   const prepararDatosBarras = () => {
-//     return Object.entries(contingencias).map(([categoria, datos]) => ({
-//       categoria,
-//       total: datos.total,
-//       positivos: datos.positivos,
-//       negativos: datos.negativos
-//     }));
-//   };
-
-//   const prepararDatosPastel = () => {
-//     return Object.entries(contingencias).map(([categoria, datos]) => ({
-//       name: categoria,
-//       value: datos.total
-//     }));
-//   };
-
-//   return (
-//     <div className="resultados-dashboard">
-//       <header className="dashboard-header">
-//         <h1>Panel de Resultados y Contingencias</h1>
-        
-//         <div className="filtros-container">
-//           <select 
-//             onChange={(e) => setFiltros(prev => ({
-//               ...prev, 
-//               categoria: e.target.value
-//             }))}
-//           >
-//             <option value="">Todas las Categorías</option>
-//             {Object.keys(contingencias).map(categoria => (
-//               <option key={categoria} value={categoria}>
-//                 {categoria}
-//               </option>
-//             ))}
-//           </select>
-          
-//           <input 
-//             type="date" 
-//             onChange={(e) => setFiltros(prev => ({
-//               ...prev, 
-//               rangoFecha: e.target.value
-//             }))}
-//           />
-//         </div>
-//       </header>
-
-//       <section className="graficos-container">
-//         <div className="grafico-barras">
-//           <h2>Distribución de Resultados por Categoría</h2>
-//           <ResponsiveContainer width="100%" height={300}>
-//             <BarChart data={prepararDatosBarras()}>
-//               <CartesianGrid strokeDasharray="3 3" />
-//               <XAxis dataKey="categoria" />
-//               <YAxis />
-//               <Tooltip />
-//               <Legend />
-//               <Bar dataKey="positivos" stackId="a" fill="#4CAF50" />
-//               <Bar dataKey="negativos" stackId="a" fill="#F44336" />
-//             </BarChart>
-//           </ResponsiveContainer>
-//         </div>
-
-//         <div className="grafico-pastel">
-//           <h2>Distribución Total por Categoría</h2>
-//           <ResponsiveContainer width="100%" height={300}>
-//             <PieChart>
-//               <Pie
-//                 data={prepararDatosPastel()}
-//                 cx="50%"
-//                 cy="50%"
-//                 labelLine={false}
-//                 outerRadius={80}
-//                 fill="#8884d8"
-//                 dataKey="value"
-//               >
-//                 {prepararDatosPastel().map((entry, index) => (
-//                   <Cell 
-//                     key={`cell-${index}`} 
-//                     fill={COLORS[index % COLORS.length]} 
-//                   />
-//                 ))}
-//               </Pie>
-//               <Tooltip />
-//               <Legend />
-//             </PieChart>
-//           </ResponsiveContainer>
-//         </div>
-//       </section>
-
-//       <section className="contingencias-detalladas">
-//         <h2>Análisis de Contingencias</h2>
-//         {Object.entries(contingencias).map(([categoria, datos]) => (
-//           <div key={categoria} className="contingencia-categoria">
-//             <h3>{categoria}</h3>
-//             <div className="contingencia-stats">
-//               <p>Total de Resultados: {datos.total}</p>
-//               <p>Resultados Positivos: {datos.positivos}</p>
-//               <p>Resultados Negativos: {datos.negativos}</p>
-//             </div>
-//             {datos.riesgos.length > 0 && (
-//               <div className="riesgos-detalle">
-//                 <h4>Riesgos Identificados</h4>
-//                 <ul>
-//                   {datos.riesgos.map((riesgo, index) => (
-//                     <li key={index}>
-//                       Nivel de Riesgo: {riesgo.nivelRiesgo} 
-//                       - Descripción: {riesgo.descripcion}
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </div>
-//             )}
-//           </div>
-//         ))}
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default ResultadosDashboard;
-
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import { 
-//   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
-//   PieChart, Pie, Cell, ResponsiveContainer 
-// } from 'recharts';
-// import './Diagnostico.css';
-
-// const ResultadosDashboard = () => {
-//   const [preguntas, setPreguntas] = useState([]);
-//   const [respuestas, setRespuestas] = useState([]);
-//   const [diagnostico, setDiagnostico] = useState(null);
-
-//   // Fetch preguntas when component mounts
-//   useEffect(() => {
-//     const fetchPreguntas = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:3000/preguntas');
-//         setPreguntas(response.data);
-//       } catch (error) {
-//         console.error('Error al obtener preguntas', error);
-//       }
-//     };
-
-//     fetchPreguntas();
-//   }, []);
-
-//   // Fetch respuestas
-//   useEffect(() => {
-//     const fetchRespuestas = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:3000/respuestas');
-//         setRespuestas(response.data);
-//       } catch (error) {
-//         console.error('Error al obtener respuestas', error);
-//       }
-//     };
-
-//     fetchRespuestas();
-//   }, []);
-
-//   // Fetch diagnóstico
-//   useEffect(() => {
-//     const fetchDiagnostico = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:3000/diagnostico');
-//         setDiagnostico(response.data);
-//       } catch (error) {
-//         console.error('Error al obtener diagnóstico', error);
-//       }
-//     };
-
-//     fetchDiagnostico();
-//   }, []);
-
-//   // Preparar datos para gráfico de barras de preguntas
-//   const prepararDatosBarras = () => {
-//     return preguntas.map(pregunta => ({
-//       pregunta: pregunta.texto,
-//       peso: pregunta.peso
-//     }));
-//   };
-
-//   // Preparar datos para gráfico de pastel de respuestas
-//   const prepararDatosPastel = () => {
-//     const respuestasPorTipo = {
-//       Si: 0,
-//       No: 0,
-//       Parcial: 0
-//     };
-
-//     respuestas.forEach(respuestaSet => {
-//       respuestaSet.forEach(respuesta => {
-//         if (respuesta.respuesta === 'Si') {
-//           respuestasPorTipo.Si++;
-//         } else if (respuesta.respuesta === 'No') {
-//           respuestasPorTipo.No++;
-//         } else {
-//           respuestasPorTipo.Parcial++;
-//         }
-//       });
-//     });
-
-//     return Object.entries(respuestasPorTipo).map(([name, value]) => ({ name, value }));
-//   };
-
-//   // Colores para gráficos
-//   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
-
-//   return (
-//     <div className="resultados-dashboard">
-//       <header className="dashboard-header">
-//         <h1>Panel de Diagnóstico</h1>
-        
-//         {diagnostico && (
-//           <div className="diagnostico-resumen">
-//             <h2>Resultado del Diagnóstico</h2>
-//             <p>Porcentaje de Cumplimiento: {diagnostico.resultado}%</p>
-            
-//             {/* Clasificación según porcentaje */}
-//             <h3>
-//               {diagnostico.resultado >= 80 
-//                 ? "Estado: Excelente ✅" 
-//                 : diagnostico.resultado >= 50 
-//                 ? "Estado: Aceptable ⚠️" 
-//                 : "Estado: Crítico ❌"}
-//             </h3>
-//           </div>
-//         )}
-//       </header>
-
-//       <section className="graficos-container">
-//         <div className="grafico-barras">
-//           <h2>Peso de Preguntas</h2>
-//           <ResponsiveContainer width="100%" height={300}>
-//             <BarChart data={prepararDatosBarras()}>
-//               <CartesianGrid strokeDasharray="3 3" />
-//               <XAxis dataKey="pregunta" />
-//               <YAxis label={{ value: 'Peso', angle: -90, position: 'insideLeft' }} />
-//               <Tooltip />
-//               <Bar dataKey="peso" fill="#8884d8" />
-//             </BarChart>
-//           </ResponsiveContainer>
-//         </div>
-
-//         <div className="grafico-pastel">
-//           <h2>Distribución de Respuestas</h2>
-//           <ResponsiveContainer width="100%" height={300}>
-//             <PieChart>
-//               <Pie
-//                 data={prepararDatosPastel()}
-//                 cx="50%"
-//                 cy="50%"
-//                 labelLine={false}
-//                 outerRadius={80}
-//                 fill="#8884d8"
-//                 dataKey="value"
-//               >
-//                 {prepararDatosPastel().map((entry, index) => (
-//                   <Cell 
-//                     key={`cell-${index}`} 
-//                     fill={COLORS[index % COLORS.length]} 
-//                   />
-//                 ))}
-//               </Pie>
-//               <Tooltip />
-//               <Legend />
-//             </PieChart>
-//           </ResponsiveContainer>
-//         </div>
-//       </section>
-
-//       <section className="respuestas-detalladas">
-//         <h2>Detalle de Respuestas</h2>
-//         {respuestas.map((respuestaSet, setIndex) => (
-//           <div key={setIndex} className="conjunto-respuestas">
-//             <h3>Conjunto de Respuestas {setIndex + 1}</h3>
-//             <table>
-//               <thead>
-//                 <tr>
-//                   <th>Pregunta</th>
-//                   <th>Respuesta</th>
-//                   <th>Comentario</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {respuestaSet.map((respuesta, index) => {
-//                   const pregunta = preguntas.find(p => p.id === Number(respuesta.preguntaId));
-//                   return (
-//                     <tr key={index}>
-//                       <td>{pregunta ? pregunta.texto : 'Pregunta no encontrada'}</td>
-//                       <td>{respuesta.respuesta}</td>
-//                       <td>{respuesta.comentario || 'Sin comentario'}</td>
-//                     </tr>
-//                   );
-//                 })}
-//               </tbody>
-//             </table>
-//           </div>
-//         ))}
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default ResultadosDashboard;
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
-  PieChart, Pie, Cell, ResponsiveContainer 
-} from 'recharts';
-import './Diagnostico.css';
-
-const ResultadosDashboard = () => {
-  const [preguntas, setPreguntas] = useState([]);
-  const [respuestas, setRespuestas] = useState([]);
-  const [diagnostico, setDiagnostico] = useState(null);
-
-  // Fetch preguntas when component mounts
+const Diagnostico = () => {
+  const navigate = useNavigate();
+  const [resultados, setResultados] = useState({
+    porcentajeCumplimiento: 0,
+    empleador: null,
+    respuestas: [],
+    categorias: {},
+    loading: true,
+    error: null,
+    fecha: new Date().toLocaleDateString()
+  });
+  
   useEffect(() => {
-    const fetchPreguntas = async () => {
+    const obtenerDatos = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/preguntas');
-        setPreguntas(response.data);
+        // Obtener el ID del empleador del localStorage
+        const empleadorId = localStorage.getItem("empleadorId");
+        
+        if (!empleadorId) {
+          setResultados(prev => ({
+            ...prev,
+            loading: false,
+            error: "No se encontró información del empleador"
+          }));
+          return;
+        }
+
+        // 1. Obtener detalles del empleador
+        const empleadorResponse = await axios.get(`http://localhost:3000/empleadores/${empleadorId}`);
+        
+        // 2. Obtener diagnóstico específico para este empleador
+        const diagnosticoResponse = await axios.get(`http://localhost:3000/respuestas/diagnostico/${empleadorId}`);
+        console.log("Diagnóstico Response:", diagnosticoResponse.data);
+        
+        
+        // 3. Obtener respuestas del empleador
+        const respuestasResponse = await axios.get(`http://localhost:3000/empleadores/${empleadorId}`);
+        
+        // 4. Obtener todas las preguntas para cruzar con las respuestas
+        const preguntasResponse = await axios.get("http://localhost:3000/preguntas");
+        
+        // Analizar respuestas por categoría
+        const respuestasData = respuestasResponse.data.length > 0 ? respuestasResponse.data[0].respuestas : [];
+        const categorias = analizarRespuestasPorCategoria(
+          preguntasResponse.data,
+          respuestasData
+        );
+
+        
+        setResultados({
+          porcentajeCumplimiento: diagnosticoResponse.data.resultado || 0,
+          empleador: empleadorResponse.data.exito ? empleadorResponse.data.empleador : null,
+          respuestas: respuestasResponse.data,
+          categorias,
+          loading: false,
+          error: null,
+          fecha: new Date(respuestasResponse.data.length > 0 ? respuestasResponse.data[0].fecha : Date.now()).toLocaleDateString()
+        });
       } catch (error) {
-        console.error('Error al obtener preguntas', error);
+        console.error("Error al obtener resultados:", error);
+        setResultados(prev => ({
+          ...prev,
+          loading: false,
+          error: "Error al cargar los resultados. Por favor, intente nuevamente."
+        }));
       }
     };
 
-    fetchPreguntas();
+    obtenerDatos();
   }, []);
 
-  // Fetch respuestas
-  useEffect(() => {
-    const fetchRespuestas = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/respuestas');
-        setRespuestas(response.data.flat()); // Flatten the array of arrays
-      } catch (error) {
-        console.error('Error al obtener respuestas', error);
+  // Función para analizar respuestas agrupadas por categoría
+  const analizarRespuestasPorCategoria = (preguntas, respuestas) => {
+    const categorias = {};
+
+    // Inicializar contadores por categoría
+    preguntas.forEach(pregunta => {
+      if (!categorias[pregunta.categoria]) {
+        categorias[pregunta.categoria] = {
+          total: 0,
+          cumplimiento: 0,
+          preguntas: []
+        };
       }
-    };
+      categorias[pregunta.categoria].total += pregunta.peso;
+    });
+    respuestas.push({
+      id: 1,
+      fecha: new Date(),
+      empleadorId: 1,
+      respuestas: [
+        { preguntaId: 1, respuesta: "Si" },
+        { preguntaId: 2, respuesta: "No" },
+        // Añade más respuestas según tus preguntas
+      ]
+    });
 
-    fetchRespuestas();
-  }, []);
-
-  // Fetch diagnóstico
-  useEffect(() => {
-    const fetchDiagnostico = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/diagnostico');
-        setDiagnostico(response.data);
-      } catch (error) {
-        console.error('Error al obtener diagnóstico', error);
-      }
-    };
-
-    fetchDiagnostico();
-  }, []);
-
-  // Preparar datos para gráfico de barras de preguntas
-  const prepararDatosBarras = () => {
-    return preguntas.map(pregunta => ({
-      pregunta: pregunta.texto,
-      peso: pregunta.peso
-    }));
-  };
-
-  // Preparar datos para gráfico de pastel de respuestas
-  const prepararDatosPastel = () => {
-    const respuestasPorTipo = {
-      'Sí': 0,
-      'No': 0,
-      'Otro': 0
-    };
-
-    // Contar respuestas
+    // Calcular cumplimiento por categoría
     respuestas.forEach(respuesta => {
-      switch(respuesta.respuesta) {
-        case 'Sí':
-          respuestasPorTipo['Sí']++;
-          break;
-        case 'No':
-          respuestasPorTipo['No']++;
-          break;
-        default:
-          respuestasPorTipo['Otro']++;
+      const preguntaId = parseInt(respuesta.preguntaId || respuesta.id);
+      const pregunta = preguntas.find(p => p.id === preguntaId);
+      if (pregunta) {
+        let valorRespuesta = 0;
+
+        // Si la pregunta tiene un mapa de puntajes personalizado
+        if (pregunta.respuestas && pregunta.respuestas[respuesta.respuesta] !== undefined) {
+          valorRespuesta = Number(pregunta.respuestas[respuesta.respuesta]);
+        } else {
+          // Lógica predeterminada
+          if (respuesta.respuesta === "Si" || respuesta.respuesta === "Sí") {
+            valorRespuesta = pregunta.peso;
+          } else if (respuesta.respuesta === "Si parcialmente" || respuesta.respuesta === "Sí parcialmente") {
+            valorRespuesta = pregunta.peso / 2;
+          }
+        }
+
+        categorias[pregunta.categoria].cumplimiento += valorRespuesta;
+        categorias[pregunta.categoria].preguntas.push({
+          id: pregunta.id,
+          texto: pregunta.texto,
+          respuesta: respuesta.respuesta,
+          valorRespuesta,
+          pesoTotal: pregunta.peso,
+          cumplimiento: (valorRespuesta / pregunta.peso) * 100
+        });
       }
     });
 
-    // Convertir a formato recharts
-    return Object.entries(respuestasPorTipo)
-      .filter(([_, value]) => value > 0) // Solo incluir tipos con valores > 0
-      .map(([name, value]) => ({ name, value }));
+    // Calcular porcentajes finales por categoría
+    Object.keys(categorias).forEach(categoria => {
+      const { total, cumplimiento } = categorias[categoria];
+      categorias[categoria].porcentaje = total > 0 ? (cumplimiento / total) * 100 : 0;
+    });
+
+    return categorias;
   };
 
-  // Colores para gráficos
-  const COLORS = ['#4CAF50', '#F44336', '#FFC107'];
+  const obtenerColorPorcentaje = (porcentaje) => {
+    if (porcentaje >= 80) return "#4CAF50"; // Verde
+    if (porcentaje >= 60) return "#FFC107"; // Amarillo
+    if (porcentaje >= 40) return "#FF9800"; // Naranja
+    return "#F44336"; // Rojo
+  };
+
+  const renderizarGraficoDona = (porcentaje, tamaño = 150) => {
+    const radio = tamaño / 2;
+    const circunferencia = 2 * Math.PI * (radio - 10);
+    const porcentajeCompletado = circunferencia * (1 - porcentaje / 100);
+    const color = obtenerColorPorcentaje(porcentaje);
+
+    return (
+      <svg width={tamaño} height={tamaño} viewBox={`0 0 ${tamaño} ${tamaño}`}>
+        <circle
+          cx={radio}
+          cy={radio}
+          r={radio - 10}
+          fill="transparent"
+          stroke="#f0f0f0"
+          strokeWidth="8"
+        />
+        <circle
+          cx={radio}
+          cy={radio}
+          r={radio - 10}
+          fill="transparent"
+          stroke={color}
+          strokeWidth="8"
+          strokeDasharray={circunferencia}
+          strokeDashoffset={porcentajeCompletado}
+          transform={`rotate(-90 ${radio} ${radio})`}
+        />
+        <text
+          x="50%"
+          y="50%"
+          dominantBaseline="middle"
+          textAnchor="middle"
+          fontSize="20"
+          fontWeight="bold"
+          fill="#333"
+        >
+          {Math.round(porcentaje)}%
+        </text>
+      </svg>
+    );
+  };
+
+  // Identificar áreas con contingencias (cumplimiento < 80%)
+  const identificarContingencias = () => {
+    const contingencias = [];
+    Object.entries(resultados.categorias).forEach(([categoria, datos]) => {
+      if (datos.porcentaje < 80) {
+        // Filtrar preguntas con bajo cumplimiento
+        const preguntasConContingencia = datos.preguntas
+          .filter(p => p.cumplimiento < 80)
+          .map(p => ({
+            texto: p.texto,
+            respuesta: p.respuesta,
+            cumplimiento: p.cumplimiento
+          }));
+
+        contingencias.push({
+          categoria,
+          porcentaje: datos.porcentaje,
+          preguntas: preguntasConContingencia
+        });
+      }
+    });
+
+    return contingencias;
+    
+  };
+
+  if (resultados.loading) {
+    return <div className="resultados-loading">Cargando resultados...</div>;
+  }
+
+  if (resultados.error) {
+    return (
+      <div className="resultados-error">
+        <h2>Error</h2>
+        <p>{resultados.error}</p>
+        <button onClick={() => navigate("/")}>Volver al inicio</button>
+      </div>
+    );
+  }
+
+  const contingencias = identificarContingencias();
 
   return (
-    <div className="resultados-dashboard">
-      <header className="dashboard-header">
-        <h1>Panel de Diagnóstico</h1>
-        
-        {diagnostico && (
-          <div className="diagnostico-resumen">
-            <h2>Resultado del Diagnóstico</h2>
-            <p>Porcentaje de Cumplimiento: {diagnostico.resultado}%</p>
-            
-            {/* Clasificación según porcentaje */}
-            <h3>
-              {diagnostico.resultado >= 80 
-                ? "Estado: Excelente ✅" 
-                : diagnostico.resultado >= 50 
-                ? "Estado: Aceptable ⚠️" 
-                : "Estado: Crítico ❌"}
-            </h3>
+    <div className="resultados-container">
+      <div className="resultados-header">
+        <h1>Resultados del Diagnóstico</h1>
+        <div className="resultados-info">
+          <p><strong>Empresa:</strong> {resultados.empleador?.nombre || "No disponible"}</p>
+          <p>
+            <strong>Identificación:</strong> {resultados.empleador?.tipoDocumento || ""}{" "}
+            {resultados.empleador?.identificacion || "No disponible"}
+          </p>
+          <p><strong>Fecha del diagnóstico:</strong> {resultados.fecha}</p>
+        </div>
+      </div>
+
+      <div className="resultados-cumplimiento">
+        <h2>Cumplimiento Global</h2>
+        <div className="grafico-dona-container">
+          {renderizarGraficoDona(resultados.porcentajeCumplimiento, 200)}
+          <div className="estado-cumplimiento">
+            <span 
+              className="estado-indicador"
+              style={{ 
+                backgroundColor: obtenerColorPorcentaje(resultados.porcentajeCumplimiento) 
+              }}
+            ></span>
+            <span className="estado-texto">
+              {resultados.porcentajeCumplimiento >= 80
+                ? "Cumplimiento Adecuado"
+                : resultados.porcentajeCumplimiento >= 60
+                ? "Requiere Mejoras"
+                : "Alto Riesgo de Incumplimiento"}
+            </span>
           </div>
-        )}
-      </header>
-
-      <section className="graficos-container">
-        <div className="grafico-barras">
-          <h2>Peso de Preguntas</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={prepararDatosBarras()}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="pregunta" />
-              <YAxis label={{ value: 'Peso', angle: -90, position: 'insideLeft' }} />
-              <Tooltip />
-              <Bar dataKey="peso" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
         </div>
+      </div>
 
-        <div className="grafico-pastel">
-          <h2>Distribución de Respuestas</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={prepararDatosPastel()}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {prepararDatosPastel().map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={COLORS[index % COLORS.length]} 
-                  />
+      <div className="resultados-categorias">
+        <h2>Cumplimiento por Categoría</h2>
+        <div className="categorias-grid">
+          {Object.entries(resultados.categorias).map(([categoria, datos]) => (
+            <div key={categoria} className="categoria-card">
+              <h3>{categoria}</h3>
+              <div className="categoria-grafico">
+                {renderizarGraficoDona(datos.porcentaje)}
+              </div>
+              <p className="categoria-detalle">
+                {datos.porcentaje >= 80 
+                  ? "Cumplimiento adecuado" 
+                  : "Requiere atención"}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {contingencias.length > 0 && (
+        <div className="resultados-contingencias">
+          <h2>Contingencias Identificadas</h2>
+          <div className="alerta-contingencias">
+            <p>
+              Se han identificado {contingencias.length} áreas con posibles riesgos de
+              incumplimiento que requieren atención inmediata.
+            </p>
+          </div>
+
+          {contingencias.map((contingencia, index) => (
+            <div key={index} className="contingencia-card">
+              <h3>{contingencia.categoria}</h3>
+              <div className="contingencia-header">
+                <div className="contingencia-porcentaje">
+                  {Math.round(contingencia.porcentaje)}% de cumplimiento
+                </div>
+                <div 
+                  className="contingencia-barra" 
+                  style={{ 
+                    width: '100%', 
+                    backgroundColor: '#f0f0f0',
+                    height: '8px',
+                    borderRadius: '4px',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div 
+                    style={{ 
+                      width: `${contingencia.porcentaje}%`, 
+                      backgroundColor: obtenerColorPorcentaje(contingencia.porcentaje),
+                      height: '100%'
+                    }}
+                  ></div>
+                </div>
+              </div>
+              
+              <h4>Preguntas con observaciones:</h4>
+              <ul className="contingencia-preguntas">
+                {contingencia.preguntas.map((pregunta, i) => (
+                  <li key={i}>
+                    <p className="pregunta-texto">{pregunta.texto}</p>
+                    <p className="pregunta-respuesta">
+                      <strong>Respuesta:</strong> {pregunta.respuesta}
+                    </p>
+                  </li>
                 ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+              </ul>
+            </div>
+          ))}
         </div>
-      </section>
+      )}
 
+      <div className="resultados-acciones">
+        <button 
+          className="btn-imprimir"
+          onClick={() => window.print()}
+        >
+          Imprimir Resultados
+        </button>
+        <button 
+          className="btn-nuevo-diagnostico"
+          onClick={() => navigate("/")}
+        >
+          Nuevo Diagnóstico
+        </button>
+      </div>
     </div>
   );
 };
 
-export default ResultadosDashboard;
+export default Diagnostico;

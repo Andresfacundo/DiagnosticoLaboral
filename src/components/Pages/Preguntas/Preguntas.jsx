@@ -19,11 +19,14 @@ const Preguntas = () => {
             try {
                 const response = await axios.get("http://localhost:3000/preguntas");
                 setPreguntas(response.data);
+                console.log(response.data);
+                
             } catch (error) {
                 console.error("Error al obtener preguntas", error);
                 setError("No se pudieron cargar las preguntas. Intente nuevamente.");
             }
         };
+        
 
         obtenerPreguntas();
     }, []);

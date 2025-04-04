@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import './Formulario.css'
+import axios from "axios"; // Asegúrate de tener axios instalado: npm install axios
+import './Formulario.css';
+
+// URL base de la API
+const API_URL = "http://localhost:3000"; // Debe coincidir con el puerto de tu servidor Express
 
 const Formulario = () => {
     const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
     const [empleador, setEmpleador] = useState({
         tipo: "",
@@ -16,6 +21,8 @@ const Formulario = () => {
     
     // Estado para controlar errores
     const [errores, setErrores] = useState({});
+    // Estado para mensajes del servidor
+    const [serverError, setServerError] = useState(null);
 
     const manejarCambio = (e) => {
         const { name, value, type, checked } = e.target;
@@ -76,18 +83,53 @@ const Formulario = () => {
         return Object.keys(nuevosErrores).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         if (validarFormulario()) {
-            // Si no hay errores, navegar al siguiente componente
-            navigate('/cuestionario');
+            setIsSubmitting(true);
+            setServerError(null);
+            
+            try {
+                // Llamada al endpoint para guardar los datos del empleador
+                const response = await axios.post(`${API_URL}/empleadores`, empleador);
+                
+                // Guardar el ID del empleador en localStorage para usar en otros componentes
+                localStorage.setItem('empleadorId', response.data.empleador.id);
+                localStorage.setItem('empleadorNombre', response.data.empleador.nombre);
+                
+                // Si todo sale bien, navegar al siguiente componente
+                navigate('/cuestionario');
+            } catch (error) {
+                console.error("Error al enviar datos:", error);
+                
+                // Mostrar errores del servidor si los hay
+                if (error.response && error.response.data) {
+                    if (error.response.data.errores) {
+                        setErrores(error.response.data.errores);
+                    }
+                    setServerError(
+                        error.response.data.mensaje || 
+                        "Ocurrió un error al procesar la solicitud. Por favor intente nuevamente."
+                    );
+                } else {
+                    setServerError("Error de conexión con el servidor. Por favor intente más tarde.");
+                }
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
     return (
         <div className="content-form">
             <h2>Información del Empleador</h2>
+            
+            {serverError && (
+                <div className="server-error-message">
+                    {serverError}
+                </div>
+            )}
             
             <div className='content-check' role="group" aria-label="Tipo de Empleador">
                 <label>
@@ -140,7 +182,6 @@ const Formulario = () => {
                         onChange={manejarCambio}
                         required
                         aria-label="Tipo de Documento"
-                        placeholder="Seleccione tipo de documento"
                     >
                         <option value="" disabled>Seleccione tipo de documento</option>
                         <option value="CC">Cédula de Ciudadanía</option>
@@ -189,6 +230,7 @@ const Formulario = () => {
                         onChange={manejarCambio}
                         id="contratoFijo"
                         className={errores.contratos ? 'input-error' : ''}
+                        checked={empleador.contratos.includes('Fijo')}
                     />
                     <label htmlFor="contratoFijo">Término Fijo</label>
                 </label>
@@ -200,6 +242,7 @@ const Formulario = () => {
                         onChange={manejarCambio}
                         id="contratoIndefinido"
                         className={errores.contratos ? 'input-error' : ''}
+                        checked={empleador.contratos.includes('Indefinido')}
                     />
                     <label htmlFor="contratoIndefinido">Término Indefinido</label>
                 </label>
@@ -211,14 +254,18 @@ const Formulario = () => {
                         onChange={manejarCambio}
                         id="contratoObra"
                         className={errores.contratos ? 'input-error' : ''}
+                        checked={empleador.contratos.includes('Obra')}
                     />
                     <label htmlFor="contratoObra">Obra o Labor</label>
                 </label>
                 {errores.contratos && <div className="error-checkbox">{errores.contratos}</div>}
             </div>
             
-            <button onClick={handleSubmit}>
-                Continuar
+            <button 
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+            >
+                {isSubmitting ? 'Enviando...' : 'Continuar'}
             </button>
         </div>
     );
