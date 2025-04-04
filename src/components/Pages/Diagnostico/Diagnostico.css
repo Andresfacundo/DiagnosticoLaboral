@@ -1,247 +1,491 @@
-.resultados-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: 'Arial', sans-serif;
+/* Diagnostico.css - Estilos para el componente de diagnóstico */
+
+/* Estilos generales */
+.diagnostico-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Estados de carga y error */
+.diagnostico-loading,
+.diagnostico-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 1s ease-in-out infinite;
+  margin: 2rem 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.diagnostico-error button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.diagnostico-error button:hover {
+  background-color: #2980b9;
+}
+
+/* Encabezado */
+.diagnostico-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.empresa-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.empresa-info h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.empresa-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dato-empresa {
+  display: flex;
+  align-items: baseline;
+  font-size: 1rem;
+}
+
+.dato-label {
+  font-weight: 600;
+  width: 120px;
+  color: #7f8c8d;
+}
+
+.dato-valor {
+  font-weight: 500;
+}
+
+.resumen-cumplimiento {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  min-width: 300px;
+}
+
+.resumen-texto {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.resumen-texto h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  color: #2c3e50;
+}
+
+.estado-cumplimiento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.estado-indicador {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Contenido principal */
+.diagnostico-contenido {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .diagnostico-contenido {
+    grid-template-columns: 3fr 2fr;
   }
-  
-  .resultados-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .resultados-header h1 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
-  
-  .resultados-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-    background-color: #f9f9f9;
+}
+
+/* Categorías */
+.columna-categorias,
+.columna-riesgos {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.columna-categorias h2,
+.columna-riesgos h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.75rem;
+}
+
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.categoria-card {
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.categoria-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.categoria-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.categoria-header h3 {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.categoria-porcentaje {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.categoria-body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.categoria-grafico {
+  flex-shrink: 0;
+}
+
+.categoria-stats {
+  flex-grow: 1;
+}
+
+.categoria-estado {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.respuestas-distribucion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.respuesta-tipo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.respuesta-color {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.categoria-barra-progreso {
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.barra-progreso {
+  height: 100%;
+  transition: width 0.5s ease-out;
+}
+
+/* Áreas de riesgo */
+.areas-riesgo-seccion {
+  margin-bottom: 2rem;
+}
+
+.areas-riesgo-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.area-riesgo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background-color: #ffecec;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #e74c3c;
+  font-size: 0.95rem;
+}
+
+/* Contingencias */
+.alerta-contingencias {
+  background-color: #fff9e6;
+  border-left: 4px solid #f39c12;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.alerta-contingencias p {
+  margin: 0;
+  color: #7f6000;
+}
+
+.contingencias-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contingencia-item {
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.contingencia-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+.contingencia-cabecera h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.contingencia-indicador {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.contingencia-porcentaje {
+  font-weight: bold;
+  min-width: 40px;
+  text-align: right;
+}
+
+.contingencia-barra-contenedor {
+  width: 100px;
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.contingencia-barra-progreso {
+  height: 100%;
+  transition: width 0.5s ease-out;
+}
+
+.contingencia-preguntas {
+  padding: 1rem;
+}
+
+.contingencia-preguntas h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.contingencia-pregunta {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.contingencia-pregunta:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.pregunta-texto {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.pregunta-respuesta {
+  font-size: 0.9rem;
+  color: #e74c3c;
+}
+
+/* Botones de acción */
+.diagnostico-acciones {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-imprimir,
+.btn-nuevo-diagnostico {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  min-width: 180px;
+}
+
+.btn-imprimir {
+  background-color: #DFBD7C;
+  color: white;
+}
+
+
+
+.btn-nuevo-diagnostico {
+  background-color: #DFBD7C;
+  color: white;
+}
+
+
+.btn-imprimir:active,
+.btn-nuevo-diagnostico:active {
+  transform: translateY(2px);
+}
+
+/* Estilos para impresión */
+@media print {
+  .diagnostico-container {
+    box-shadow: none;
+    margin: 0;
     padding: 1rem;
-    border-radius: 8px;
   }
   
-  .resultados-info p {
-    margin: 0.5rem 0;
-  }
-  
-  .resultados-cumplimiento {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  
-  .grafico-dona-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1rem 0;
-  }
-  
-  .estado-cumplimiento {
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-  }
-  
-  .estado-indicador {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
-  
-  .categorias-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-  
-  .categoria-card {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.3s ease;
+  .diagnostico-acciones {
+    display: none;
   }
   
   .categoria-card:hover {
-    transform: translateY(-5px);
+    transform: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   }
-  
-  .categoria-card h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #34495e;
-  }
-  
-  .categoria-grafico {
-    display: flex;
-    justify-content: center;
-    margin: 1rem 0;
-  }
-  
-  .categoria-detalle {
-    margin-top: 1rem;
-    font-weight: 500;
-  }
-  
-  .resultados-contingencias {
-    margin-top: 3rem;
-  }
-  
-  .alerta-contingencias {
-    background-color: #fff3e0;
-    border-left: 4px solid #ff9800;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 4px;
-  }
-  
-  .contingencia-card {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .contingencia-card h3 {
-    margin-top: 0;
-    color: #e74c3c;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1rem;
-  }
-  
-  .contingencia-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .contingencia-porcentaje {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .contingencia-preguntas {
-    padding-left: 1.5rem;
-  }
-  
-  .contingencia-preguntas li {
-    margin-bottom: 1rem;
-  }
-  
-  .pregunta-texto {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-  }
-  
-  .pregunta-respuesta {
-    color: #e74c3c;
-  }
-  
-  .resultados-acciones {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e0e0e0;
-  }
-  
-  .resultados-acciones button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-imprimir {
-    background-color: #DFBD7C;
-    color: white;
-  }
-  
- 
-  
-  .btn-nuevo-diagnostico {
-    background-color: #DFBD7C;
-    color: white;
-  }
-  
+}
 
+/* Responsive para dispositivos pequeños */
+@media (max-width: 768px) {
+  .diagnostico-container {
+    padding: 1rem;
+  }
   
-  .resultados-loading, .resultados-error {
+  .diagnostico-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  
+  .empresa-info {
     text-align: center;
-    padding: 3rem;
-    margin: 2rem auto;
-    max-width: 600px;
+    width: 100%;
   }
   
-  .resultados-error {
-    background-color: #ffebee;
-    border-radius: 8px;
-    padding: 2rem;
+  .dato-empresa {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
   
-  .resultados-error button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  .dato-label {
+    width: auto;
+    margin-bottom: 0.25rem;
   }
   
-  @media print {
-    .resultados-acciones {
-      display: none;
-    }
-    
-    .resultados-container {
-      padding: 0;
-    }
-    
-    .categoria-card, .contingencia-card {
-      box-shadow: none;
-      break-inside: avoid;
-    }
-    
-    .contingencia-card {
-      page-break-inside: avoid;
-    }
+  .categorias-grid {
+    grid-template-columns: 1fr;
   }
   
-  @media (max-width: 768px) {
-    .resultados-container {
-      padding: 1rem;
-    }
-    
-    .categorias-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .resultados-info {
-      grid-template-columns: 1fr;
-    }
-    
-    .resultados-acciones {
-      flex-direction: column;
-    }
-    
-    .resultados-acciones button {
-      width: 100%;
-      margin-bottom: 0.5rem;
-    }
+  .categoria-body {
+    flex-direction: column;
+    text-align: center;
   }
+  
+  .respuestas-distribucion {
+    align-items: center;
+  }
+  
+  .contingencia-cabecera {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .contingencia-indicador {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .contingencia-barra-contenedor {
+    width: 150px;
+  }
+}
