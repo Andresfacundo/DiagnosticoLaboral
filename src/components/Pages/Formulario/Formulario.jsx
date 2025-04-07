@@ -13,7 +13,7 @@ const Formulario = () => {
     const [empleador, setEmpleador] = useState({
         tipo: "",
         tipoDocumento: "",
-        nombre: "",
+        nombres: "",
         identificacion: "",
         trabajadores: "",
         contratos: []
@@ -55,8 +55,8 @@ const Formulario = () => {
         }
         
         // Validar nombre
-        if (!empleador.nombre.trim()) {
-            nuevosErrores.nombre = "Campo requerido";
+        if (!empleador.nombres.trim()) {
+            nuevosErrores.nombres = "Campo requerido";
         }
         
         // Validar tipo de documento
@@ -162,16 +162,16 @@ const Formulario = () => {
             <div className="content-input">
                 <div className="input-container">
                     <input
-                        className={`input ${errores.nombre ? 'input-error' : ''}`}
+                        className={`input ${errores.nombres ? 'input-error' : ''}`}
                         type="text"
-                        name="nombre"
+                        name="nombres"
                         placeholder="Nombre o Razón Social"
-                        value={empleador.nombre}
+                        value={empleador.nombres}
                         onChange={manejarCambio}
                         required
                         aria-label="Nombre o Razón Social"
                     />
-                    {errores.nombre && <div className="error-inside">{errores.nombre}</div>}
+                    {errores.nombres && <div className="error-inside">{errores.nombres}</div>}
                 </div>
                 
                 <div className="input-container">

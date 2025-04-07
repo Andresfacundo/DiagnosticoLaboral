@@ -17,7 +17,8 @@ const Preguntas = () => {
     useEffect(() => {
         const obtenerPreguntas = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/preguntas");
+                const response = await axios.get("http://localhost:3000/api/preguntas");
+                
                 setPreguntas(response.data);
                 console.log(response.data);
                 
@@ -54,7 +55,7 @@ const Preguntas = () => {
         };
 
         try {
-            const response = await axios.post("http://localhost:3000/preguntas", nuevaPregunta);
+            const response = await axios.post("http://localhost:3000/api/preguntas", nuevaPregunta);
             setPreguntas([...preguntas, response.data]);
 
             // Limpiar campos
@@ -70,7 +71,7 @@ const Preguntas = () => {
     // Eliminar una pregunta
     const eliminarPregunta = async (id) => {
         try {
-            await axios.delete(`http://localhost:3000/preguntas/${id}`);
+            await axios.delete(`http://localhost:3000/api/preguntas/${id}`);
             setPreguntas(preguntas.filter(p => p.id !== id));
         } catch (error) {
             console.error("Error al eliminar pregunta", error);
@@ -150,7 +151,7 @@ const Preguntas = () => {
                 respuestasNumero[tipo] = Number(editandoEnLinea.respuestas[tipo]);
             }
 
-            const response = await axios.put(`http://localhost:3000/preguntas/${id}`, {
+            const response = await axios.put(`http://localhost:3000/api/preguntas/${id}`, {
                 texto: editandoEnLinea.texto.trim(),
                 peso: Number(editandoEnLinea.peso),
                 categoria: editandoEnLinea.categoria.trim(),
