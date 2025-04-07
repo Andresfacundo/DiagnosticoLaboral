@@ -12,11 +12,13 @@ const Cuestionario = () => {
     const [progreso, setProgreso] = useState(0);
     const [enviando, setEnviando] = useState(false);
     const [error, setError] = useState("");
+    const [EmpleadorId, setEmpleadorId] = useState(null);
 
     useEffect(() => {
         const obtenerPreguntas = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/preguntas");
+                const response = await axios.get("http://localhost:3000/api/preguntas");
+                setEmpleadorId(response.data[0].EmpleadorId); // Asignar el EmpleadorId de la primera pregunta
                 setPreguntas(response.data);
                 setRespuestas(response.data.map(pregunta => ({
                     id: pregunta.id,
@@ -56,25 +58,24 @@ const Cuestionario = () => {
         }
     };
     const enviarRespuestas = () => {
-                setEnviando(true);
-        
-                axios.post("http://localhost:3000/respuestas", { respuestasUsuario:respuestas })
-                    .then(() => {
-                        localStorage.setItem("respuestas", JSON.stringify(respuestas));
-                        
-                        
-                        
-                        navigate("/diagnostico");
-                    })
-                    .catch(error => {
-                        console.error("Error al enviar respuestas", error);
-                    })
-                    .finally(() => {
-                        setEnviando(false);
-                    });
-                    console.log(JSON.stringify({respuestasUsuario:respuestas}));
-                    
-            };
+        const empleadorId = 1; // Cambia esto por el ID real del empleador si lo tienes guardado en algún lugar (por ejemplo, en localStorage o contexto)
+    
+        setEnviando(true);
+    
+        axios.post(`http://localhost:3000/api/respuestas/${empleadorId}`, {
+            respuestas
+        })
+        .then(() => {
+            navigate("/diagnostico");
+        })
+        .catch(error => {
+            console.error("Error al enviar respuestas", error);
+            setError("Error al enviar respuestas");
+        })
+        .finally(() => {
+            setEnviando(false);
+        });
+    };
 
     // No hay preguntas
     if (preguntas.length === 0) {

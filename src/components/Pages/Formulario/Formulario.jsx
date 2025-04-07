@@ -19,6 +19,7 @@ const Formulario = () => {
         contratos: []
     });
     
+    
     // Estado para controlar errores
     const [errores, setErrores] = useState({});
     // Estado para mensajes del servidor
@@ -91,14 +92,8 @@ const Formulario = () => {
             setServerError(null);
             
             try {
-                // Llamada al endpoint para guardar los datos del empleador
-                const response = await axios.post(`${API_URL}/empleadores`, empleador);
-                
-                // Guardar el ID del empleador en localStorage para usar en otros componentes
-                localStorage.setItem('empleadorId', response.data.empleador.id);
-                localStorage.setItem('empleadorNombre', response.data.empleador.nombre);
-                
-                // Si todo sale bien, navegar al siguiente componente
+                const response = await axios.post(`http://localhost:3000/api/empleadores`, empleador);
+                response.data
                 navigate('/cuestionario');
             } catch (error) {
                 console.error("Error al enviar datos:", error);

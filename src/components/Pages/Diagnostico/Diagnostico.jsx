@@ -26,8 +26,8 @@ const Diagnostico = () => {
     const fetchData = async () => {
       try {
         // Obtener información del empleador del localStorage
-        const empleadorId = localStorage.getItem("empleadorId");
-        const empleadorNombre = localStorage.getItem("empleadorNombre");
+        const empleadorId = resultados.empleador?.empleador?.id 
+
         
         if (!empleadorId) {
           setResultados(prev => ({
@@ -39,18 +39,19 @@ const Diagnostico = () => {
         }
 
         // Obtener empleador desde el backend
-        const empleadorResponse = await axios.get(`http://localhost:3000/empleadores/${empleadorId}`);
+        const empleadorResponse = await axios.get(`http://localhost:3000/api/empleadores/${empleadorId}`);
+        console.log
         const empleadorInfo = empleadorResponse.data;
 
         // Obtener respuestas desde el localStorage o el servidor
         let respuestas = JSON.parse(localStorage.getItem("respuestas"));
         if (!respuestas) {
-          const respuestasResponse = await axios.get(`http://localhost:3000/respuestas?empleadorId=${empleadorId}`);
+          const respuestasResponse = await axios.get(`http://localhost:3000/api/respuestas/${empleadorId}`);
           respuestas = respuestasResponse.data;
         }
 
         // Obtener preguntas para asociarlas con las respuestas
-        const preguntasResponse = await axios.get("http://localhost:3000/preguntas");
+        const preguntasResponse = await axios.get("http://localhost:3000/api/preguntas");
         const preguntas = preguntasResponse.data;
 
         // Procesar datos
