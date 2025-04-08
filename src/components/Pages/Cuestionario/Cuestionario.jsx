@@ -60,7 +60,9 @@ const Cuestionario = () => {
         }
     };
     const enviarRespuestas = () => {
-        const empleadorId = 1; // Cambia esto por el ID real del empleador si lo tienes guardado en algún lugar (por ejemplo, en localStorage o contexto)
+        const empleadorId = JSON.parse(localStorage.getItem("empleadorId"));
+        console.log("EmpleadorId:", empleadorId); // Verifica el ID del empleador en la consola
+         // Cambia esto por el ID real del empleador si lo tienes guardado en algún lugar (por ejemplo, en localStorage o contexto)
     
         setEnviando(true);
     

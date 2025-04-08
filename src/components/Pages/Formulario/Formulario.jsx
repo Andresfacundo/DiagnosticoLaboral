@@ -93,7 +93,8 @@ const Formulario = () => {
             
             try {
                 const response = await axios.post(`${API_URL}/api/empleadores`, empleador);
-                response.data
+                const empleadoId = response.data;
+                localStorage.setItem("empleadorId", empleadoId);
                 navigate('/cuestionario');
             } catch (error) {
                 console.error("Error al enviar datos:", error);
