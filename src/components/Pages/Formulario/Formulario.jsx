@@ -92,7 +92,7 @@ const Formulario = () => {
             setServerError(null);
             
             try {
-                const response = await axios.post(`http://localhost:3000/api/empleadores`, empleador);
+                const response = await axios.post(`https://diagnosticolaboral-backend.onrender.com/api/empleadores`, empleador);
                 response.data
                 navigate('/cuestionario');
             } catch (error) {

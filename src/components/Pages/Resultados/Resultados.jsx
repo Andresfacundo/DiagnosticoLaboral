@@ -40,18 +40,18 @@ const Resultados = () => {
         }
 
         // Obtener empleador desde el backend
-        const empleadorResponse = await axios.get(`http://localhost:3000/empleadores/${empleadorId}`);
+        const empleadorResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/empleadores/${empleadorId}`);
         setEmpleadorInfo(empleadorResponse.data);
 
         // Obtener respuestas desde el localStorage o el servidor
         let respuestas = JSON.parse(localStorage.getItem("respuestas"));
         if (!respuestas) {
-          const respuestasResponse = await axios.get(`http://localhost:3000/respuestas?empleadorId=${empleadorId}`);
+          const respuestasResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/respuestas?empleadorId=${empleadorId}`);
           respuestas = respuestasResponse.data;
         }
 
         // Obtener preguntas para asociarlas con las respuestas
-        const preguntasResponse = await axios.get("http://localhost:3000/preguntas");
+        const preguntasResponse = await axios.get("https://diagnosticolaboral-backend.onrender.com/preguntas");
         const preguntas = preguntasResponse.data;
 
         // Procesar datos para los gráficos

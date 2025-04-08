@@ -17,7 +17,7 @@ const Cuestionario = () => {
     useEffect(() => {
         const obtenerPreguntas = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/preguntas");
+                const response = await axios.get("https://diagnosticolaboral-backend.onrender.com/api/preguntas");
                 setEmpleadorId(response.data[0].EmpleadorId); // Asignar el EmpleadorId de la primera pregunta
                 setPreguntas(response.data);
                 setRespuestas(response.data.map(pregunta => ({
@@ -62,7 +62,7 @@ const Cuestionario = () => {
     
         setEnviando(true);
     
-        axios.post(`http://localhost:3000/api/respuestas/${empleadorId}`, {
+        axios.post(`https://diagnosticolaboral-backend.onrender.com/api/respuestas/${empleadorId}`, {
             respuestas
         })
         .then(() => {

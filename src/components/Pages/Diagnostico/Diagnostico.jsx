@@ -40,7 +40,7 @@ const Diagnostico = () => {
         }
 
         // Obtener empleador desde el backend (adaptado a la nueva API)
-        const empleadorResponse = await axios.get(`http://localhost:3000/api/empleadores/${empleadorId}`);
+        const empleadorResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/api/empleadores/${empleadorId}`);
         const empleadorInfo = empleadorResponse.data;
 
         // Obtener respuestas desde el localStorage o el servidor
@@ -49,14 +49,14 @@ const Diagnostico = () => {
         if (!respuestas) {
           // Adaptación: Obtener respuestas específicas del empleador
           // Como no hay un endpoint específico por empleadorId, obtenemos todas y filtramos
-          const respuestasResponse = await axios.get(`http://localhost:3000/api/respuestas`);
+          const respuestasResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/api/respuestas`);
           // Filtramos las respuestas que corresponden al empleador actual
           const respuestasEmpleador = respuestasResponse.data.find(r => r.empleadorId === empleadorId);
           respuestas = respuestasEmpleador ? respuestasEmpleador.respuestas : [];
         }
 
         // Obtener preguntas para asociarlas con las respuestas
-        const preguntasResponse = await axios.get("http://localhost:3000/api/preguntas");
+        const preguntasResponse = await axios.get("https://diagnosticolaboral-backend.onrender.com/api/preguntas");
         const preguntas = preguntasResponse.data;
 
         // Procesar datos
