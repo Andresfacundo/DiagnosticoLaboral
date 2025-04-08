@@ -14,6 +14,7 @@ const Diagnostico = () => {
     error: null,
     fecha: new Date().toLocaleDateString()
   });
+  console.log(resultados);
   
   // Colores para los gráficos
   const COLORES_ESTADO = {
@@ -26,8 +27,8 @@ const Diagnostico = () => {
     const fetchData = async () => {
       try {
         // Obtener información del empleador del localStorage
-        const empleadorId = resultados.empleador?.empleador?.id 
-
+        const empleadorId = localStorage.getItem("empleadorId");
+        const empleadorNombre = localStorage.getItem("empleadorNombre");
         
         if (!empleadorId) {
           setResultados(prev => ({
@@ -38,16 +39,20 @@ const Diagnostico = () => {
           return;
         }
 
-        // Obtener empleador desde el backend
+        // Obtener empleador desde el backend (adaptado a la nueva API)
         const empleadorResponse = await axios.get(`http://localhost:3000/api/empleadores/${empleadorId}`);
-        console.log
         const empleadorInfo = empleadorResponse.data;
 
         // Obtener respuestas desde el localStorage o el servidor
         let respuestas = JSON.parse(localStorage.getItem("respuestas"));
+        
         if (!respuestas) {
-          const respuestasResponse = await axios.get(`http://localhost:3000/api/respuestas/${empleadorId}`);
-          respuestas = respuestasResponse.data;
+          // Adaptación: Obtener respuestas específicas del empleador
+          // Como no hay un endpoint específico por empleadorId, obtenemos todas y filtramos
+          const respuestasResponse = await axios.get(`http://localhost:3000/api/respuestas`);
+          // Filtramos las respuestas que corresponden al empleador actual
+          const respuestasEmpleador = respuestasResponse.data.find(r => r.empleadorId === empleadorId);
+          respuestas = respuestasEmpleador ? respuestasEmpleador.respuestas : [];
         }
 
         // Obtener preguntas para asociarlas con las respuestas
@@ -298,9 +303,9 @@ const Diagnostico = () => {
 
   const contingencias = identificarContingencias();
 
-  // Obtener la información del empleador directamente
-  const nombreEmpresa = resultados.empleador?.empleador?.nombre || "No disponible";
-  const identificacionEmpresa = resultados.empleador?.empleador?.identificacion || "No disponible";
+  // Obtener la información del empleador adaptada a la nueva estructura de datos
+  const nombreEmpresa = resultados.empleador?.nombres || "No disponible";
+  const identificacionEmpresa = resultados.empleador?.identificacion || "No disponible";
   const tipoIdentificacion = resultados.empleador?.tipo || "";
 
   return (
