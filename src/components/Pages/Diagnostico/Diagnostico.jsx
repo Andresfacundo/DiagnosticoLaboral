@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Diagnostico.css";
+const API_URL = import.meta.env.VITE_API_URL
 
 const Diagnostico = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Diagnostico = () => {
         }
 
         // Obtener empleador desde el backend (adaptado a la nueva API)
-        const empleadorResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/api/empleadores/${empleadorId}`);
+        const empleadorResponse = await axios.get(`${API_URL}/api/empleadores/${empleadorId}`);
         const empleadorInfo = empleadorResponse.data;
 
         // Obtener respuestas desde el localStorage o el servidor
@@ -49,14 +50,14 @@ const Diagnostico = () => {
         if (!respuestas) {
           // Adaptación: Obtener respuestas específicas del empleador
           // Como no hay un endpoint específico por empleadorId, obtenemos todas y filtramos
-          const respuestasResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/api/respuestas`);
+          const respuestasResponse = await axios.get(`${API_URL}/api/respuestas`);
           // Filtramos las respuestas que corresponden al empleador actual
           const respuestasEmpleador = respuestasResponse.data.find(r => r.empleadorId === empleadorId);
           respuestas = respuestasEmpleador ? respuestasEmpleador.respuestas : [];
         }
 
         // Obtener preguntas para asociarlas con las respuestas
-        const preguntasResponse = await axios.get("https://diagnosticolaboral-backend.onrender.com/api/preguntas");
+        const preguntasResponse = await axios.get(`${API_URL}/api/preguntas`);
         const preguntas = preguntasResponse.data;
 
         // Procesar datos

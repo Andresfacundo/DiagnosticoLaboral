@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import './Preguntas.css'
+const API_URL = import.meta.env.VITE_API_URL
 
 const Preguntas = () => {
     const [preguntas, setPreguntas] = useState([]);
@@ -17,7 +18,7 @@ const Preguntas = () => {
     useEffect(() => {
         const obtenerPreguntas = async () => {
             try {
-                const response = await axios.get("https://diagnosticolaboral-backend.onrender.com/api/preguntas");
+                const response = await axios.get(`${API_URL}/api/preguntas`);
                 
                 setPreguntas(response.data);
                 console.log(response.data);
@@ -55,7 +56,7 @@ const Preguntas = () => {
         };
 
         try {
-            const response = await axios.post("https://diagnosticolaboral-backend.onrender.com/api/preguntas", nuevaPregunta);
+            const response = await axios.post(`${API_URL}/api/preguntas`, nuevaPregunta);
             setPreguntas([...preguntas, response.data]);
 
             // Limpiar campos
@@ -71,7 +72,7 @@ const Preguntas = () => {
     // Eliminar una pregunta
     const eliminarPregunta = async (id) => {
         try {
-            await axios.delete(`https://diagnosticolaboral-backend.onrender.com/api/preguntas/${id}`);
+            await axios.delete(`${API_URL}/api/preguntas/${id}`);
             setPreguntas(preguntas.filter(p => p.id !== id));
         } catch (error) {
             console.error("Error al eliminar pregunta", error);
@@ -151,7 +152,7 @@ const Preguntas = () => {
                 respuestasNumero[tipo] = Number(editandoEnLinea.respuestas[tipo]);
             }
 
-            const response = await axios.put(`https://diagnosticolaboral-backend.onrender.com/api/preguntas/${id}`, {
+            const response = await axios.put(`${API_URL}/api/preguntas/${id}`, {
                 texto: editandoEnLinea.texto.trim(),
                 peso: Number(editandoEnLinea.peso),
                 categoria: editandoEnLinea.categoria.trim(),

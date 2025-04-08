@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './Cuestionario.css';
 
+const API_URL = import.meta.env.VITE_API_URL
 const Cuestionario = () => {
     
     const navigate = useNavigate();
@@ -14,10 +15,11 @@ const Cuestionario = () => {
     const [error, setError] = useState("");
     const [EmpleadorId, setEmpleadorId] = useState(null);
 
+
     useEffect(() => {
         const obtenerPreguntas = async () => {
             try {
-                const response = await axios.get("https://diagnosticolaboral-backend.onrender.com/api/preguntas");
+                const response = await axios.get(`${API_URL}/api/preguntas`);
                 setEmpleadorId(response.data[0].EmpleadorId); // Asignar el EmpleadorId de la primera pregunta
                 setPreguntas(response.data);
                 setRespuestas(response.data.map(pregunta => ({
@@ -62,7 +64,7 @@ const Cuestionario = () => {
     
         setEnviando(true);
     
-        axios.post(`https://diagnosticolaboral-backend.onrender.com/api/respuestas/${empleadorId}`, {
+        axios.post(`${API_URL}/api/respuestas/${empleadorId}`, {
             respuestas
         })
         .then(() => {

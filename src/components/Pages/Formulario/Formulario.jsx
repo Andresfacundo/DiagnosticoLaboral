@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Asegúrate de tener axios instalado: npm install axios
 import './Formulario.css';
+const API_URL = import.meta.env.VITE_API_URL
 
-// URL base de la API
-const API_URL = "http://localhost:3000"; // Debe coincidir con el puerto de tu servidor Express
+
 
 const Formulario = () => {
     const navigate = useNavigate();
@@ -92,7 +92,7 @@ const Formulario = () => {
             setServerError(null);
             
             try {
-                const response = await axios.post(`https://diagnosticolaboral-backend.onrender.com/api/empleadores`, empleador);
+                const response = await axios.post(`${API_URL}/api/empleadores`, empleador);
                 response.data
                 navigate('/cuestionario');
             } catch (error) {

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import "./Resultados.css";
+const API_URL = import.meta.env.VITE_API_URL
 
 const Resultados = () => {
   const navigate = useNavigate();
@@ -40,18 +41,18 @@ const Resultados = () => {
         }
 
         // Obtener empleador desde el backend
-        const empleadorResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/empleadores/${empleadorId}`);
+        const empleadorResponse = await axios.get(`${API_URL}/empleadores/${empleadorId}`);
         setEmpleadorInfo(empleadorResponse.data);
 
         // Obtener respuestas desde el localStorage o el servidor
         let respuestas = JSON.parse(localStorage.getItem("respuestas"));
         if (!respuestas) {
-          const respuestasResponse = await axios.get(`https://diagnosticolaboral-backend.onrender.com/respuestas?empleadorId=${empleadorId}`);
+          const respuestasResponse = await axios.get(`${API_URL}/respuestas?empleadorId=${empleadorId}`);
           respuestas = respuestasResponse.data;
         }
 
         // Obtener preguntas para asociarlas con las respuestas
-        const preguntasResponse = await axios.get("https://diagnosticolaboral-backend.onrender.com/preguntas");
+        const preguntasResponse = await axios.get(`${API_URL}/preguntas`);
         const preguntas = preguntasResponse.data;
 
         // Procesar datos para los gráficos
