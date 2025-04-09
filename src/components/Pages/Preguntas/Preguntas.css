@@ -154,37 +154,14 @@
 .content-response-items{
     display: flex;
 }
-.si{
-    border: 1px solid #9b9797;
-    padding: .1rem 1.5rem .1rem 1.5rem;
-    background-color: #71adf117;
-    width: 100%;
-}
-.si-parcialmente{
-    border: 1px solid #9b9797;
-    padding: .1rem 1.5rem .1rem 1.5rem;
-    background-color: #71adf117;
-    width: 100%;
 
-}
-.no{
-    border: 1px solid #9b9797;
-    padding: .1rem 1.5rem .1rem 1.5rem;
-    background-color: #71adf117;
-    width: 100%;
-
-}
-.na{
-    border: 1px solid #9b9797;
-    padding: .1rem 1.5rem .1rem 1.5rem;
-    background-color: #71adf117;
-    width: 100%;
-
-}
 .respuesta  {
+    width: 100%;
     border: 1px solid #9b9797;
     background-color: #71adf117;
-    width: 100%;
+    padding: .1rem 1.5rem .1rem 1.5rem;
+
+
 }
 .editar-en-linea-input {
     border: none;

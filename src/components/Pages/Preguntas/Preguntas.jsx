@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import './Preguntas.css'
+
 const API_URL = import.meta.env.VITE_API_URL
 
 const Preguntas = () => {
@@ -16,24 +17,20 @@ const Preguntas = () => {
 
     // Obtener preguntas desde el backend
     useEffect(() => {
-        const obtenerPreguntas = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/api/preguntas`);
-                
-                setPreguntas(response.data);
-                console.log(response.data);
-                
-            } catch (error) {
-                console.error("Error al obtener preguntas", error);
-                setError("No se pudieron cargar las preguntas. Intente nuevamente.");
-            }
-        };
-        
-
         obtenerPreguntas();
     }, []);
 
-    // Agregar una nueva pregunta
+    const obtenerPreguntas = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/api/preguntas`);
+            setPreguntas(response.data);
+        } catch (error) {
+            console.error("Error al obtener preguntas", error);
+            setError("No se pudieron cargar las preguntas. Intente nuevamente.");
+        }
+    };
+
+    // Agregar una nueva pregunta - solo enviamos datos básicos, el backend calcula respuestas
     const manejarEnvio = async (e) => {
         e.preventDefault();
         setError("");
@@ -48,18 +45,15 @@ const Preguntas = () => {
             return;
         }
 
-        const nuevaPregunta = {
-            texto: texto.trim(),
-            peso: Number(peso),
-            categoria: categoria.trim(),
-            // Se pueden agregar valores de respuesta personalizados aquí si es necesario
-        };
-
         try {
-            const response = await axios.post(`${API_URL}/api/preguntas`, nuevaPregunta);
+            // Solo enviamos los campos básicos, el backend calculará las respuestas
+            const response = await axios.post(`${API_URL}/api/preguntas`, {
+                texto: texto.trim(),
+                peso: Number(peso),
+                categoria: categoria.trim()
+            });
+            
             setPreguntas([...preguntas, response.data]);
-
-            // Limpiar campos
             setTexto("");
             setPeso("");
             setCategoria("");
@@ -82,33 +76,26 @@ const Preguntas = () => {
 
     // Iniciar edición en línea
     const iniciarEdicionEnLinea = (pregunta) => {
-        // Inicializar los valores de respuesta personalizados si existen, o usar los calculados
-        const respuestas = pregunta.respuestas || {
-            Si: pregunta.peso,
-            "Si parcialmente": pregunta.peso / 2,
-            No: 0,
-            "N/A": 0
-        };
-
         setEditandoEnLinea({
             id: pregunta.id,
             texto: pregunta.texto,
-            peso: pregunta.peso.toString(), // Convertir a string para el input
+            peso: pregunta.peso.toString(),
             categoria: pregunta.categoria,
+            // Usamos directamente los valores de respuesta que vienen del backend
             respuestas: {
-                Si: respuestas.Si?.toString() || pregunta.peso.toString(),
-                "Si parcialmente": respuestas["Si parcialmente"]?.toString() || (pregunta.peso / 2).toString(),
-                No: respuestas.No?.toString() || "0",
-                "N/A": respuestas["N/A"]?.toString() || "0"
+                Si: pregunta.respuestas.Si.toString(),
+                "Si parcialmente": pregunta.respuestas["Si parcialmente"].toString(),
+                No: pregunta.respuestas.No.toString(),
+                "N/A": pregunta.respuestas["N/A"].toString()
             }
         });
     };
 
-    // Manejar cambios en los campos de edición en línea
+    // Manejar cambios en los campos de edición
     const cambiarCampoEdicion = (campo, valor) => {
         setEditandoEnLinea({
             ...editandoEnLinea,
-            [campo]: valor // Mantener como string para permitir borrado
+            [campo]: valor
         });
     };
 
@@ -130,13 +117,12 @@ const Preguntas = () => {
             return;
         }
 
-        // Validar peso - asegurarse de que no esté vacío
         if (editandoEnLinea.peso.trim() === "" || isNaN(Number(editandoEnLinea.peso)) || Number(editandoEnLinea.peso) <= 0) {
             setError("El peso debe ser un número positivo");
             return;
         }
 
-        // Validar los valores de respuesta
+        // Validar valores de respuesta
         for (const tipo of tiposRespuestas) {
             const valor = editandoEnLinea.respuestas[tipo];
             if (valor.trim() === "" || isNaN(Number(valor))) {
@@ -152,6 +138,7 @@ const Preguntas = () => {
                 respuestasNumero[tipo] = Number(editandoEnLinea.respuestas[tipo]);
             }
 
+            // Enviamos los datos al backend
             const response = await axios.put(`${API_URL}/api/preguntas/${id}`, {
                 texto: editandoEnLinea.texto.trim(),
                 peso: Number(editandoEnLinea.peso),
@@ -159,6 +146,7 @@ const Preguntas = () => {
                 respuestas: respuestasNumero
             });
 
+            // Actualizamos la pregunta con la respuesta del backend
             setPreguntas(preguntas.map(p => p.id === id ? response.data : p));
             setEditandoEnLinea({});
             setError("");
@@ -174,26 +162,6 @@ const Preguntas = () => {
         setError("");
     };
 
-    // Obtener valor de respuesta (de la base de datos o calculado)
-    const obtenerValorRespuesta = (pregunta, tipo) => {
-        // Si la pregunta tiene valores de respuesta personalizados, usarlos
-        if (pregunta.respuestas && pregunta.respuestas[tipo] !== undefined) {
-            return pregunta.respuestas[tipo];
-        }
-        // Si no, calcular según la lógica original
-        return calcularValorRespuesta(pregunta.peso, tipo);
-    };
-
-    const calcularValorRespuesta = (peso, tipo) => {
-        switch (tipo) {
-            case "Si": return peso;
-            case "Si parcialmente": return peso / 2;
-            case "No": return 0;
-            case "N/A": return 0;
-            default: return "-";
-        }
-    };
-
     return (
         <div className="preguntas-container">
             <h2 className="preguntas-header">Gestión de Preguntas</h2>
@@ -202,9 +170,30 @@ const Preguntas = () => {
             <form onSubmit={manejarEnvio} className="preguntas-form">
                 {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
 
-                <input type="text" placeholder="Nueva Pregunta" value={texto} onChange={(e) => setTexto(e.target.value)} required />
-                <input type="number" placeholder="Peso (0-3)" value={peso} onChange={(e) => setPeso(e.target.value)} min="0" max='3' step='any' required />
-                <input type="text" placeholder="Categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} required />
+                <input 
+                    type="text" 
+                    placeholder="Nueva Pregunta" 
+                    value={texto} 
+                    onChange={(e) => setTexto(e.target.value)} 
+                    required 
+                />
+                <input 
+                    type="number" 
+                    placeholder="Peso (0-3)" 
+                    value={peso} 
+                    onChange={(e) => setPeso(e.target.value)} 
+                    min="0" 
+                    max='3' 
+                    step='any' 
+                    required 
+                />
+                <input 
+                    type="text" 
+                    placeholder="Categoria" 
+                    value={categoria} 
+                    onChange={(e) => setCategoria(e.target.value)} 
+                    required 
+                />
                 <button type="submit">Agregar Nueva Pregunta</button>
             </form>
 
@@ -278,14 +267,12 @@ const Preguntas = () => {
                                                 <button
                                                     onClick={() => iniciarEdicionEnLinea(pregunta)}
                                                     className="btn-editar"
-                                                    aria-label={`Editar pregunta: ${pregunta.texto}`}
                                                 >
                                                     Editar
                                                 </button>
                                                 <button
                                                     onClick={() => eliminarPregunta(pregunta.id)}
                                                     className="btn-eliminar"
-                                                    aria-label={`Eliminar pregunta: ${pregunta.texto}`}
                                                 >
                                                     Eliminar
                                                 </button>
@@ -314,10 +301,10 @@ const Preguntas = () => {
                                         ) : (
                                             // Modo de visualización normal para respuestas
                                             <>
-                                                <div className="respuesta si">Si <br /> {obtenerValorRespuesta(pregunta, "Si")}</div>
-                                                <div className="respuesta si-parcialmente">Si parcialmente <br /> {obtenerValorRespuesta(pregunta, "Si parcialmente")}</div>
-                                                <div className="respuesta no">No <br /> {obtenerValorRespuesta(pregunta, "No")}</div>
-                                                <div className="respuesta na">N/A <br /> {obtenerValorRespuesta(pregunta, "N/A")}</div>
+                                                <div className="respuesta si">Si <br /> {pregunta.respuestas.Si}</div>
+                                                <div className="respuesta si-parcialmente">Si parcialmente <br /> {pregunta.respuestas["Si parcialmente"]}</div>
+                                                <div className="respuesta no">No <br /> {pregunta.respuestas.No}</div>
+                                                <div className="respuesta na">N/A <br /> {pregunta.respuestas["N/A"]}</div>
                                             </>
                                         )}
                                     </div>
