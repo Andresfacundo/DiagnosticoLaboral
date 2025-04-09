@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './Cuestionario.css';
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Cuestionario = () => {
-    
     const navigate = useNavigate();
     const [preguntas, setPreguntas] = useState([]);
     const [respuestas, setRespuestas] = useState([]);
@@ -13,14 +13,25 @@ const Cuestionario = () => {
     const [progreso, setProgreso] = useState(0);
     const [enviando, setEnviando] = useState(false);
     const [error, setError] = useState("");
-    const [EmpleadorId, setEmpleadorId] = useState(null);
-
+    const [empleadorId, setEmpleadorId] = useState(null);
 
     useEffect(() => {
         const obtenerPreguntas = async () => {
             try {
+                // Obtener el ID del empleador del localStorage
+                const idEmpleador = localStorage.getItem("empleadorId");
+                if (!idEmpleador) {
+                    setError("No se encontró información del empleador. Por favor regrese al inicio.");
+                    return;
+                }
+                // Aseguramos que el ID sea un número si viene como string
+                const empleadorIdParsed = JSON.parse(idEmpleador);
+                setEmpleadorId(empleadorIdParsed);
+                
+                // Obtenemos las preguntas de la API
                 const response = await axios.get(`${API_URL}/api/preguntas`);
-                setEmpleadorId(response.data[0].EmpleadorId); // Asignar el EmpleadorId de la primera pregunta
+                
+                // Establecemos las preguntas y creamos el array de respuestas
                 setPreguntas(response.data);
                 setRespuestas(response.data.map(pregunta => ({
                     id: pregunta.id,
@@ -28,6 +39,9 @@ const Cuestionario = () => {
                     comentario: "",
                     documento: null
                 })));
+                
+                // Inicializamos el progreso
+                setProgreso(0);
             } catch (error) {
                 console.error("Error al obtener preguntas", error);
                 setError("No se pudieron cargar las preguntas. Intente nuevamente.");
@@ -59,41 +73,63 @@ const Cuestionario = () => {
             setProgreso(((preguntaActual + 1) / preguntas.length) * 100);
         }
     };
-    const enviarRespuestas = () => {
-        const empleadorId = JSON.parse(localStorage.getItem("empleadorId"));
-        console.log("EmpleadorId:", empleadorId); // Verifica el ID del empleador en la consola
-         // Cambia esto por el ID real del empleador si lo tienes guardado en algún lugar (por ejemplo, en localStorage o contexto)
-    
-        setEnviando(true);
-    
-        axios.post(`${API_URL}/api/respuestas/${empleadorId}`, {
-            respuestas
-        })
-        .then(() => {
+
+    const enviarRespuestas = async () => {
+        try {
+            // Validar que se haya seleccionado una respuesta para la última pregunta
+            if (!respuestas[preguntaActual].respuesta) {
+                setError("Por favor, seleccione una respuesta antes de enviar.");
+                return;
+            }
+
+            setError(""); // Limpiar errores previos
+            setEnviando(true);
+
+            // Asegurarnos que el empleadorId esté disponible
+            if (!empleadorId) {
+                throw new Error("ID de empleador no disponible");
+            }
+
+            // Guardar las respuestas en localStorage para usarlas en el diagnóstico
+            localStorage.setItem("respuestas", JSON.stringify(respuestas));
+            
+            // Enviar respuestas al servidor
+            await axios.post(`${API_URL}/api/respuestas/${empleadorId}`, {
+                respuestas
+            });
+
+            // Navegar a la página de diagnóstico
             navigate("/diagnostico");
-        })
-        .catch(error => {
+        } catch (error) {
             console.error("Error al enviar respuestas", error);
-            setError("Error al enviar respuestas");
-        })
-        .finally(() => {
+            setError("Error al enviar respuestas: " + (error.response?.data?.mensaje || error.message));
+        } finally {
             setEnviando(false);
-        });
+        }
     };
 
-    // No hay preguntas
+    // Si no hay preguntas o están cargando
     if (preguntas.length === 0) {
         return (
             <div className="cuestionario-container">
                 <h2 className="cuestionario-header">Cuestionario</h2>
-                <p>No hay preguntas disponibles en este momento.</p>
+                {error ? (
+                    <div className="error-message">{error}</div>
+                ) : (
+                    <p>Cargando preguntas...</p>
+                )}
+                {error && (
+                    <button className="navigation-button" onClick={() => navigate("/")}>
+                        Volver al inicio
+                    </button>
+                )}
             </div>
         );
     }
 
     return (
         <div className="cuestionario-container">
-            <h2 className="cuestionario-header">Responde la pregunta</h2>
+            <h2 className="cuestionario-header">Responde la pregunta ({preguntaActual + 1}/{preguntas.length})</h2>
 
             {/* Barra de progreso */}
             <div className="progress-bar-container">
@@ -105,11 +141,7 @@ const Cuestionario = () => {
 
             {/* Mostrar error si existe */}
             {error && (
-                <div style={{ 
-                    color: 'red', 
-                    marginBottom: '1rem', 
-                    textAlign: 'center' 
-                }}>
+                <div className="error-message">
                     {error}
                 </div>
             )}
@@ -122,7 +154,7 @@ const Cuestionario = () => {
                 {["Sí", "No", "N/A"].map((opcion) => (
                     <label 
                         key={opcion} 
-                        className="response-label"
+                        className={`response-label ${respuestas[preguntaActual]?.respuesta === opcion ? 'selected' : ''}`}
                     >
                         <input 
                             type="radio" 
@@ -139,7 +171,7 @@ const Cuestionario = () => {
             <textarea
                 className="comment-textarea"
                 placeholder="Comentario opcional"
-                value={respuestas[preguntaActual]?.comentario}
+                value={respuestas[preguntaActual]?.comentario || ""}
                 onChange={(e) => manejarCambio("comentario", e.target.value)}
             />
 
@@ -147,26 +179,27 @@ const Cuestionario = () => {
                 type="file"
                 className="file-input"
                 onChange={(e) => manejarCambio("documento", e.target.files[0])}
-                placeholder="Subir documento"
             />
 
-            {/* Botón de navegación */}
-            {preguntaActual < preguntas.length - 1 ? (
-                <button 
-                    className="navigation-button" 
-                    onClick={siguientePregunta}
-                >
-                    Siguiente Pregunta
-                </button>
-            ) : (
-                <button 
-                    className="navigation-button" 
-                    onClick={enviarRespuestas} 
-                    disabled={enviando}
-                >
-                    {enviando ? "Enviando..." : "Enviar Respuestas"}
-                </button>
-            )}
+            {/* Botones de navegación */}
+            <div className="navigation-buttons">
+                {preguntaActual < preguntas.length - 1 ? (
+                    <button 
+                        className="navigation-button primary" 
+                        onClick={siguientePregunta}
+                    >
+                        Siguiente
+                    </button>
+                ) : (
+                    <button 
+                        className="navigation-button primary" 
+                        onClick={enviarRespuestas} 
+                        disabled={enviando}
+                    >
+                        {enviando ? "Enviando..." : "Finalizar"}
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

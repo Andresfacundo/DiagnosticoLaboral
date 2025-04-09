@@ -15,7 +15,6 @@ const Diagnostico = () => {
     error: null,
     fecha: new Date().toLocaleDateString()
   });
-  console.log(resultados);
   
   // Colores para los gráficos
   const COLORES_ESTADO = {
@@ -28,8 +27,7 @@ const Diagnostico = () => {
     const fetchData = async () => {
       try {
         // Obtener información del empleador del localStorage
-        const empleadorId = localStorage.getItem("empleadorId");
-        const empleadorNombre = localStorage.getItem("empleadorNombre");
+        const empleadorId = JSON.parse(localStorage.getItem("empleadorId"));
         
         if (!empleadorId) {
           setResultados(prev => ({
@@ -135,6 +133,7 @@ const Diagnostico = () => {
           id: r.pregunta.id,
           texto: r.pregunta.texto,
           respuesta: r.respuesta,
+          comentario: r.comentario || "", // Aseguramos que el comentario se incluya
           valorRespuesta: r.respuesta === "Sí" || r.respuesta === "Si" 
             ? (r.pregunta.respuestas?.Si || r.pregunta.peso) 
             : (r.pregunta.respuestas?.[r.respuesta] || 0),
@@ -269,6 +268,7 @@ const Diagnostico = () => {
           .map(p => ({
             texto: p.texto,
             respuesta: p.respuesta,
+            comentario: p.comentario, // Incluimos el comentario
             cumplimiento: p.cumplimiento
           }));
 
@@ -281,6 +281,42 @@ const Diagnostico = () => {
     });
 
     return contingencias;
+  };
+
+  // Función para mostrar todas las preguntas con sus comentarios por categoría
+  const mostrarTodasLasPreguntas = () => {
+    return Object.entries(resultados.categorias).map(([categoria, datos]) => (
+      <div key={categoria} className="categoria-detalle">
+        <h3>{categoria}</h3>
+        <div className="categoria-preguntas-lista">
+          {datos.preguntas.map((pregunta, idx) => (
+            <div key={idx} className="pregunta-detalle-item">
+              <div className="pregunta-detalle-texto">{pregunta.texto}</div>
+              <div className="pregunta-detalle-respuesta">
+                <span className="etiqueta">Respuesta:</span> 
+                <span 
+                  className="valor-respuesta" 
+                  style={{ color: pregunta.respuesta === "Sí" || pregunta.respuesta === "Si" 
+                    ? COLORES_ESTADO.Si 
+                    : pregunta.respuesta === "No" 
+                      ? COLORES_ESTADO.No 
+                      : COLORES_ESTADO.NA 
+                  }}
+                >
+                  {pregunta.respuesta}
+                </span>
+              </div>
+              {pregunta.comentario && (
+                <div className="pregunta-detalle-comentario">
+                  <span className="etiqueta">Comentario:</span> 
+                  <span className="valor-comentario">{pregunta.comentario}</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    ));
   };
 
   if (resultados.loading) {
@@ -468,6 +504,11 @@ const Diagnostico = () => {
                             <div className="pregunta-respuesta">
                               Respuesta: <strong>{pregunta.respuesta}</strong>
                             </div>
+                            {pregunta.comentario && (
+                              <div className="pregunta-comentario">
+                                <strong>Comentario:</strong> {pregunta.comentario}
+                              </div>
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -479,6 +520,8 @@ const Diagnostico = () => {
           )}
         </div>
       </div>
+
+   
 
       {/* Botones de acción */}
       <div className="diagnostico-acciones">
