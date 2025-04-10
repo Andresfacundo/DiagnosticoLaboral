@@ -29,6 +29,10 @@
     background-color: #DFBD7C;
     transition: width 0.5s ease-in-out;
 }
+.question-category {
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
 
 .question-text {
     font-size: 1.2rem;

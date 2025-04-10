@@ -11,6 +11,8 @@ const Preguntas = () => {
     const [categoria, setCategoria] = useState("");
     const [editandoEnLinea, setEditandoEnLinea] = useState({});
     const [error, setError] = useState("");
+    // Estado para la categoría de filtro
+    const [filtroCategoria, setFiltroCategoria] = useState("Todas");
 
     // Valores predeterminados para respuestas
     const tiposRespuestas = ["Si", "Si parcialmente", "No", "N/A"];
@@ -28,14 +30,23 @@ const Preguntas = () => {
         "Terceros"
     ];
 
-    // Obtener preguntas desde el backend
+    // Obtener preguntas según el filtro seleccionado
     useEffect(() => {
-        obtenerPreguntas();
-    }, []);
+        cargarPreguntas();
+    }, [filtroCategoria]); // Se ejecutará cada vez que cambie el filtro
 
-    const obtenerPreguntas = async () => {
+    const cargarPreguntas = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/preguntas`);
+            let response;
+            
+            // Si el filtro es "Todas", cargamos todas las preguntas
+            // Si hay una categoría específica, usamos el endpoint para filtrar
+            if (filtroCategoria === "Todas") {
+                response = await axios.get(`${API_URL}/api/preguntas`);
+            } else {
+                response = await axios.get(`${API_URL}/api/preguntas/categoria/${filtroCategoria}`);
+            }
+            
             setPreguntas(response.data);
         } catch (error) {
             console.error("Error al obtener preguntas", error);
@@ -71,7 +82,9 @@ const Preguntas = () => {
                 categoria: categoria
             });
             
-            setPreguntas([...preguntas, response.data]);
+            // Recargar las preguntas según el filtro actual para incluir la nueva
+            cargarPreguntas();
+            
             setTexto("");
             setPeso("");
             setCategoria("");
@@ -85,6 +98,7 @@ const Preguntas = () => {
     const eliminarPregunta = async (id) => {
         try {
             await axios.delete(`${API_URL}/api/preguntas/${id}`);
+            // Actualizamos el estado local para reflejar el cambio sin recargar
             setPreguntas(preguntas.filter(p => p.id !== id));
         } catch (error) {
             console.error("Error al eliminar pregunta", error);
@@ -185,6 +199,11 @@ const Preguntas = () => {
         setError("");
     };
 
+    // Manejar cambio de filtro
+    const cambiarFiltro = (nuevoFiltro) => {
+        setFiltroCategoria(nuevoFiltro);
+    };
+
     return (
         <div className="preguntas-container">
             <h2 className="preguntas-header">Gestión de Preguntas</h2>
@@ -224,9 +243,25 @@ const Preguntas = () => {
                 <button type="submit">Agregar Nueva Pregunta</button>
             </form>
 
+            {/* Filtro de categorías */}
+            <div className="categoria-filter">
+                <label htmlFor="filtro-categoria">Filtrar por categoría:</label>
+                <select 
+                    id="filtro-categoria"
+                    className="select-filtro-categoria"
+                    value={filtroCategoria}
+                    onChange={(e) => cambiarFiltro(e.target.value)}
+                >
+                    <option value="Todas">Todas las categorías</option>
+                    {categorias.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                </select>
+            </div>
+
             {/* Lista de preguntas */}
             {preguntas.length === 0 ? (
-                <p>No hay preguntas. Agregue una nueva.</p>
+                <p>No hay preguntas {filtroCategoria !== "Todas" ? `en la categoría ${filtroCategoria}` : ""}. Agregue una nueva.</p>
             ) : (
                 <>
                     <div className="preguntas-list-header">

@@ -13,8 +13,9 @@ const Diagnostico = () => {
     categorias: {},
     loading: true,
     error: null,
-    fecha: new Date().toLocaleDateString()
+    fecha: new Date().toLocaleString()
   });
+  console.log("Resultados iniciales:", resultados);
   
   // Colores para los gráficos
   const COLORES_ESTADO = {
@@ -68,7 +69,7 @@ const Diagnostico = () => {
           categorias: datosAnalizados.categoriasAnalizadas,
           loading: false,
           error: null,
-          fecha: new Date().toLocaleDateString(),
+          fecha: new Date().toLocaleString(),
           areasRiesgo: datosAnalizados.areasRiesgo
         });
       } catch (err) {
@@ -343,7 +344,9 @@ const Diagnostico = () => {
   // Obtener la información del empleador adaptada a la nueva estructura de datos
   const nombreEmpresa = resultados.empleador?.nombres || "No disponible";
   const identificacionEmpresa = resultados.empleador?.identificacion || "No disponible";
-  const tipoIdentificacion = resultados.empleador?.tipo || "";
+  const tipoIdentificacion = resultados.empleador?.tipoDocumento || "";
+
+  
 
   return (
     <div className="diagnostico-container">
@@ -353,7 +356,7 @@ const Diagnostico = () => {
           <h1>Diagnóstico de Cumplimiento</h1>
           <div className="empresa-datos">
             <div className="dato-empresa">
-              <span className="dato-label">Empresa:</span>
+              <span className="dato-label">Empleador:</span>
               <span className="dato-valor">{nombreEmpresa}</span>
             </div>
             <div className="dato-empresa">

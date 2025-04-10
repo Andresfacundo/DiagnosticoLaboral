@@ -171,4 +171,38 @@
     font-size: 15px;
 
 }
+/* Estilos para el filtro por categoria */
+.categoria-filter {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.categoria-filter label {
+    margin-right: 1rem;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+}
+
+.select-filtro-categoria {
+    flex-grow: 1;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #ffffff;
+    transition: border-color 0.3s ease;
+    cursor: pointer;
+}
+
+.select-filtro-categoria:focus {
+    outline: none;
+    border-color: #DFBD7C;
+    box-shadow: 0 0 0 2px rgba(223, 189, 124, 0.2);
+}
 

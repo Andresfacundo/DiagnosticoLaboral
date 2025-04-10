@@ -27,10 +27,10 @@ const Cuestionario = () => {
                 // Aseguramos que el ID sea un número si viene como string
                 const empleadorIdParsed = JSON.parse(idEmpleador);
                 setEmpleadorId(empleadorIdParsed);
-                
+
                 // Obtenemos las preguntas de la API
                 const response = await axios.get(`${API_URL}/api/preguntas`);
-                
+
                 // Establecemos las preguntas y creamos el array de respuestas
                 setPreguntas(response.data);
                 setRespuestas(response.data.map(pregunta => ({
@@ -39,7 +39,7 @@ const Cuestionario = () => {
                     comentario: "",
                     documento: null
                 })));
-                
+
                 // Inicializamos el progreso
                 setProgreso(0);
             } catch (error) {
@@ -92,7 +92,7 @@ const Cuestionario = () => {
 
             // Guardar las respuestas en localStorage para usarlas en el diagnóstico
             localStorage.setItem("respuestas", JSON.stringify(respuestas));
-            
+
             // Enviar respuestas al servidor
             await axios.post(`${API_URL}/api/respuestas/${empleadorId}`, {
                 respuestas
@@ -133,8 +133,8 @@ const Cuestionario = () => {
 
             {/* Barra de progreso */}
             <div className="progress-bar-container">
-                <div 
-                    className="progress-bar" 
+                <div
+                    className="progress-bar"
                     style={{ width: `${progreso}%` }}
                 ></div>
             </div>
@@ -145,24 +145,27 @@ const Cuestionario = () => {
                     {error}
                 </div>
             )}
+            <p className="question-category">
+                {preguntas[preguntaActual].categoria}
+            </p>            
 
             <p className="question-text">
                 {preguntas[preguntaActual].texto}
             </p>
 
             <div className="response-options">
-                {["Sí", "No", "N/A"].map((opcion) => (
-                    <label 
-                        key={opcion} 
+                {["Si", "Si Parcialmente", "No", "N/A"].map((opcion) => (
+                    <label
+                        key={opcion}
                         className={`response-label ${respuestas[preguntaActual]?.respuesta === opcion ? 'selected' : ''}`}
                     >
-                        <input 
-                            type="radio" 
-                            name="respuesta" 
+                        <input
+                            type="radio"
+                            name="respuesta"
                             value={opcion}
                             checked={respuestas[preguntaActual]?.respuesta === opcion}
                             onChange={(e) => manejarCambio("respuesta", e.target.value)}
-                        /> 
+                        />
                         {opcion}
                     </label>
                 ))}
@@ -184,16 +187,16 @@ const Cuestionario = () => {
             {/* Botones de navegación */}
             <div className="navigation-buttons">
                 {preguntaActual < preguntas.length - 1 ? (
-                    <button 
-                        className="navigation-button primary" 
+                    <button
+                        className="navigation-button primary"
                         onClick={siguientePregunta}
                     >
                         Siguiente
                     </button>
                 ) : (
-                    <button 
-                        className="navigation-button primary" 
-                        onClick={enviarRespuestas} 
+                    <button
+                        className="navigation-button primary"
+                        onClick={enviarRespuestas}
                         disabled={enviando}
                     >
                         {enviando ? "Enviando..." : "Finalizar"}

@@ -4,8 +4,6 @@ import axios from "axios"; // Asegúrate de tener axios instalado: npm install a
 import './Formulario.css';
 const API_URL = import.meta.env.VITE_API_URL
 
-
-
 const Formulario = () => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,9 +14,10 @@ const Formulario = () => {
         nombres: "",
         identificacion: "",
         trabajadores: "",
-        contratos: []
+        nombreDiligenciador: "",
+        email: "",
+        telefono: "",
     });
-    
     
     // Estado para controlar errores
     const [errores, setErrores] = useState({});
@@ -26,17 +25,8 @@ const Formulario = () => {
     const [serverError, setServerError] = useState(null);
 
     const manejarCambio = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (type === "checkbox") {
-            setEmpleador((prev) => ({
-                ...prev,
-                contratos: checked
-                    ? [...prev.contratos, value]
-                    : prev.contratos.filter((c) => c !== value)
-            }));
-        } else {
-            setEmpleador({ ...empleador, [name]: value });
-        }
+        const { name, value } = e.target;
+        setEmpleador({ ...empleador, [name]: value });
         
         // Limpiar el error del campo que se está editando
         if (errores[name]) {
@@ -73,11 +63,6 @@ const Formulario = () => {
         // Validar número de trabajadores
         if (!empleador.trabajadores) {
             nuevosErrores.trabajadores = "Campo requerido";
-        }
-        
-        // Validar que haya al menos un tipo de contrato seleccionado
-        if (empleador.contratos.length === 0) {
-            nuevosErrores.contratos = "Seleccione al menos uno";
         }
         
         setErrores(nuevosErrores);
@@ -215,46 +200,42 @@ const Formulario = () => {
                     />
                     {errores.trabajadores && <div className="error-inside">{errores.trabajadores}</div>}
                 </div>
-            </div>
-            
-            <div role="group" aria-label="Tipos de Contrato" className="box-checkbox">
-                <label className="label1">
+                <div className="input-container">
                     <input
-                        type="checkbox"
-                        name="contratos"
-                        value="Fijo"
+                        className={`input ${errores.nombreDiligenciador ? 'input-error' : ''}`}
+                        type="text"
+                        name="nombreDiligenciador"
+                        placeholder="Nombre del Diligenciador"
+                        value={empleador.nombreDiligenciador}
                         onChange={manejarCambio}
-                        id="contratoFijo"
-                        className={errores.contratos ? 'input-error' : ''}
-                        checked={empleador.contratos.includes('Fijo')}
+                        required                        
                     />
-                    <label htmlFor="contratoFijo">Término Fijo</label>
-                </label>
-                <label className="label1">
+                    {errores.nombreDiligenciador && <div className="error-inside">{errores.nombreDiligenciador}</div>}
+                </div>
+                <div className="input-container">
                     <input
-                        type="checkbox"
-                        name="contratos"
-                        value="Indefinido"
+                        className={`input ${errores.email ? 'input-error' : ''}`}
+                        type="text"
+                        name="email"
+                        placeholder="Correo electronico"
+                        value={empleador.email}
                         onChange={manejarCambio}
-                        id="contratoIndefinido"
-                        className={errores.contratos ? 'input-error' : ''}
-                        checked={empleador.contratos.includes('Indefinido')}
+                        required                        
                     />
-                    <label htmlFor="contratoIndefinido">Término Indefinido</label>
-                </label>
-                <label className="label1">
+                    {errores.email && <div className="error-inside">{errores.email}</div>}
+                </div>
+                <div className="input-container">
                     <input
-                        type="checkbox"
-                        name="contratos"
-                        value="Obra"
+                        className={`input ${errores.telefono ? 'input-error' : ''}`}
+                        type="text"
+                        name="telefono"
+                        placeholder="Celular o Teléfono"
+                        value={empleador.telefono}
                         onChange={manejarCambio}
-                        id="contratoObra"
-                        className={errores.contratos ? 'input-error' : ''}
-                        checked={empleador.contratos.includes('Obra')}
+                        required                        
                     />
-                    <label htmlFor="contratoObra">Obra o Labor</label>
-                </label>
-                {errores.contratos && <div className="error-checkbox">{errores.contratos}</div>}
+                    {errores.telefono && <div className="error-inside">{errores.telefono}</div>}                    
+                </div>
             </div>
             
             <button 
