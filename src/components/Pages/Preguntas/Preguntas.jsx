@@ -14,6 +14,19 @@ const Preguntas = () => {
 
     // Valores predeterminados para respuestas
     const tiposRespuestas = ["Si", "Si parcialmente", "No", "N/A"];
+    
+    // Lista de categorías disponibles
+    const categorias = [
+        "Colectivo",
+        "Contratación",
+        "Litigios",
+        "Normas laborales",
+        "Remunaración",
+        "Documentación",
+        "Seguridad social",
+        "SST",
+        "Terceros"
+    ];
 
     // Obtener preguntas desde el backend
     useEffect(() => {
@@ -45,12 +58,17 @@ const Preguntas = () => {
             return;
         }
 
+        if (!categoria) {
+            setError("Debe seleccionar una categoría");
+            return;
+        }
+
         try {
             // Solo enviamos los campos básicos, el backend calculará las respuestas
             const response = await axios.post(`${API_URL}/api/preguntas`, {
                 texto: texto.trim(),
                 peso: Number(peso),
-                categoria: categoria.trim()
+                categoria: categoria
             });
             
             setPreguntas([...preguntas, response.data]);
@@ -122,6 +140,11 @@ const Preguntas = () => {
             return;
         }
 
+        if (!editandoEnLinea.categoria) {
+            setError("Debe seleccionar una categoría");
+            return;
+        }
+
         // Validar valores de respuesta
         for (const tipo of tiposRespuestas) {
             const valor = editandoEnLinea.respuestas[tipo];
@@ -142,7 +165,7 @@ const Preguntas = () => {
             const response = await axios.put(`${API_URL}/api/preguntas/${id}`, {
                 texto: editandoEnLinea.texto.trim(),
                 peso: Number(editandoEnLinea.peso),
-                categoria: editandoEnLinea.categoria.trim(),
+                categoria: editandoEnLinea.categoria,
                 respuestas: respuestasNumero
             });
 
@@ -187,13 +210,17 @@ const Preguntas = () => {
                     step='any' 
                     required 
                 />
-                <input 
-                    type="text" 
-                    placeholder="Categoria" 
-                    value={categoria} 
-                    onChange={(e) => setCategoria(e.target.value)} 
-                    required 
-                />
+                <select 
+                    className="select-categoria"
+                    value={categoria}
+                    onChange={(e) => setCategoria(e.target.value)}
+                    required
+                >
+                    <option value="" disabled>Seleccione una categoría</option>
+                    {categorias.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                </select>
                 <button type="submit">Agregar Nueva Pregunta</button>
             </form>
 
@@ -235,12 +262,15 @@ const Preguntas = () => {
                                                 />
                                             </div>
                                             <div className="preguntas-item-categoria">
-                                                <input
-                                                    type="text"
+                                                <select
                                                     value={editandoEnLinea.categoria}
                                                     onChange={(e) => cambiarCampoEdicion('categoria', e.target.value)}
                                                     className="editar-en-linea-input"
-                                                />
+                                                >
+                                                    {categorias.map((cat) => (
+                                                        <option key={cat} value={cat}>{cat}</option>
+                                                    ))}
+                                                </select>
                                             </div>
                                             <div className="preguntas-item-actions">
                                                 <button
