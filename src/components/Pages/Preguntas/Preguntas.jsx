@@ -223,6 +223,7 @@ const Preguntas = () => {
                     type="number" 
                     placeholder="Peso (0-3)" 
                     value={peso} 
+                    onWheel={(e) => e.target.blur()}
                     onChange={(e) => setPeso(e.target.value)} 
                     min="0" 
                     max='3' 
@@ -268,7 +269,7 @@ const Preguntas = () => {
                         <div>#</div>
                         <div>Pregunta</div>
                         <div>Peso</div>
-                        <div>Categoria</div>
+                        <div>Categoría</div>
                         <div>Acciones</div>
                     </div>
                     <ul className="preguntas-list">
@@ -290,7 +291,8 @@ const Preguntas = () => {
                                             </div>
                                             <div className="preguntas-item-peso">
                                                 <input
-                                                    type="text"
+                                                    type="number"
+                                                    onWheel={(e) => e.target.blur()}
                                                     value={editandoEnLinea.peso}
                                                     onChange={(e) => cambiarCampoEdicion('peso', e.target.value)}
                                                     className="editar-en-linea-input peso"
@@ -346,7 +348,7 @@ const Preguntas = () => {
                                     )}
                                 </div>
                                 <div className="content-response">
-                                    <p>Respuestas</p>
+                                    <p>Opciones de respuestas</p>
                                     <div className="content-response-items">
                                         {editandoEnLinea.id === pregunta.id ? (
                                             // Modo de edición para valores de respuesta

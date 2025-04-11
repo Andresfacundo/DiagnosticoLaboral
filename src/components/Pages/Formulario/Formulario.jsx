@@ -64,6 +64,22 @@ const Formulario = () => {
         if (!empleador.trabajadores) {
             nuevosErrores.trabajadores = "Campo requerido";
         }
+        if(!empleador.nombreDiligenciador){
+            nuevosErrores.nombreDiligenciador = "Campo requerido";
+        }
+        // Validar email   
+        if (!empleador.email) {
+            nuevosErrores.email = "Campo requerido";
+        } else if (!/\S+@\S+\.\S+/.test(empleador.email)) {
+            nuevosErrores.email = "Email inválido";
+        }
+        // validar telefono 
+        if (!empleador.telefono) {
+            nuevosErrores.telefono = "Campo requerido";
+        } else if (!/^\d+$/.test(empleador.telefono)) {
+            nuevosErrores.telefono = "Teléfono inválido";
+        }
+        
         
         setErrores(nuevosErrores);
         return Object.keys(nuevosErrores).length === 0;
@@ -146,7 +162,7 @@ const Formulario = () => {
                         className={`input ${errores.nombres ? 'input-error' : ''}`}
                         type="text"
                         name="nombres"
-                        placeholder="Nombre o Razón Social"
+                        placeholder="Nombre o razón social"
                         value={empleador.nombres}
                         onChange={manejarCambio}
                         required
@@ -162,7 +178,7 @@ const Formulario = () => {
                         value={empleador.tipoDocumento}
                         onChange={manejarCambio}
                         required
-                        aria-label="Tipo de Documento"
+                        aria-label="Tipo de documento"
                     >
                         <option value="" disabled>Seleccione tipo de documento</option>
                         <option value="Cédula de ciudadanía">Cédula de Ciudadanía</option>
@@ -178,10 +194,11 @@ const Formulario = () => {
                         className={`input ${errores.identificacion ? 'input-error' : ''}`}
                         type="number"
                         name="identificacion"
-                        placeholder="Número de Identificación"
+                        placeholder="Número de identificación"
                         value={empleador.identificacion}
                         onChange={manejarCambio}
                         required
+                        onWheel={(e) => e.target.blur()}
                         aria-label="Número de Identificación"
                     />
                     {errores.identificacion && <div className="error-inside">{errores.identificacion}</div>}
@@ -192,10 +209,11 @@ const Formulario = () => {
                         className={`input ${errores.trabajadores ? 'input-error' : ''}`}
                         type="number"
                         name="trabajadores"
-                        placeholder="Número de Trabajadores"
+                        placeholder="Número de trabajadores"
                         value={empleador.trabajadores}
                         onChange={manejarCambio}
                         min="0"
+                        onWheel={(e) => e.target.blur()}
                         aria-label="Número de Trabajadores"
                     />
                     {errores.trabajadores && <div className="error-inside">{errores.trabajadores}</div>}
@@ -205,7 +223,7 @@ const Formulario = () => {
                         className={`input ${errores.nombreDiligenciador ? 'input-error' : ''}`}
                         type="text"
                         name="nombreDiligenciador"
-                        placeholder="Nombre del Diligenciador"
+                        placeholder="Nombre del diligenciador"
                         value={empleador.nombreDiligenciador}
                         onChange={manejarCambio}
                         required                        
@@ -217,7 +235,7 @@ const Formulario = () => {
                         className={`input ${errores.email ? 'input-error' : ''}`}
                         type="text"
                         name="email"
-                        placeholder="Correo electronico"
+                        placeholder="Correo electrónico"
                         value={empleador.email}
                         onChange={manejarCambio}
                         required                        
@@ -227,10 +245,11 @@ const Formulario = () => {
                 <div className="input-container">
                     <input
                         className={`input ${errores.telefono ? 'input-error' : ''}`}
-                        type="text"
+                        type="number"
                         name="telefono"
                         placeholder="Celular o Teléfono"
                         value={empleador.telefono}
+                        onWheel={(e) => e.target.blur()}
                         onChange={manejarCambio}
                         required                        
                     />
