@@ -112,7 +112,7 @@
 }
 
 .btn-editar, .btn-eliminar, .btn-guardar, .btn-cancelar {
-    padding: 0.5rem 0.75rem;
+    padding: 0.4rem ;
     border: none;
     border-radius: 6px;
     font-size: 0.875rem;
@@ -165,7 +165,7 @@
 }
 .respuesta-container{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
 }
