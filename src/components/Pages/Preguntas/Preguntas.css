@@ -90,7 +90,11 @@
     align-items: center;
     width: 100%;
     /* border: 2px solid red; */
-    height: 4rem;
+    height: auto;
+}
+.preguntas-item-text{
+    /* border: 2px solid red; */
+    height: auto;
 }
 
 .preguntas-item-peso{
@@ -99,8 +103,9 @@
 
 .preguntas-item-actions {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     gap: 0.5rem;
+    padding-left: 2rem;
 }
 .preguntas-item-categoria{
     text-align: center;
