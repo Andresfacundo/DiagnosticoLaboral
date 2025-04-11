@@ -89,12 +89,13 @@
 
 .dato-label {
   font-weight: 600;
-  width: 120px;
+  /* width: 120px; */
   color: #7f8c8d;
 }
 
 .dato-valor {
   font-weight: 500;
+  color: #000;
 }
 
 .resumen-cumplimiento {

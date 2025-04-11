@@ -165,8 +165,8 @@ const Formulario = () => {
                         aria-label="Tipo de Documento"
                     >
                         <option value="" disabled>Seleccione tipo de documento</option>
-                        <option value="CC">Cédula de Ciudadanía</option>
-                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="Cédula de ciudadanía">Cédula de Ciudadanía</option>
+                        <option value="Cédula de Extranjería">Cédula de Extranjería</option>
                         <option value="NIT">NIT</option>
                         <option value="Pasaporte">Pasaporte</option>
                     </select>

@@ -178,11 +178,11 @@ const Cuestionario = () => {
                 onChange={(e) => manejarCambio("comentario", e.target.value)}
             />
 
-            <input
+            {/* <input
                 type="file"
                 className="file-input"
                 onChange={(e) => manejarCambio("documento", e.target.files[0])}
-            />
+            /> */}
 
             {/* Botones de navegación */}
             <div className="navigation-buttons">

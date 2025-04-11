@@ -356,16 +356,16 @@ const Diagnostico = () => {
           <h1>Diagnóstico de Cumplimiento</h1>
           <div className="empresa-datos">
             <div className="dato-empresa">
-              <span className="dato-label">Empleador:</span>
-              <span className="dato-valor">{nombreEmpresa}</span>
+              <span className="dato-label">Empleador: <span className="dato-valor">{nombreEmpresa}</span></span>   
             </div>
             <div className="dato-empresa">
-              <span className="dato-label">Identificación:</span>
-              <span className="dato-valor">{tipoIdentificacion} {identificacionEmpresa}</span>
+              <span className="dato-label">Tipo de identificación: <span className="dato-valor">{tipoIdentificacion}</span></span>              
             </div>
             <div className="dato-empresa">
-              <span className="dato-label">Fecha:</span>
-              <span className="dato-valor">{resultados.fecha}</span>
+              <span className="dato-label">Número de identificación: <span className="dato-valor">{identificacionEmpresa}</span></span>              
+            </div>
+            <div className="dato-empresa">
+              <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span>
             </div>
           </div>
         </div>
