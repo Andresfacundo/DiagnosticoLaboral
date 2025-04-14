@@ -1,4 +1,5 @@
 .box-home{
+    width: 100%;
     font-family: "Jost", serif ;
     font-optical-sizing: auto;
     font-weight: 450;
@@ -7,6 +8,10 @@
     flex-direction: column;
     align-items: center;
     gap: 2rem;
+    /* background-image: url('../../../../public/backGround.jpeg'); */
+    background-size: cover;
+    background-repeat: no-repeat;
+
 
 
 }

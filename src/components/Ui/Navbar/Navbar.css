@@ -1,0 +1,42 @@
+.navbar-container {
+    width: 100%;
+    background-color: white;
+    padding-top: 1rem;
+    opacity: 0.97;
+
+}
+.navbar-container li {
+    text-decoration: none;
+    list-style: none;
+}
+
+.navbar-container a {
+    padding: .3rem;
+
+}
+.navbar {
+    width: 100%;
+    display: flex
+}
+.nav-list {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0;
+    margin: 0;
+
+}
+.nav-list a {
+    text-decoration: none;
+    color: #000;
+}
+.nav-list a:hover {
+    background-color: #DFBD7C;
+    transition: .4s;
+}
+.botonActivo{
+    background-color: #DFBD7C;
+}
+

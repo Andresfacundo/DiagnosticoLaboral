@@ -10,10 +10,14 @@ body{
     align-items: center;
     display: flex;
     flex-direction: column;
+    background-image: url('../../../../public/backGround.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
 }
 #root{
     width: 100%;
-    max-width: 1200px;
+    /* max-width: 1300px; */
     margin: 0 auto;
     /* border: 2px solid blue; */
     /* text-align: center; */
