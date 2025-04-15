@@ -23,8 +23,8 @@ function App() {
     <Navbar/>
     <Routes>
       <Route path='/' element={<Home/>}/>
-      <Route path='preguntas' element={<Preguntas/>}/>
-      <Route path='formulario' element={<Formulario />}/>
+      <Route path='questions' element={<Preguntas/>}/>
+      <Route path='form' element={<Formulario />}/>
       <Route path='diagnostico' element={<Diagnostico/>}/>
       <Route path='cuestionario' element={<Cuestionario/>}/>
       {/* <Route path='resultados' element={<Resultados/>}/> */}

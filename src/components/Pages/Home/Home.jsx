@@ -45,7 +45,7 @@ const Home = () => {
 
             <div className='content-home'>
                 <div class="title-container">
-                    <h3>Acompañamiento</h3>
+                    <h3>Asesoría en</h3>
                     <p id='typingText'></p>
                 </div>
 

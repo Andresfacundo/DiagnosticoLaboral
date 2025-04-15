@@ -3,13 +3,15 @@
     max-width: 900px;
     flex-direction: column;
     margin: 2rem auto;
-
-    /* margin: 2rem auto; */
-    background-color: #ffffff;
+    margin-top: 4rem;
+    background-color: #f9f9f9e6;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 2rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    animation: fadeIn 0.4s ease-out;
+    /* border: 2px solid red; */
+
 }
 
 .preguntas-header {
@@ -224,5 +226,17 @@
     outline: none;
     border-color: #DFBD7C;
     box-shadow: 0 0 0 2px rgba(223, 189, 124, 0.2);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
