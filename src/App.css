@@ -10,7 +10,7 @@ body{
     align-items: center;
     display: flex;
     flex-direction: column;
-    background-image: url('../../../../public/backGround.jpeg');
+    background-image: url('./assets/backGround.png');
     background-size: cover;
     background-repeat: no-repeat;
     width: 100%;
