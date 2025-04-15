@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 const Home = () => {
     useEffect(() => {
         const textElement = document.getElementById("typingText");
-        const words = ["Laboral", "Tributario", "Corporativo", "Jurídico", "Empresarial"];
+        const words = ["Laboral", "Comercial", "Tributario", "Nómina", "Seguridad social", "Manejo del personal"];
         let wordIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -49,9 +49,10 @@ const Home = () => {
                     <p id='typingText'></p>
                 </div>
 
-                <span>En GVA, trabajamos con talento local para impulsar el crecimiento de las empresas en el Quindío.
-                    Somos un equipo altamente capacitado que combina experiencia jurídica con el uso de tecnología para ofrecer soluciones efectivas en derecho laboral, tributario y corporativo.
-                    Nos comprometemos con cada cliente, acompañando su gestión empresarial y aportando valor real desde lo legal, con cercanía, excelencia y conocimiento del entorno regional.
+                <span>Impulsamos el crecimiento de las empresas del Quindío con soluciones legales confiables y cercanas.
+En GVA, creemos en el poder del talento local. Contamos con un equipo de profesionales altamente capacitados, comprometidos con acompañar a las empresas de nuestra región en sus retos jurídicos.
+A través del uso de tecnología y un enfoque práctico, brindamos asesoría en derecho laboral, tributario y corporativo, con el objetivo de proteger y fortalecer cada etapa del desarrollo empresarial.
+Estamos aquí para crecer contigo.
                 </span>
             </div>
 
