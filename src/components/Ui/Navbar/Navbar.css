@@ -8,6 +8,7 @@
 .navbar-container li {
     text-decoration: none;
     list-style: none;
+
 }
 
 .navbar-container a {
@@ -31,6 +32,9 @@
 .nav-list a {
     text-decoration: none;
     color: #000;
+    border-radius: 20px;
+    align-items: center;
+    text-align: center;
 }
 .nav-list a:hover {
     background-color: #DFBD7C;
@@ -38,5 +42,21 @@
 }
 .botonActivo{
     background-color: #DFBD7C;
+}
+.login{
+    /* border: 2px solid blue; */
+    align-items: center;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+.login a{
+    /* border: 2px solid red; */
+    align-items: center;
+    text-align: center;
+}
+.login img{
+    width: 30px;
+    /* border: 2px solid yellow; */
 }
 

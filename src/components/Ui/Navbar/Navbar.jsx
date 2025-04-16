@@ -1,10 +1,41 @@
-import React from 'react'
-import Logo from '../Logo/Logo'
-import { NavLink } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import GVA from '../GVA/GVA.jsx'
 import './Navbar.css'
+import user from '../../../../public/usuario.png'
+import logout from '../../../../public/cerrar-sesion.png'
+import axios from 'axios'
+import authService from '../../../Services/authService.js'
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 const Navbar = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const location = useLocation();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
+    }, [location]);
+
+    const handleLogout = async () => {
+        const token = authService.getToken();
+        try {
+            if(token){
+                await axios.post(`${API_URL}/api/auth/logout`,{},{
+                    headers:{
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            }
+            authService.logout();
+            setIsAuthenticated(false);
+
+        }catch (error){
+            console.error('Error durante el logout:',error);
+            authService.logout();
+            setIsAuthenticated(false);
+        }
+    }
     return (
         <div className='navbar-container'>
             <nav className='navbar'>
@@ -15,9 +46,21 @@ const Navbar = () => {
                     <li className='preguntas'><NavLink to='questions' className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>
                     <li className='contacto'><NavLink >Contacto</NavLink></li>
                     <li className='nosotros'><NavLink >Nosotros</NavLink></li>
-                    {/* <li className='login'><NavLink to='login' className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Iniciar sesion</NavLink></li> */}
-                <Logo />
+                    {isAuthenticated ? (
+                        <li className='login'>
+                            <NavLink to='login' onClick={handleLogout} className='logout-button boton'>
+                                <img  src={logout}alt='icon-logout' className='logo-user' />
+                            </NavLink>
+                        </li>
+                    ) : (
+                        <li className='login'>
+                            <NavLink to='login' className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>
+                                <img src={user} alt='icon-user' className='logo-user' />
+                            </NavLink>
+                        </li>
+                    )}
                 </ul>
+                {/* <Logo /> */}
             </nav>
 
         </div>

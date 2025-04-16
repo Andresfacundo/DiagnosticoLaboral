@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import './Preguntas.css'
+import authService from "../../../Services/authService";
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -30,6 +31,15 @@ const Preguntas = () => {
         "Terceros"
     ];
 
+    const getAuthConfig = () => {
+        const token = authService.getToken();
+        return {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+    };
+
     // Obtener preguntas según el filtro seleccionado
     useEffect(() => {
         cargarPreguntas();
@@ -44,13 +54,19 @@ const Preguntas = () => {
             if (filtroCategoria === "Todas") {
                 response = await axios.get(`${API_URL}/api/preguntas`);
             } else {
-                response = await axios.get(`${API_URL}/api/preguntas/categoria/${filtroCategoria}`);
+                response = await axios.get(`${API_URL}/api/preguntas/categoria/${filtroCategoria}`,
+                    getAuthConfig()
+                );
             }
             
             setPreguntas(response.data);
         } catch (error) {
             console.error("Error al obtener preguntas", error);
             setError("No se pudieron cargar las preguntas. Intente nuevamente.");
+            if(error.response && error.response.status === 401){
+                setError('Sesión expirada o no autorizada. Porfavor, inicie sesión nuevamente.');
+                authService.logout();
+            }
         }
     };
 
@@ -75,12 +91,13 @@ const Preguntas = () => {
         }
 
         try {
-            // Solo enviamos los campos básicos, el backend calculará las respuestas
+            // Aqui se envian los datos con el token de autenticación
             const response = await axios.post(`${API_URL}/api/preguntas`, {
                 texto: texto.trim(),
                 peso: Number(peso),
                 categoria: categoria
-            });
+            }, getAuthConfig()
+        );
             
             // Recargar las preguntas según el filtro actual para incluir la nueva
             cargarPreguntas();
@@ -91,18 +108,34 @@ const Preguntas = () => {
         } catch (error) {
             console.error("Error en la operación", error);
             setError("No se pudo completar la operación. Intente nuevamente.");
+            if (error.response && error.response.status === 401) {
+                setError("No tiene autorización para esta acción. Por favor, inicie sesión nuevamente.");
+                authService.logout(); // Opcional: cerrar sesión si el token expiró
+            } else if (error.response && error.response.status === 403) {
+                setError("No tiene los permisos necesarios para realizar esta acción.");
+            } else {
+                setError("No se pudo completar la operación. Intente nuevamente.");
+            }
         }
     };
 
     // Eliminar una pregunta
     const eliminarPregunta = async (id) => {
         try {
-            await axios.delete(`${API_URL}/api/preguntas/${id}`);
+            await axios.delete(`${API_URL}/api/preguntas/${id}`,getAuthConfig());
             // Actualizamos el estado local para reflejar el cambio sin recargar
             setPreguntas(preguntas.filter(p => p.id !== id));
         } catch (error) {
             console.error("Error al eliminar pregunta", error);
             setError("No se pudo eliminar la pregunta. Intente nuevamente.");
+            if (error.response && error.response.status === 401) {
+                setError("No tiene autorización para esta acción. Por favor, inicie sesión nuevamente.");
+                authService.logout(); // Opcional: cerrar sesión si el token expiró
+            } else if (error.response && error.response.status === 403) {
+                setError("No tiene los permisos necesarios para eliminar esta pregunta.");
+            } else {
+                setError("No se pudo eliminar la pregunta. Intente nuevamente.");
+            }
         }
     };
 
@@ -181,7 +214,8 @@ const Preguntas = () => {
                 peso: Number(editandoEnLinea.peso),
                 categoria: editandoEnLinea.categoria,
                 respuestas: respuestasNumero
-            });
+            },getAuthConfig()
+        );
 
             // Actualizamos la pregunta con la respuesta del backend
             setPreguntas(preguntas.map(p => p.id === id ? response.data : p));
@@ -190,6 +224,15 @@ const Preguntas = () => {
         } catch (error) {
             console.error("Error al actualizar pregunta", error);
             setError("No se pudo actualizar la pregunta. Intente nuevamente.");
+             
+            if (error.response && error.response.status === 401) {
+                setError("No tiene autorización para esta acción. Por favor, inicie sesión nuevamente.");
+                authService.logout(); // Opcional: cerrar sesión si el token expiró
+            } else if (error.response && error.response.status === 403) {
+                setError("No tiene los permisos necesarios para actualizar esta pregunta.");
+            } else {
+                setError("No se pudo actualizar la pregunta. Intente nuevamente.");
+            }
         }
     };
 

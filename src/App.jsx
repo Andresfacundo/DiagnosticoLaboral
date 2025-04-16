@@ -7,6 +7,7 @@ import Formulario from './components/Pages/Formulario/Formulario.jsx'
 import Home from './components/Pages/Home/Home.jsx'
 import Cuestionario from './components/Pages/Cuestionario/Cuestionario.jsx'
 import Navbar from './components/Ui/Navbar/Navbar.jsx'
+import Login from './components/Ui/Login/Login.jsx'
 // import Resultados from './components/Pages/Resultados/Resultados.jsx'
 
 
@@ -27,6 +28,7 @@ function App() {
       <Route path='form' element={<Formulario />}/>
       <Route path='diagnostico' element={<Diagnostico/>}/>
       <Route path='cuestionario' element={<Cuestionario/>}/>
+      <Route path='login' element={<Login/>}/>
       {/* <Route path='resultados' element={<Resultados/>}/> */}
     </Routes>
     </>
