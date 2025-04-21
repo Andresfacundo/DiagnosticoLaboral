@@ -99,7 +99,7 @@ const Cuestionario = () => {
             });
 
             // Navegar a la página de diagnóstico
-            navigate("/diagnostico");
+            navigate("/resultados");
         } catch (error) {
             console.error("Error al enviar respuestas", error);
             setError("Error al enviar respuestas: " + (error.response?.data?.mensaje || error.message));
