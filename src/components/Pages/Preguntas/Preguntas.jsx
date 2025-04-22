@@ -16,7 +16,7 @@ const Preguntas = () => {
     const [filtroCategoria, setFiltroCategoria] = useState("Todas");
 
     // Valores predeterminados para respuestas
-    const tiposRespuestas = ["Si", "Si parcialmente", "No", "N/A"];
+    const tiposRespuestas = ["Si", "Parcialmente", "No", "No aplica"];
     
     // Lista de categorías disponibles
     const categorias = [
@@ -149,9 +149,9 @@ const Preguntas = () => {
             // Usamos directamente los valores de respuesta que vienen del backend
             respuestas: {
                 Si: pregunta.respuestas.Si.toString(),
-                "Si parcialmente": pregunta.respuestas["Si parcialmente"].toString(),
+                "Parcialmente": pregunta.respuestas["Parcialmente"].toString(),
                 No: pregunta.respuestas.No.toString(),
-                "N/A": pregunta.respuestas["N/A"].toString()
+                "No aplica": pregunta.respuestas["No aplica"].toString()
             }
         });
     };
@@ -412,9 +412,9 @@ const Preguntas = () => {
                                             // Modo de visualización normal para respuestas
                                             <div className="respuesta-container">
                                                 <div className="respuesta si">Si <br /> {pregunta.respuestas.Si}</div>
-                                                <div className="respuesta si-parcialmente">parcialmente <br /> {pregunta.respuestas["Si parcialmente"]}</div>
+                                                <div className="respuesta si-parcialmente">parcialmente <br /> {pregunta.respuestas["Parcialmente"]}</div>
                                                 <div className="respuesta no">No <br /> {pregunta.respuestas.No}</div>
-                                                <div className="respuesta na">No aplica <br /> {pregunta.respuestas["N/A"]}</div>
+                                                <div className="respuesta na">No aplica <br /> {pregunta.respuestas["No aplica"]}</div>
                                             </div>
                                         )}
                                     </div>
