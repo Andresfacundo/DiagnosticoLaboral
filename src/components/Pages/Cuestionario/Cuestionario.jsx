@@ -129,7 +129,7 @@ const Cuestionario = () => {
 
     return (
         <div className="cuestionario-container">
-            <h2 className="cuestionario-header">Responde la pregunta ({preguntaActual + 1}/{preguntas.length})</h2>
+            <p className="cuestionario-header">Pregunta  {preguntaActual + 1} de {preguntas.length}</p>
 
             {/* Barra de progreso */}
             <div className="progress-bar-container">
@@ -145,13 +145,15 @@ const Cuestionario = () => {
                     {error}
                 </div>
             )}
-            <p className="question-category">
-                {preguntas[preguntaActual].categoria}
-            </p>            
+            <div>
+                <p className="question-category">
+                    {preguntas[preguntaActual].categoria}
+                </p>            
+            </div>
 
-            <p className="question-text">
+            <h2 className="question-text">
                 {preguntas[preguntaActual].texto}
-            </p>
+            </h2>
 
             <div className="response-options">
                 {["Si", "Si Parcialmente", "No", "N/A"].map((opcion) => (

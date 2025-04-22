@@ -12,8 +12,7 @@
 }
 
 .navbar-container a {
-    padding: .3rem;
-
+    padding: 3px 10px;
 }
 .navbar {
     width: 100%;
