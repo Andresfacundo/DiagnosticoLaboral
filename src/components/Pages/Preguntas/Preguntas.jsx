@@ -412,9 +412,9 @@ const Preguntas = () => {
                                             // Modo de visualización normal para respuestas
                                             <div className="respuesta-container">
                                                 <div className="respuesta si">Si <br /> {pregunta.respuestas.Si}</div>
-                                                <div className="respuesta si-parcialmente">Si parcialmente <br /> {pregunta.respuestas["Si parcialmente"]}</div>
+                                                <div className="respuesta si-parcialmente">parcialmente <br /> {pregunta.respuestas["Si parcialmente"]}</div>
                                                 <div className="respuesta no">No <br /> {pregunta.respuestas.No}</div>
-                                                <div className="respuesta na">N/A <br /> {pregunta.respuestas["N/A"]}</div>
+                                                <div className="respuesta na">No aplica <br /> {pregunta.respuestas["N/A"]}</div>
                                             </div>
                                         )}
                                     </div>

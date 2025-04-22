@@ -156,7 +156,7 @@ const Cuestionario = () => {
             </h2>
 
             <div className="response-options">
-                {["Si", "Si Parcialmente", "No", "N/A"].map((opcion) => (
+                {["Si", "Parcialmente", "No", "No aplica"].map((opcion) => (
                     <label
                         key={opcion}
                         className={`response-label ${respuestas[preguntaActual]?.respuesta === opcion ? 'selected' : ''}`}
