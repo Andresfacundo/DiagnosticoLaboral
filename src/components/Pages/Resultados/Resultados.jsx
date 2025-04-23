@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Resultados.css";
+import RadarChartComponent from '../../Ui/RadarChart/RadarChartComponent'
 const API_URL = import.meta.env.VITE_API_URL
 
 const Resultados = () => {
@@ -15,7 +16,13 @@ const Resultados = () => {
     error: null,
     fecha: new Date().toLocaleString()
   });
-  console.log("Resultados iniciales:", resultados);
+
+  const datosRadar = Object.entries(resultados.categorias).map(([categoria, datos]) => ({
+    subject: categoria,
+    A: datos.porcentaje,
+    preguntas: datos.preguntas.length, // Porcentaje de cumplimiento por categoría
+    fullMark: 100, // Máximo valor
+  }));
   
   // Colores para los gráficos
   const COLORES_ESTADO = {
@@ -372,7 +379,8 @@ const Resultados = () => {
         
         <div className="resumen-cumplimiento">
           <div className="grafico-principal">
-            {renderizarGraficoDona(resultados.porcentajeCumplimiento, 150)}
+            {/* {renderizarGraficoDona(resultados.porcentajeCumplimiento, 150)} */}
+            <RadarChartComponent categorias={datosRadar}/>
           </div>
           <div className="resumen-texto">
             <h2>Cumplimiento Global</h2>

@@ -7,16 +7,11 @@ import {
   PolarRadiusAxis,
   Tooltip,
 } from "recharts";
+import CustomTooltip from "../CustomToolTip/CustomToolTip";
 
 const RadarChartComponent = ({ categorias }) => {
   // Datos de ejemplo
-  const data = [
-    { subject: "Comunicación", A: 80, fullMark: 100 },
-    { subject: "Trabajo en equipo", A: 50, fullMark: 100 },
-    { subject: "Liderazgo", A: 70, fullMark: 100 },
-    { subject: "Adaptabilidad", A: 100, fullMark: 100 },
-    { subject: "Resolución de problemas", A: 30, fullMark: 100 },
-  ];
+  const data = categorias;
 
   return (
     <RadarChart
@@ -31,13 +26,13 @@ const RadarChartComponent = ({ categorias }) => {
       <PolarAngleAxis dataKey="subject" />
       <PolarRadiusAxis />
       <Radar
-        name="Empleado A"
+        name="Cumplimiento"
         dataKey="A"
         stroke="#8884d8"
         fill="#8884d8"
         fillOpacity={0.6}
       />
-      <Tooltip />
+      <Tooltip content={<CustomTooltip/>}/>
     </RadarChart>
   );
 };
