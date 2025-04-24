@@ -51,6 +51,8 @@ const authService = {
     logout: () => { 
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
+        
+        window.dispatchEvent(new Event('authStateChanged'));
     },
     
     // Verificar si está autenticado

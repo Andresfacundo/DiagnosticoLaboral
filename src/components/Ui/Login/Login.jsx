@@ -45,13 +45,13 @@ const Login = () => {
       switch (data.usuario.rol) {
         case 'superadmin':
         case 'admin':
-          navigate('/questions');
+          navigate('/');
           break;
         case 'user':
-          navigate('/diagnostico');
+          navigate('/');
           break;
         default:
-          navigate('/dashboard');
+          navigate('/');
       }
   
     } catch (error) {

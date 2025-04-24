@@ -101,40 +101,41 @@ const Navbar = () => {
                         }
                     </button>
                 </div>
-                
-                <ul className={`nav-list ${menuOpen ? 'nav-active' : ''}`}>
-                    <li className='home'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Inicio</NavLink></li>
-                    <li className='diagnostico'><NavLink to='form' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico</NavLink></li>
-                    
-                    {/* Solo mostrar Gestión de preguntas para admin/superadmin */}
-                    {hasAccess('admin') && (
-                        <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>
-                    )}
-                    
-                    {/* Solo mostrar Calculadora para admin/superadmin */}
-                    {hasAccess('admin') && (
-                        <li className='calculadora'><a href="https://calculadora-gap-six.vercel.app/" onClick={closeMenu} target='_blank'>Calculadora</a></li>
-                    )}
-                    
-                    <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li>
-                    <li className='nosotros'><NavLink onClick={closeMenu}>Nosotros</NavLink></li>
-                    
-                    {isAuthenticated ? (
-                        <li className='login'>
-                            <NavLink to='login' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
-                                <img src={logout} alt='icon-logout' className='logo-user' />
-                                <span className="menu-text">Cerrar sesión</span>
-                            </NavLink>
-                        </li>
-                    ) : (
-                        <li className='login'>
-                            <NavLink to='login' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>
-                                <img src={user} alt='icon-user' className='logo-user' />
-                                <span className="menu-text">Iniciar sesión</span>
-                            </NavLink>
-                        </li>
-                    )}
-                </ul>
+                <div className='content-list-nav'>
+                    <ul className={`nav-list ${menuOpen ? 'nav-active' : ''}`}>
+                        <li className='home'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Inicio</NavLink></li>
+                        <li className='diagnostico'><NavLink to='diagnostico' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico</NavLink></li>
+                        
+                        {/* Solo mostrar Gestión de preguntas para admin/superadmin */}
+                        {hasAccess('admin') && (
+                            <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>
+                        )}
+                        
+                        {/* Solo mostrar Calculadora para admin/superadmin */}
+                        {hasAccess('admin') && (
+                            <li className='calculadora'><a href="https://calculadora-gap-six.vercel.app/" onClick={closeMenu} target='_blank'>Calculadora</a></li>
+                        )}
+                        
+                        {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
+                        <li className='nosotros'><NavLink onClick={closeMenu}>Nosotros</NavLink></li>
+                        
+                    </ul>
+                        {isAuthenticated ? (
+                            <li className='login'>
+                                <NavLink to='login' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
+                                    <img src={logout} alt='icon-logout' className='logo-user' />
+                                    <span className="menu-text">Cerrar sesión</span>
+                                </NavLink>
+                            </li>
+                        ) : (
+                            <li className='login'>
+                                <NavLink to='login' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>
+                                    <img src={user} alt='icon-user' className='logo-user' />
+                                    <span className="menu-text">Iniciar sesión</span>
+                                </NavLink>
+                            </li>
+                        )}
+                </div>
             </nav>
         </div>
     )

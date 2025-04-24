@@ -1,0 +1,47 @@
+.content-footer{
+    width: 100%;
+
+    background: linear-gradient(130deg,  #889aa436 0%, #ffffff 100%);
+    padding: 0;
+
+    display: flex;
+    justify-content: space-around;
+    padding: 3rem 0 3rem 0;
+}
+
+.content-contacto{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+.content-contacto .item-img{    
+    display: flex;
+    gap: 10px;
+
+    
+}
+.content-contacto .item-img img{
+    width: 20px;
+}
+.item-img  a{
+    text-decoration: none;
+    color: #000;
+}
+.content-img{
+    padding-bottom: 1rem;
+}
+.content-img img{
+    width: 100px;
+}
+
+.item-interes ul, li a{
+    list-style: none;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #000;
+    padding: 0;
+}
+

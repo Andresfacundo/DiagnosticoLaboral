@@ -119,6 +119,8 @@ const Formulario = () => {
     };
 
     return (
+        <section className="content-top">
+
         <div className="content-form">
             <h2>Información del Empleador</h2>
             
@@ -138,7 +140,7 @@ const Formulario = () => {
                         onChange={manejarCambio}
                         id="tipoNatural"
                         className={errores.tipo ? 'input-error' : ''}
-                    />
+                        />
                     <label htmlFor="tipoNatural">Natural</label>
                 </label>
                 <label>
@@ -167,7 +169,7 @@ const Formulario = () => {
                         onChange={manejarCambio}
                         required
                         aria-label="Nombre o Razón Social"
-                    />
+                        />
                     {errores.nombres && <div className="error-inside">{errores.nombres}</div>}
                 </div>
                 
@@ -179,7 +181,7 @@ const Formulario = () => {
                         onChange={manejarCambio}
                         required
                         aria-label="Tipo de documento"
-                    >
+                        >
                         <option value="" disabled>Seleccione tipo de documento</option>
                         <option value="Cédula de ciudadanía">Cédula de Ciudadanía</option>
                         <option value="Cédula de Extranjería">Cédula de Extranjería</option>
@@ -200,7 +202,7 @@ const Formulario = () => {
                         required
                         onWheel={(e) => e.target.blur()}
                         aria-label="Número de Identificación"
-                    />
+                        />
                     {errores.identificacion && <div className="error-inside">{errores.identificacion}</div>}
                 </div>
                 
@@ -227,7 +229,7 @@ const Formulario = () => {
                         value={empleador.nombreDiligenciador}
                         onChange={manejarCambio}
                         required                        
-                    />
+                        />
                     {errores.nombreDiligenciador && <div className="error-inside">{errores.nombreDiligenciador}</div>}
                 </div>
                 <div className="input-container">
@@ -252,7 +254,7 @@ const Formulario = () => {
                         onWheel={(e) => e.target.blur()}
                         onChange={manejarCambio}
                         required                        
-                    />
+                        />
                     {errores.telefono && <div className="error-inside">{errores.telefono}</div>}                    
                 </div>
             </div>
@@ -260,10 +262,11 @@ const Formulario = () => {
             <button 
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-            >
+                >
                 {isSubmitting ? 'Enviando...' : 'Continuar'}
             </button>
         </div>
+        </section>
     );
 };
 
