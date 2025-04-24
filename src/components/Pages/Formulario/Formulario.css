@@ -1,15 +1,20 @@
 /* Formulario.css */
+.content-top{
+    padding: 4rem 0 4rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .content-form {
     font-family: "Jost", serif ;
     font-optical-sizing: auto;
     font-weight: 400;
     max-width: 800px;
-    margin: 0 auto;
+    width: 100%;
+    background: linear-gradient(170deg,  #889aa436 0%, #ffffff 60%);
     padding: 2rem;
-    background-color: #f9f9f9e6;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 4rem;
     animation: fadeIn 0.4s ease-out;
 }
 

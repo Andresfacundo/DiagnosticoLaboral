@@ -104,7 +104,7 @@ const Navbar = () => {
                 <div className='content-list-nav'>
                     <ul className={`nav-list ${menuOpen ? 'nav-active' : ''}`}>
                         <li className='home'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Inicio</NavLink></li>
-                        <li className='diagnostico'><NavLink to='form' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico</NavLink></li>
+                        <li className='diagnostico'><NavLink to='diagnostico' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico</NavLink></li>
                         
                         {/* Solo mostrar Gestión de preguntas para admin/superadmin */}
                         {hasAccess('admin') && (

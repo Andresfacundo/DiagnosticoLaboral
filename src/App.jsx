@@ -8,6 +8,7 @@ import Cuestionario from './components/Pages/Cuestionario/Cuestionario.jsx'
 import Navbar from './components/Ui/Navbar/Navbar.jsx'
 import Login from './components/Ui/Login/Login.jsx'
 import Footer from './components/Layouts/Footer/Footer.jsx'
+import InfoDiagnostico from './components/Ui/InfoDiagnostico/InfoDiagnostico.jsx'
 
 
 
@@ -24,10 +25,11 @@ function App() {
     <Routes>
       <Route path='/' element={<Home/>}/>
       <Route path='questions' element={<Preguntas/>}/>
-      <Route path='form' element={<Formulario />}/>
+      <Route path='diagnostico/form' element={<Formulario />}/>
       <Route path='resultados' element={<Resultados/>}/>
       <Route path='cuestionario' element={<Cuestionario/>}/>
       <Route path='login' element={<Login/>}/>
+      <Route path='diagnostico' element={<InfoDiagnostico/>}/>
     </Routes>
     <Footer/>        
     </>
