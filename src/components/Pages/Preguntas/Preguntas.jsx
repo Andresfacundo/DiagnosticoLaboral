@@ -39,6 +39,11 @@ const Preguntas = () => {
             }
         };
     };
+    const calcularPesoTotal = () => {
+        return preguntas.reduce((total, pregunta) => total + (pregunta.peso || 0), 0);
+    };
+
+    const pesoTotal = calcularPesoTotal();
 
     // Obtener preguntas según el filtro seleccionado
     useEffect(() => {
@@ -249,6 +254,7 @@ const Preguntas = () => {
 
     return (
         <div className="preguntas-container">
+            
             <h2 className="preguntas-header">Gestión de Preguntas</h2>
 
             {/* Formulario para agregar nuevas preguntas */}
@@ -301,6 +307,10 @@ const Preguntas = () => {
                         <option key={cat} value={cat}>{cat}</option>
                     ))}
                 </select>
+            </div>
+            <div className="peso-total">
+                <h3>Peso Total</h3>
+                <p>{pesoTotal}</p>
             </div>
 
             {/* Lista de preguntas */}
