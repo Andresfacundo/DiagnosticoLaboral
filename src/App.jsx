@@ -7,6 +7,7 @@ import Home from './components/Pages/Home/Home.jsx'
 import Cuestionario from './components/Pages/Cuestionario/Cuestionario.jsx'
 import Navbar from './components/Ui/Navbar/Navbar.jsx'
 import Login from './components/Ui/Login/Login.jsx'
+import Footer from './components/Layouts/Footer/Footer.jsx'
 
 
 
@@ -28,6 +29,7 @@ function App() {
       <Route path='cuestionario' element={<Cuestionario/>}/>
       <Route path='login' element={<Login/>}/>
     </Routes>
+    <Footer/>        
     </>
   )
 }
