@@ -291,42 +291,6 @@ const Resultados = () => {
     return contingencias;
   };
 
-  // Función para mostrar todas las preguntas con sus comentarios por categoría
-  const mostrarTodasLasPreguntas = () => {
-    return Object.entries(resultados.categorias).map(([categoria, datos]) => (
-      <div key={categoria} className="categoria-detalle">
-        <h3>{categoria}</h3>
-        <div className="categoria-preguntas-lista">
-          {datos.preguntas.map((pregunta, idx) => (
-            <div key={idx} className="pregunta-detalle-item">
-              <div className="pregunta-detalle-texto">{pregunta.texto}</div>
-              <div className="pregunta-detalle-respuesta">
-                <span className="etiqueta">Respuesta:</span> 
-                <span 
-                  className="valor-respuesta" 
-                  style={{ color: pregunta.respuesta === "Sí" || pregunta.respuesta === "Si" 
-                    ? COLORES_ESTADO.Si 
-                    : pregunta.respuesta === "No" 
-                      ? COLORES_ESTADO.No 
-                      : COLORES_ESTADO.NA 
-                  }}
-                >
-                  {pregunta.respuesta}
-                </span>
-              </div>
-              {pregunta.comentario && (
-                <div className="pregunta-detalle-comentario">
-                  <span className="etiqueta">Comentario:</span> 
-                  <span className="valor-comentario">{pregunta.comentario}</span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    ));
-  };
-
   if (resultados.loading) {
     return (
       <div className="diagnostico-loading">
@@ -378,25 +342,28 @@ const Resultados = () => {
         </div>
         
         <div className="resumen-cumplimiento">
-          <div className="grafico-principal">
-            {/* {renderizarGraficoDona(resultados.porcentajeCumplimiento, 150)} */}
-            <RadarChartComponent categorias={datosRadar}/>
-          </div>
+         
           <div className="resumen-texto">
-            <h2>Cumplimiento Global</h2>
-            <div className="estado-cumplimiento">
-              <span 
-                className="estado-indicador"
-                style={{ backgroundColor: obtenerColorPorcentaje(resultados.porcentajeCumplimiento) }}
-              ></span>
-              <span className="estado-texto">
-                {resultados.porcentajeCumplimiento >= 80
-                  ? "Cumplimiento Adecuado"
-                  : resultados.porcentajeCumplimiento >= 60
-                  ? "Requiere Mejoras"
-                  : "Alto Riesgo de Incumplimiento"}
-              </span>
+            <div>              
+              {renderizarGraficoDona(resultados.porcentajeCumplimiento, 150)}
+              <h2>Cumplimiento Global</h2>
+              <div className="estado-cumplimiento">
+                <span 
+                  className="estado-indicador"
+                  style={{ backgroundColor: obtenerColorPorcentaje(resultados.porcentajeCumplimiento) }}
+                ></span>
+                <span className="estado-texto">
+                  {resultados.porcentajeCumplimiento >= 80
+                    ? "Cumplimiento Adecuado"
+                    : resultados.porcentajeCumplimiento >= 60
+                    ? "Requiere Mejoras"
+                    : "Alto Riesgo de Incumplimiento"}
+                </span>
+              </div>
             </div>
+          </div>
+          <div className="grafico-principal">
+            <RadarChartComponent categorias={datosRadar}/>
           </div>
         </div>
       </div>
