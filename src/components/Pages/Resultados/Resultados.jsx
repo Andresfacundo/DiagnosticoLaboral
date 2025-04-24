@@ -16,6 +16,7 @@ const Resultados = () => {
     error: null,
     fecha: new Date().toLocaleString()
   });
+  console.log(resultados)
 
   const datosRadar = Object.entries(resultados.categorias).map(([categoria, datos]) => ({
     subject: categoria,
@@ -316,6 +317,9 @@ const Resultados = () => {
   const nombreEmpresa = resultados.empleador?.nombres || "No disponible";
   const identificacionEmpresa = resultados.empleador?.identificacion || "No disponible";
   const tipoIdentificacion = resultados.empleador?.tipoDocumento || "";
+  const diligenciador = resultados.empleador?.nombreDiligenciador || "No disponible"
+  const telefono = resultados.empleador?.telefono || "No disponible"
+  const email = resultados.empleador?.email || "No disponible"
 
   
 
@@ -330,6 +334,15 @@ const Resultados = () => {
               <span className="dato-label">Empleador: <span className="dato-valor">{nombreEmpresa}</span></span>   
             </div>
             <div className="dato-empresa">
+              <span className="dato-label">Diligenciador: <span className="dato-valor">{diligenciador}</span></span>
+            </div>
+            <div className="dato-empresa">
+              <span className="dato-label">Telefono: <span className="dato-valor">{telefono}</span></span>
+            </div>
+            <div className="dato-empresa">
+              <span className="dato-label">Correo electrónico: <span className="dato-valor">{email}</span></span>
+            </div>
+            <div className="dato-empresa">
               <span className="dato-label">Tipo de identificación: <span className="dato-valor">{tipoIdentificacion}</span></span>              
             </div>
             <div className="dato-empresa">
@@ -337,7 +350,7 @@ const Resultados = () => {
             </div>
             <div className="dato-empresa">
               <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span>
-            </div>
+            </div>            
           </div>
         </div>
         
