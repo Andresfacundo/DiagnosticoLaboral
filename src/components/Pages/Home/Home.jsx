@@ -48,19 +48,20 @@ const Home = () => {
     }, []);
     return (
         <div className='box-home'>
+            <section className='box-asesoria'>
+                <div className='content-home'>
+                    <div class="title-container">
+                        <h3>Asesoría en</h3>
+                        <p id='typingText'></p>
+                    </div>
 
-            <div className='content-home'>
-                <div class="title-container">
-                    <h3>Asesoría en</h3>
-                    <p id='typingText'></p>
+                    <span>Impulsamos el crecimiento de las empresas del Quindío con soluciones legales confiables y cercanas.
+    En GVA, creemos en el poder del talento local. Contamos con un equipo de profesionales altamente capacitados, comprometidos con acompañar a las empresas de nuestra región en sus retos jurídicos.
+    A través del uso de tecnología y un enfoque práctico, brindamos asesoría en derecho laboral, tributario y corporativo, con el objetivo de proteger y fortalecer cada etapa del desarrollo empresarial.
+    Estamos aquí para crecer contigo.
+                    </span>
                 </div>
-
-                <span>Impulsamos el crecimiento de las empresas del Quindío con soluciones legales confiables y cercanas.
-En GVA, creemos en el poder del talento local. Contamos con un equipo de profesionales altamente capacitados, comprometidos con acompañar a las empresas de nuestra región en sus retos jurídicos.
-A través del uso de tecnología y un enfoque práctico, brindamos asesoría en derecho laboral, tributario y corporativo, con el objetivo de proteger y fortalecer cada etapa del desarrollo empresarial.
-Estamos aquí para crecer contigo.
-                </span>
-            </div>
+            </section>
             <section className='box-caracteristicas'>
                 <div className='title-caracteristicas'>
                     <h2>Características principales</h2>

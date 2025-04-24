@@ -16,6 +16,7 @@ const Resultados = () => {
     error: null,
     fecha: new Date().toLocaleString()
   });
+  console.log(resultados)
 
   const datosRadar = Object.entries(resultados.categorias).map(([categoria, datos]) => ({
     subject: categoria,
@@ -291,42 +292,6 @@ const Resultados = () => {
     return contingencias;
   };
 
-  // Función para mostrar todas las preguntas con sus comentarios por categoría
-  const mostrarTodasLasPreguntas = () => {
-    return Object.entries(resultados.categorias).map(([categoria, datos]) => (
-      <div key={categoria} className="categoria-detalle">
-        <h3>{categoria}</h3>
-        <div className="categoria-preguntas-lista">
-          {datos.preguntas.map((pregunta, idx) => (
-            <div key={idx} className="pregunta-detalle-item">
-              <div className="pregunta-detalle-texto">{pregunta.texto}</div>
-              <div className="pregunta-detalle-respuesta">
-                <span className="etiqueta">Respuesta:</span> 
-                <span 
-                  className="valor-respuesta" 
-                  style={{ color: pregunta.respuesta === "Sí" || pregunta.respuesta === "Si" 
-                    ? COLORES_ESTADO.Si 
-                    : pregunta.respuesta === "No" 
-                      ? COLORES_ESTADO.No 
-                      : COLORES_ESTADO.NA 
-                  }}
-                >
-                  {pregunta.respuesta}
-                </span>
-              </div>
-              {pregunta.comentario && (
-                <div className="pregunta-detalle-comentario">
-                  <span className="etiqueta">Comentario:</span> 
-                  <span className="valor-comentario">{pregunta.comentario}</span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    ));
-  };
-
   if (resultados.loading) {
     return (
       <div className="diagnostico-loading">
@@ -352,6 +317,9 @@ const Resultados = () => {
   const nombreEmpresa = resultados.empleador?.nombres || "No disponible";
   const identificacionEmpresa = resultados.empleador?.identificacion || "No disponible";
   const tipoIdentificacion = resultados.empleador?.tipoDocumento || "";
+  const diligenciador = resultados.empleador?.nombreDiligenciador || "No disponible"
+  const telefono = resultados.empleador?.telefono || "No disponible"
+  const email = resultados.empleador?.email || "No disponible"
 
   
 
@@ -372,171 +340,46 @@ const Resultados = () => {
               <span className="dato-label">Número de identificación: <span className="dato-valor">{identificacionEmpresa}</span></span>              
             </div>
             <div className="dato-empresa">
-              <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span>
+              <span className="dato-label">Diligenciador: <span className="dato-valor">{diligenciador}</span></span>
             </div>
+            <div className="dato-empresa">
+              <span className="dato-label">Correo electrónico: <span className="dato-valor">{email}</span></span>
+            </div>
+            <div className="dato-empresa">
+              <span className="dato-label">Telefono: <span className="dato-valor">{telefono}</span></span>
+            </div>
+            <div className="dato-empresa">
+              <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span>
+            </div>            
           </div>
         </div>
         
         <div className="resumen-cumplimiento">
+         
+          <div className="resumen-texto">
+            <div>              
+              {renderizarGraficoDona(resultados.porcentajeCumplimiento, 150)}
+              <h2>Cumplimiento Global</h2>
+              <div className="estado-cumplimiento">
+                <span 
+                  className="estado-indicador"
+                  style={{ backgroundColor: obtenerColorPorcentaje(resultados.porcentajeCumplimiento) }}
+                ></span>
+                <span className="estado-texto">
+                  {resultados.porcentajeCumplimiento >= 80
+                    ? "Cumplimiento Adecuado"
+                    : resultados.porcentajeCumplimiento >= 60
+                    ? "Requiere Mejoras"
+                    : "Alto Riesgo de Incumplimiento"}
+                </span>
+              </div>
+            </div>
+          </div>
           <div className="grafico-principal">
-            {/* {renderizarGraficoDona(resultados.porcentajeCumplimiento, 150)} */}
             <RadarChartComponent categorias={datosRadar}/>
           </div>
-          <div className="resumen-texto">
-            <h2>Cumplimiento Global</h2>
-            <div className="estado-cumplimiento">
-              <span 
-                className="estado-indicador"
-                style={{ backgroundColor: obtenerColorPorcentaje(resultados.porcentajeCumplimiento) }}
-              ></span>
-              <span className="estado-texto">
-                {resultados.porcentajeCumplimiento >= 80
-                  ? "Cumplimiento Adecuado"
-                  : resultados.porcentajeCumplimiento >= 60
-                  ? "Requiere Mejoras"
-                  : "Alto Riesgo de Incumplimiento"}
-              </span>
-            </div>
-          </div>
         </div>
       </div>
-
-      {/* Sección principal con dos columnas */}
-      <div className="diagnostico-contenido">
-        {/* Columna izquierda: Categorías */}
-        <div className="columna-categorias">
-          <h2>Cumplimiento por Categoría</h2>
-          <div className="categorias-grid">
-            {Object.entries(resultados.categorias).map(([categoria, datos]) => (
-              <div key={categoria} className="categoria-card">
-                <div className="categoria-header">
-                  <h3>{categoria}</h3>
-                  <div className="categoria-porcentaje" style={{ color: obtenerColorPorcentaje(datos.porcentaje) }}>
-                    {Math.round(datos.porcentaje)}%
-                  </div>
-                </div>
-                
-                <div className="categoria-body">
-                  <div className="categoria-grafico">
-                    {renderizarGraficoDona(datos.porcentaje, 80)}
-                  </div>
-                  <div className="categoria-stats">
-                    <div className="categoria-estado" style={{ color: obtenerColorPorcentaje(datos.porcentaje) }}>
-                      {datos.porcentaje >= 80 
-                        ? "Cumplimiento adecuado" 
-                        : datos.porcentaje >= 60
-                        ? "Requiere mejoras"
-                        : "Alto riesgo"}
-                    </div>
-                    <div className="respuestas-distribucion">
-                      <div className="respuesta-tipo">
-                        <span className="respuesta-color" style={{backgroundColor: COLORES_ESTADO.Si}}></span>
-                        <span>Si: {datos.conteo.Si}</span>
-                      </div>
-                      <div className="respuesta-tipo">
-                        <span className="respuesta-color" style={{backgroundColor: COLORES_ESTADO.Parcialmente}}></span>
-                        <span>Parcialmente: {datos.conteo.Parcialmente}</span>
-                      </div>
-                      <div className="respuesta-tipo">
-                        <span className="respuesta-color" style={{backgroundColor: COLORES_ESTADO.No}}></span>
-                        <span>No: {datos.conteo.No}</span>
-                      </div>
-                      <div className="respuesta-tipo">
-                        <span className="respuesta-color" style={{backgroundColor: COLORES_ESTADO.NA}}></span>
-                        <span>No aplica: {datos.conteo.NA}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="categoria-barra-progreso">
-                  <div 
-                    className="barra-progreso" 
-                    style={{ 
-                      width: `${datos.porcentaje}%`, 
-                      backgroundColor: obtenerColorPorcentaje(datos.porcentaje) 
-                    }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        {/* Columna derecha: Áreas de riesgo y contingencias */}
-        <div className="columna-riesgos">
-          {resultados.areasRiesgo && resultados.areasRiesgo.length > 0 && (
-            <div className="areas-riesgo-seccion">
-              <h2>Áreas de Riesgo</h2>
-              <div className="areas-riesgo-lista">
-                {resultados.areasRiesgo.map((area, index) => (
-                  <div key={index} className="area-riesgo-item">
-                    <span className="icono-riesgo">⚠️</span>
-                    <span>{area}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {contingencias.length > 0 && (
-            <div className="contingencias-seccion">
-              <h2>Contingencias Identificadas</h2>
-              <div className="alerta-contingencias">
-                <p>
-                  <strong>{contingencias.length} {contingencias.length === 1 ? 'área' : 'áreas'}</strong> con riesgos de
-                  incumplimiento que requieren atención inmediata.
-                </p>
-              </div>
-
-              <div className="contingencias-lista">
-                {contingencias.map((contingencia, index) => (
-                  <div key={index} className="contingencia-item">
-                    <div className="contingencia-cabecera">
-                      <h3>{contingencia.categoria}</h3>
-                      <div className="contingencia-indicador">
-                        <span className="contingencia-porcentaje">
-                          {Math.round(contingencia.porcentaje)}%
-                        </span>
-                        <div className="contingencia-barra-contenedor">
-                          <div 
-                            className="contingencia-barra-progreso" 
-                            style={{ 
-                              width: `${contingencia.porcentaje}%`, 
-                              backgroundColor: obtenerColorPorcentaje(contingencia.porcentaje)
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="contingencia-preguntas">
-                      <h4>Preguntas con observaciones:</h4>
-                      <ul>
-                        {contingencia.preguntas.map((pregunta, i) => (
-                          <li key={i} className="contingencia-pregunta">
-                            <div className="pregunta-texto">{pregunta.texto}</div>
-                            <div className="pregunta-respuesta">
-                              Respuesta: <strong>{pregunta.respuesta}</strong>
-                            </div>
-                            {pregunta.comentario && (
-                              <div className="pregunta-comentario">
-                                <strong>Comentario:</strong> {pregunta.comentario}
-                              </div>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-   
 
       {/* Botones de acción */}
       <div className="diagnostico-acciones">

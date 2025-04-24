@@ -1,14 +1,20 @@
 .box-home{
     width: 100%;
-    padding-top: 6rem;
+    /* padding-top: 6rem; */
     font-family: "Jost", serif ;
     font-optical-sizing: auto;
     font-weight: 400;
     align-content: center;
 }
+
+.box-asesoria{
+    padding: 5rem 0 5rem 0;
+    background: linear-gradient(130deg,  #889aa436 0%, #ffffff 50%);
+    
+}
 .content-home{
     width: 50%;
-    margin-left: 3rem;
+    margin-left: 4rem;
     color: #333;
     animation: fadeIn 0.4s ease-out;
     
@@ -63,16 +69,19 @@
     }
 }
 .box-caracteristicas{
-    padding-top: 8rem ;
+    padding: 5rem 0 5rem 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+.title-caracteristicas h2{
+    font-size: 25px;
+}
 .title-caracteristicas{
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
 }
 .content-item-caracteristicas{
     display: flex;
@@ -85,7 +94,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    font-size: 20px
+    font-size: 16px
 }
 .item-caracteristicas .box-img{
     background-color: #DFBD7C;

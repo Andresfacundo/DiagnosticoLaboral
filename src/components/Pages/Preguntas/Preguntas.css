@@ -53,8 +53,27 @@
     font-size: 1rem;
     transition: background-color 0.3s ease;
 }
-
-
+.peso-total {
+    margin-bottom: 15px;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .peso-total h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .peso-total p {
+    margin: 5px 0 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+  }
 
 .preguntas-list-header {
     display: grid;
@@ -95,16 +114,15 @@
     grid-template-columns: 0.5fr 3fr 1fr 1fr  1fr;
     align-items: center;
     width: 100%;
-    /* border: 2px solid red; */
     height: auto;
 }
 .preguntas-item-text{
-    /* border: 2px solid red; */
+    max-width: 90%;
     height: auto;
 }
 
 .preguntas-item-peso{
-    text-align: center;
+    margin-left: 11px;
 }
 
 .preguntas-item-actions {

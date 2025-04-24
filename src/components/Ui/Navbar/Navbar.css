@@ -1,65 +1,188 @@
 .navbar-container {
     width: 100%;
     background-color: white;
-    padding-top: 1rem;
     opacity: 0.97;
-
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+    justify-content: center;
+    display: flex;
+    padding: .5rem 0 .5rem 0;
 }
+
 .navbar-container li {
     text-decoration: none;
     list-style: none;
-
 }
 
 .navbar-container a {
     padding: 3px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
+
 .navbar {
     width: 100%;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1300px;
+    /* margin: 0 auto; */
+    /* margin-left: 2rem; */
 }
-.nav-list {
-    text-align: center;
-    width: 100%;
+
+.navbar-logo {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+}
+
+.nav-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     padding: 0;
     margin: 0;
-
+    flex-grow: 1;
+    margin-left: 20px;
 }
+
 .nav-list a {
     text-decoration: none;
     color: #000;
     border-radius: 20px;
-    align-items: center;
-    text-align: center;
-}
-.nav-list a:hover {
-    background-color: #DFBD7C;
-    transition: .4s;
-}
-.botonActivo{
-    background-color: #DFBD7C;
-}
-.login{
-    /* border: 2px solid blue; */
-    align-items: center;
-    text-align: center;
-    display: flex;
-    flex-direction: row;
-}
-.login a{
-    /* border: 2px solid red; */
-    align-items: center;
-    text-align: center;
-}
-.login img{
-    width: 30px;
-    align-items: center;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    /* border: 2px solid yellow; */
+    transition: all 0.3s ease;
 }
 
+.nav-list a:hover {
+    background-color: #DFBD7C;
+    transition: 0.4s;
+}
+
+.botonActivo {
+    background-color: #DFBD7C;
+}
+
+.login {
+    align-items: center;
+    display: flex;
+}
+
+.login a {
+    align-items: center;
+    display: flex;
+}
+
+.logo-user {
+    width: 25px;
+    height: 25px;
+}
+
+/* Oculta el texto junto al ícono en pantallas normales */
+.menu-text {
+    display: none;
+}
+
+/* Estilos del menú hamburguesa */
+.hamburger-menu {
+    display: none;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.menu-icon {
+    width: 30px;
+    height: 30px;
+}
+
+/* Media queries para hacer el diseño responsivo */
+@media screen and (max-width: 992px) {
+    .nav-list {
+        gap: 5px;
+    }
+    
+    .navbar-container a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+        align-items: center;
+    }
+    
+    .navbar {
+        padding: 0 15px;
+    }
+    
+    .nav-list {
+        position: absolute;
+        flex-direction: column;
+        background-color: white;
+        width: 100%;
+        top: 100%;
+        left: 0;
+        padding: 20px 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        transform: translateY(-150%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        margin-left: 0;
+        gap: 15px;
+        z-index: 100;
+    }
+    
+    .nav-list.nav-active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-list li {
+        width: 100%;
+        text-align: left;
+    }
+    
+    .nav-list a {
+        width: 90%;
+        padding: 12px 20px;
+        border-radius: 0;
+        justify-content: flex-start;
+        margin: 0 auto;
+    }
+    
+    /* Muestra el texto junto al ícono en el menú móvil */
+    .menu-text {
+        display: inline;
+        margin-left: 8px;
+    }
+    
+    .botonActivo {
+        background-color: #DFBD7C;
+        border-radius: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .navbar-container {
+        padding: 0.75rem 0;
+    }
+    
+    .navbar {
+        padding: 6px;
+    }
+    
+    .logo-user {
+        width: 20px;
+        height: 20px;
+    }
+}

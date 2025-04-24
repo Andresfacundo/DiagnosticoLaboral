@@ -10,9 +10,6 @@ body{
     align-items: center;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(150deg,  #889aa457 0%, #ffffff 100%);
-    background-size: cover;
-    background-repeat: no-repeat;
     width: 100%;
 }
 #root{
