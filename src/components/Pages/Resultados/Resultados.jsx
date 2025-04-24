@@ -334,19 +334,19 @@ const Resultados = () => {
               <span className="dato-label">Empleador: <span className="dato-valor">{nombreEmpresa}</span></span>   
             </div>
             <div className="dato-empresa">
-              <span className="dato-label">Diligenciador: <span className="dato-valor">{diligenciador}</span></span>
+              <span className="dato-label">Tipo de identificación: <span className="dato-valor">{tipoIdentificacion}</span></span>              
             </div>
             <div className="dato-empresa">
-              <span className="dato-label">Telefono: <span className="dato-valor">{telefono}</span></span>
+              <span className="dato-label">Número de identificación: <span className="dato-valor">{identificacionEmpresa}</span></span>              
+            </div>
+            <div className="dato-empresa">
+              <span className="dato-label">Diligenciador: <span className="dato-valor">{diligenciador}</span></span>
             </div>
             <div className="dato-empresa">
               <span className="dato-label">Correo electrónico: <span className="dato-valor">{email}</span></span>
             </div>
             <div className="dato-empresa">
-              <span className="dato-label">Tipo de identificación: <span className="dato-valor">{tipoIdentificacion}</span></span>              
-            </div>
-            <div className="dato-empresa">
-              <span className="dato-label">Número de identificación: <span className="dato-valor">{identificacionEmpresa}</span></span>              
+              <span className="dato-label">Telefono: <span className="dato-valor">{telefono}</span></span>
             </div>
             <div className="dato-empresa">
               <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span>
