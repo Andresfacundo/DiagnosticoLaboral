@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Resultados.css";
 import RadarChartComponent from '../../Ui/RadarChart/RadarChartComponent'
+import { GiConsoleController } from "react-icons/gi";
 const API_URL = import.meta.env.VITE_API_URL
 
 const Resultados = () => {
@@ -20,7 +21,7 @@ const Resultados = () => {
 
   const datosRadar = Object.entries(resultados.categorias).map(([categoria, datos]) => ({
     subject: categoria,
-    A: datos.porcentaje,
+    A: parseFloat(datos.porcentaje.toFixed(2)),
     preguntas: datos.preguntas.length, // Porcentaje de cumplimiento por categoría
     fullMark: 100, // Máximo valor
   }));

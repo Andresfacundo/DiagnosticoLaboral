@@ -27,7 +27,7 @@
 }
 
 .content-home span{
-    font-size: 20px;
+    font-size: 18px;
     flex-wrap: nowrap;
     line-height: 2.3rem;
     font-weight: 450;
@@ -77,11 +77,12 @@
     align-items: center;
 }
 .title-caracteristicas h2{
-    font-size: 25px;
-}
-.title-caracteristicas{
+    font-size: 30px;
     text-align: center;
-    font-size: 16px;
+}
+.title-caracteristicas p{
+    text-align: center;
+    font-size: 18px;
 }
 .content-item-caracteristicas{
     display: flex;
@@ -94,7 +95,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    font-size: 16px
+    font-size: 18px
 }
 .item-caracteristicas .box-img{
     background-color: #DFBD7C;

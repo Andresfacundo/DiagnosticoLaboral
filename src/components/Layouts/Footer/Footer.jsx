@@ -7,6 +7,11 @@ import './Footer.css'
 import { NavLink, useLocation } from 'react-router-dom'
 import instagram from '../../../../public/logotipo-de-instagram.svg'
 import authService from '../../../Services/authService'
+const UrlWasa = import.meta.env.VITE_WASA
+const gps = import.meta.env.VITE_UBICACION;
+const correo = import.meta.env.VITE_EMAIL;
+const INSTAGRAM = import.meta.env.VITE_INSTAGRAM;
+
 
 
 const Footer = () => {
@@ -65,10 +70,10 @@ const Footer = () => {
                 <div className='content-img'>
                     <img src={gva} alt="icono-GVA" />
                 </div>
-                <div className='item-img'><img src={wasa} alt="icono-whatsapp" />(+57) 314 8739679</div>
-                <div className='item-img'><img src={instagram} alt="icono-instagram"/><a href="https://www.instagram.com/gomezvalenciaabogados/?igsh=MXB0bDByYmsyNHNpeA%3D%3D#">@gomezvalenciaabogados</a></div>
-                <div className='item-img'><img src={email} alt="icono-email" />administrativo@gomezvalencia.com</div>
-                <div className='item-img'><img src={ubicacion} alt="icono-ubicacion" />Calle 22 Norte KR #9-18 Barrio coinca</div>
+                <div className='item-img'><img src={wasa} alt="icono-whatsapp" /><a target='_blank' href={UrlWasa}>(+57) 314 8739679</a></div>
+                <div className='item-img'><img src={instagram} alt="icono-instagram"/><a href={INSTAGRAM}>@gomezvalenciaabogados</a></div>
+                <div className='item-img'><img src={email} alt="icono-email" /><a  target='_blank' href={correo}>administrativo@gomezvalencia.com</a></div>
+                <div className='item-img'><img src={ubicacion} alt="icono-ubicacion" /><a target='_blank' href={gps}>Calle 22 Norte #9-18 Barrio coinca</a></div>
                 <div className='item-img'>Lun-Vie: 8:00 - 18:00</div>
             </div>
             <div className='item-interes'>

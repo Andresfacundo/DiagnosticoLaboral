@@ -23,10 +23,14 @@
 }
 .content-contacto .item-img img{
     width: 20px;
+    
 }
 .item-img  a{
     text-decoration: none;
     color: #000;
+}
+.item-img a:hover{
+    text-decoration: underline;
 }
 .content-img{
     padding-bottom: 1rem;
