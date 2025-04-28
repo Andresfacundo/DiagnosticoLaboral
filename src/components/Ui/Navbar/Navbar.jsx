@@ -10,7 +10,7 @@ import axios from 'axios'
 import authService from '../../../Services/authService.js'
 const API_URL = import.meta.env.VITE_API_URL;
 
-const Navbar = () => {
+const Navbar = ({id}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userRole, setUserRole] = useState('invitado');
     const [menuOpen, setMenuOpen] = useState(false);
@@ -87,7 +87,7 @@ const Navbar = () => {
     }
     
     return (
-        <div className='navbar-container'>
+        <div id={id} className='navbar-container'>
             <nav className='navbar'>
                 <div className="navbar-logo">
                     <GVA/>

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Resultados.css";
 import RadarChartComponent from '../../Ui/RadarChart/RadarChartComponent'
-import { GiConsoleController } from "react-icons/gi";
 const API_URL = import.meta.env.VITE_API_URL
 
 const Resultados = () => {
@@ -17,7 +16,6 @@ const Resultados = () => {
     error: null,
     fecha: new Date().toLocaleString()
   });
-  console.log(resultados)
 
   const datosRadar = Object.entries(resultados.categorias).map(([categoria, datos]) => ({
     subject: categoria,
@@ -27,12 +25,6 @@ const Resultados = () => {
   }));
   
   // Colores para los gráficos
-  const COLORES_ESTADO = {
-    Si: "#4CAF50", // Verde para cumplimiento
-    No: "#F44336", // Rojo para incumplimiento
-    NA: "#9E9E9E", // Gris para no aplicable
-    Parcialmente: "#FFC107"
-  };
   
   useEffect(() => {
     const fetchData = async () => {
@@ -266,53 +258,6 @@ const Resultados = () => {
       </svg>
     );
   };
-
-  const identificarContingencias = () => {
-    if (!resultados.areasRiesgo) return [];
-    
-    const contingencias = [];
-    resultados.areasRiesgo.forEach(categoria => {
-      if (resultados.categorias[categoria]) {
-        const preguntasConContingencia = resultados.categorias[categoria].preguntas
-          .filter(p => p.cumplimiento < 70)
-          .map(p => ({
-            texto: p.texto,
-            respuesta: p.respuesta,
-            comentario: p.comentario, // Incluimos el comentario
-            cumplimiento: p.cumplimiento
-          }));
-
-        contingencias.push({
-          categoria,
-          porcentaje: resultados.categorias[categoria].porcentaje,
-          preguntas: preguntasConContingencia
-        });
-      }
-    });
-
-    return contingencias;
-  };
-
-  if (resultados.loading) {
-    return (
-      <div className="diagnostico-loading">
-        <h2>Cargando resultados...</h2>
-        <div className="loading-spinner"></div>
-      </div>
-    );
-  }
-
-  if (resultados.error) {
-    return (
-      <div className="diagnostico-error">
-        <h2>Error</h2>
-        <p>{resultados.error}</p>
-        <button onClick={() => navigate("/")}>Volver al inicio</button>
-      </div>
-    );
-  }
-
-  const contingencias = identificarContingencias();
 
   // Obtener la información del empleador adaptada a la nueva estructura de datos
   const nombreEmpresa = resultados.empleador?.nombres || "No disponible";

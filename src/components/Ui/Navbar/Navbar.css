@@ -7,7 +7,7 @@
     z-index: 1000;
     justify-content: center;
     display: flex;
-    padding: .5rem 0 .5rem 0;
+    padding: .5rem 1.5rem .5rem 1.5rem;
 }
 
 .navbar-container li {
@@ -26,12 +26,17 @@
     width: 100%;
     display: flex;
     align-items: center;
-    max-width: 1300px;
+    font-size: 18px;
+    font-weight: 500;
+
+    /* max-width: 1300px; */
+    /* border: 2px solid red; */
 }
 
 .navbar-logo {
     display: flex;
     align-items: center;
+    /* border: 2px solid blue; */
 }
 .content-list-nav .login a{
     text-decoration: none;

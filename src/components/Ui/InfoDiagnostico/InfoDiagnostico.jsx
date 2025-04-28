@@ -11,13 +11,13 @@ const InfoDiagnostico = () => {
         <h3 className="info-title">Información importante antes de comenzar</h3>
         
         <p>
-          Este diagnóstico está diseñado para evaluar diferentes aspectos de tu situación laboral,
-          incluyendo condiciones de trabajo, ambiente laboral, y acceso a derechos y prestaciones.
+        Este diagnóstico está diseñado para evaluar diferentes aspectos de cumplimiento de la legislación 
+        laboral, incluyendo seguridad social, derecho colectivo y seguridad y salud en el trabajo.
         </p>
         
         <p>
-          El cuestionario tiene 26 preguntas y tomará aproximadamente 10-15 minutos en completarse.
-          Tus respuestas son confidenciales y te permitirán obtener una evaluación personalizada.
+        El cuestionario tiene 26 preguntas y tomará aproximadamente 10-15 minutos en completarse. 
+        Las respuestas y la información proporcionada son confidenciales.
         </p>
         
         <h3>Instrucciones:</h3>
@@ -28,15 +28,14 @@ const InfoDiagnostico = () => {
             Si no estás seguro de alguna respuesta, selecciona la opción que mejor represente tu
             situación
           </li>
-          <li>Al final del cuestionario, recibirás un informe con los resultados y recomendaciones</li>
-          <li>Puedes guardar tus resultados para consultarlos posteriormente</li>
+          <li>Al final del cuestionario, recibirá un informe con los resultados.</li>
+          <li>Puede guardar los resultados para consultarlos posteriormente.</li>
         </ul>
         
         <div className="note">
           <p>
-            <strong>Nota:</strong> Esta herramienta proporciona información orientativa y no sustituye el asesoramiento legal
-            profesional. Si identificas problemas graves, te recomendamos consultar con un especialista en
-            derecho laboral.
+            <strong>Nota:</strong> Esta herramienta proporciona información orientativa y no sustituye 
+            el asesoramiento legal profesional. Si requiere asesoría, puede contactarnos.
           </p>
         </div>
         

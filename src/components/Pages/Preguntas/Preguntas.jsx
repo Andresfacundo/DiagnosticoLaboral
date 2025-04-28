@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import './Preguntas.css'
 import authService from "../../../Services/authService";
+import flecha from '../../../../public/flecha.svg'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -12,10 +13,10 @@ const Preguntas = () => {
     const [categoria, setCategoria] = useState("");
     const [editandoEnLinea, setEditandoEnLinea] = useState({});
     const [error, setError] = useState("");
-    // Estado para la categoría de filtro
     const [filtroCategoria, setFiltroCategoria] = useState("Todas");
+    const [mostrarFlecha, setMostrarFlecha] = useState(false);
+    const contenedorPreguntasRef = useRef(null);
 
-    // Valores predeterminados para respuestas
     const tiposRespuestas = ["Si", "Parcialmente", "No", "No aplica"];
     
     // Lista de categorías disponibles
@@ -45,10 +46,49 @@ const Preguntas = () => {
 
     const pesoTotal = calcularPesoTotal();
 
+    // Verificar si necesitamos mostrar la flecha cuando cambia el número de preguntas
+    useEffect(() => {
+        verificarVisibilidadFlecha();
+    }, [preguntas]);
+
     // Obtener preguntas según el filtro seleccionado
     useEffect(() => {
         cargarPreguntas();
     }, [filtroCategoria]); // Se ejecutará cada vez que cambie el filtro
+
+    // Agregar event listeners para detectar scroll y redimensionamiento
+    useEffect(() => {
+        const handleScroll = () => {
+            // Mostrar flecha cuando el usuario ha bajado suficiente
+            if (window.scrollY > 300) {
+                setMostrarFlecha(true);
+            } else {
+                setMostrarFlecha(false);
+            }
+        };
+        
+        // Event listeners
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', verificarVisibilidadFlecha);
+        
+        // Verificar inicialmente
+        verificarVisibilidadFlecha();
+        handleScroll();
+        
+        // Limpieza de event listeners
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', verificarVisibilidadFlecha);
+        };
+    }, []);
+
+    // Función para verificar si se debe mostrar la flecha
+    const verificarVisibilidadFlecha = () => {
+        // Mostrar flecha si hay más de 5 preguntas
+        if (preguntas.length > 5) {
+            setMostrarFlecha(true);
+        }
+    };
 
     const cargarPreguntas = async () => {
         try {
@@ -65,6 +105,8 @@ const Preguntas = () => {
             }
             
             setPreguntas(response.data);
+            // Verificar si necesitamos mostrar la flecha después de cargar preguntas
+            setTimeout(verificarVisibilidadFlecha, 100); // Pequeño retraso para asegurar que el DOM se ha actualizado
         } catch (error) {
             console.error("Error al obtener preguntas", error);
             setError("No se pudieron cargar las preguntas. Intente nuevamente.");
@@ -253,7 +295,7 @@ const Preguntas = () => {
     };
 
     return (
-        <div className="preguntas-container">
+        <div id='navbar' className="preguntas-container">
             
             <h2 className="preguntas-header">Gestión de Preguntas</h2>
 
@@ -314,6 +356,8 @@ const Preguntas = () => {
             </div>
 
             {/* Lista de preguntas */}
+            <div ref={contenedorPreguntasRef} className="preguntas-list-container">
+            
             {preguntas.length === 0 ? (
                 <p>No hay preguntas {filtroCategoria !== "Todas" ? `en la categoría ${filtroCategoria}` : ""}. Agregue una nueva.</p>
             ) : (
@@ -433,6 +477,14 @@ const Preguntas = () => {
                         ))}
                     </ul>
                 </>
+            )}
+            </div>
+            
+            {/* Flecha "volver arriba" fuera del contenedor de preguntas */}
+            {mostrarFlecha && (
+                <a className='volver-home' href="#navbar">
+                    <img src={flecha} alt="Volver arriba" />
+                </a>
             )}
         </div>
     );
