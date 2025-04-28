@@ -6,7 +6,7 @@ import ItemCaracteristicas from '../../Ui/ItemCaracteristicas/ItemCaracteristica
 import diagnostico from '../../../../public/informe-de-diagnostico.svg'
 import exclamacion from '../../../../public/exclamacion.svg'
 import investigacion from '../../../../public/investigacion.svg'
-import Footer from '../../Layouts/Footer/Footer'
+import GAP from '../../../../public/gap.png'
 
 
 const Home = () => {

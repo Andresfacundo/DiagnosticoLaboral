@@ -9,21 +9,42 @@
 
 .box-asesoria{
     padding: 5rem 0 5rem 0;
-    background: linear-gradient(130deg,  #889aa436 0%, #ffffff 50%);
     
+    backGround: linear-gradient(90deg,rgba(0, 0, 0, 0.63) 40%, rgba(255, 255, 255, 0)),url('../../../assets/backGround.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;  
+}
+
+.box-asesoria span{
+    color: #ffffff;
+}
+.box-asesoria .box-img-gap{
+    display: flex;
+    justify-content: flex-end;
+
+}
+.box-asesoria img{
+    width: 150px;
+    height: 65px;
+    margin-right: 8rem;
 }
 .content-home{
-    width: 50%;
-    margin-left: 4rem;
+    text-align: center;
     color: #333;
     animation: fadeIn 0.4s ease-out;
-    
+    padding: 0 5rem 0 5rem;    
 }
 .content-home h3{
     font-size: 30px;
     font-weight: 700;
     color: #DFBD7C;
     flex-wrap: nowrap;    
+}
+.content-home #typingText{
+    color: #ffffff;
 }
 
 .content-home span{
@@ -32,16 +53,23 @@
     line-height: 2.3rem;
     font-weight: 450;
 }
- .title-container{
+ .title-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 1rem;
 
 }
+.box-asesoria .content-home .title-container {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+
+}
 
 .title-container p {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 500;
     color: #333;
     white-space: nowrap;

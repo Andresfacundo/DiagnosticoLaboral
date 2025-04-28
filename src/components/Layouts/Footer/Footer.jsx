@@ -1,12 +1,10 @@
-import Reac, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import gva from '../../../../public/Gva.png'
-import wasa from '../../../../public/whatsapp.svg'
-import email from '../../../../public/correo-electronico.svg'
-import ubicacion from '../../../../public/mapa.svg'
 import './Footer.css'
 import { NavLink, useLocation } from 'react-router-dom'
-import instagram from '../../../../public/logotipo-de-instagram.svg'
 import authService from '../../../Services/authService'
+import GAP from '../../../../public/gap.png'
+
 const UrlWasa = import.meta.env.VITE_WASA
 const gps = import.meta.env.VITE_UBICACION;
 const correo = import.meta.env.VITE_EMAIL;
@@ -68,12 +66,12 @@ const Footer = () => {
         <div className='content-footer'>
             <div className='content-contacto'>
                 <div className='content-img'>
-                    <img src={gva} alt="icono-GVA" />
+                    <img src={gva} alt="icono-GVA" />                                        
                 </div>
-                <div className='item-img'><img src={wasa} alt="icono-whatsapp" /><a target='_blank' href={UrlWasa}>(+57) 314 8739679</a></div>
-                <div className='item-img'><img src={instagram} alt="icono-instagram"/><a href={INSTAGRAM}>@gomezvalenciaabogados</a></div>
-                <div className='item-img'><img src={email} alt="icono-email" /><a  target='_blank' href={correo}>administrativo@gomezvalencia.com</a></div>
-                <div className='item-img'><img src={ubicacion} alt="icono-ubicacion" /><a target='_blank' href={gps}>Calle 22 Norte #9-18 Barrio coinca</a></div>
+                <div className='item-img'><i class="fa-brands fa-whatsapp"></i><a target='_blank' href={UrlWasa}>(+57) 314 8739679</a></div>
+                <div className='item-img'><i class="fa-brands fa-instagram"></i><a href={INSTAGRAM}>@gomezvalenciaabogados</a></div>
+                <div className='item-img'><i class="fa-regular fa-envelope"></i><a  target='_blank' href={correo}>administrativo@gomezvalencia.com</a></div>
+                <div className='item-img'><i class="fa-solid fa-location-dot"></i><a target='_blank' href={gps}>Calle 22 Norte #9-18 Barrio coinca</a></div>
                 <div className='item-img'>Lun-Vie: 8:00 - 18:00</div>
             </div>
             <div className='item-interes'>
