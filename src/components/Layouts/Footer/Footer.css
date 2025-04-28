@@ -1,10 +1,13 @@
+.box-footer{
+    backGround: linear-gradient(130deg,#424948 50%, #ffffff00);
+    padding: 3rem 5rem 1rem 5rem;   
+    
+}
 .content-footer{
     width: 100%;
-    backGround: linear-gradient(130deg,#424948 50%, #ffffff00);
     padding: 0;
     display: flex;
     justify-content: space-between;
-    padding: 3rem 5rem 3rem 5rem;   
 }
 
 .content-contacto{
@@ -43,5 +46,12 @@
     gap: 10px;
     color: #000;
     padding: 0;
+}
+.derechos p{
+    margin-top: 2rem;
+    margin-bottom: 0;
+    padding: 0;
+    color: #fff;
+
 }
 

@@ -63,32 +63,38 @@ const Footer = () => {
 
 
     return (
-        <div className='content-footer'>
-            <div className='content-contacto'>
-                <div className='content-img'>
-                    <img src={gva} alt="icono-GVA" />                                        
+        <div className='box-footer'>
+            <div className='content-footer'>
+                <div className='content-contacto'>
+                    <div className='content-img'>
+                        <img src={gva} alt="icono-GVA" />                                        
+                    </div>
+                    <div className='item-img'><i class="fa-brands fa-whatsapp"></i><a target='_blank' href={UrlWasa}>(+57) 314 8739679</a></div>
+                    <div className='item-img'><i class="fa-brands fa-instagram"></i><a href={INSTAGRAM}>@gomezvalenciaabogados</a></div>
+                    <div className='item-img'><i class="fa-regular fa-envelope"></i><a  target='_blank' href={correo}>administrativo@gomezvalencia.com</a></div>
+                    <div className='item-img'><i class="fa-solid fa-location-dot"></i><a target='_blank' href={gps}>Calle 22 Norte #9-18 Barrio coinca</a></div>
+                    <div className='item-img'>Lun-Vie: 8:00 - 18:00</div>
                 </div>
-                <div className='item-img'><i class="fa-brands fa-whatsapp"></i><a target='_blank' href={UrlWasa}>(+57) 314 8739679</a></div>
-                <div className='item-img'><i class="fa-brands fa-instagram"></i><a href={INSTAGRAM}>@gomezvalenciaabogados</a></div>
-                <div className='item-img'><i class="fa-regular fa-envelope"></i><a  target='_blank' href={correo}>administrativo@gomezvalencia.com</a></div>
-                <div className='item-img'><i class="fa-solid fa-location-dot"></i><a target='_blank' href={gps}>Calle 22 Norte #9-18 Barrio coinca</a></div>
-                <div className='item-img'>Lun-Vie: 8:00 - 18:00</div>
-            </div>
-            <div className='item-interes'>
-                <h3>Enlaces de interés</h3>
-                <ul>
-                    <li><NavLink to='/'>Inicio</NavLink></li>
-                    <li><NavLink to='/form'>Diagnóstico</NavLink></li>
-                    {hasAccess('admin') && (
-                        <li><NavLink to='/questions'>Gestión de preguntas</NavLink></li>
-                    )}
-                    {hasAccess('admin') && (
-                        <li><NavLink to='https://calculadora-gap-six.vercel.app/' target='_blank'>Calculadora</NavLink></li>
-                    )}
-                    <li><NavLink to='#'>Nosotros</NavLink></li>
-                </ul>
+                <div className='item-interes'>
+                    <h3>Enlaces de interés</h3>
+                    <ul>
+                        <li><NavLink to='/'>Inicio</NavLink></li>
+                        <li><NavLink to='/form'>Diagnóstico</NavLink></li>
+                        {hasAccess('admin') && (
+                            <li><NavLink to='/questions'>Gestión de preguntas</NavLink></li>
+                        )}
+                        {hasAccess('admin') && (
+                            <li><NavLink to='https://calculadora-gap-six.vercel.app/' target='_blank'>Calculadora</NavLink></li>
+                        )}
+                        <li><NavLink to='#'>Nosotros</NavLink></li>
+                    </ul>
 
+                </div>
             </div>
+                <div className='derechos'>
+                    <p>© 2025 DiagnósticoLaboral. Todos los derechos reservados.</p>
+                
+                </div>
         </div>
     )
 }
