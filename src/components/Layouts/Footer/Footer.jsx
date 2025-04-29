@@ -54,9 +54,7 @@ const Footer = () => {
     return (
         <div className="footer-wrapper">
             {/* Aquí el formulario Contacto */}
-            <div className="contacto-form-wrapper">
-                <Contacto />
-            </div>
+            
 
             {/* Aquí el contenido del Footer */}
             <div className='box-footer'>
@@ -83,12 +81,15 @@ const Footer = () => {
                         </div>
                         <div className='item-img'>Lun-Vie: 8:00 - 18:00</div>
                     </div>
+                    <div className="contacto-form-wrapper">
+                        <Contacto />
+                    </div>
 
                     <div className='item-interes'>
                         <h3>Enlaces de interés</h3>
                         <ul>
                             <li><NavLink to='/'>Inicio</NavLink></li>
-                            <li><NavLink to='/form'>Diagnóstico</NavLink></li>
+                            <li><NavLink to='/diagnostico'>Diagnóstico</NavLink></li>
                             {hasAccess('admin') && (
                                 <li><NavLink to='/questions'>Gestión de preguntas</NavLink></li>
                             )}
@@ -97,7 +98,7 @@ const Footer = () => {
                             )}
                             <li><NavLink to='#'>Nosotros</NavLink></li>
                         </ul>
-                    </div>
+                    </div>                    
                 </div>
 
                 <div className='derechos'>

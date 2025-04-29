@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Contacto.css';
+import axios from "axios"
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ContactoForm = () => {
   const [formData, setFormData] = useState({
@@ -7,9 +9,26 @@ const ContactoForm = () => {
     correo: '',
     telefono: '',
     intereses: [],
+    mensaje: '',
   });
-
+  
   const [mensaje, setMensaje] = useState('');
+  const [interesesDisponibles, setInteresesDisponibles] = useState([]);
+
+  useEffect(() => {
+    // Obtener intereses desde el backend
+    const fetchIntereses = async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/api/intereses');
+        setInteresesDisponibles(res.data);
+      } catch (error) {
+        console.error('Error al obtener intereses:', error);
+      }
+    };
+
+    fetchIntereses();
+  }, []);
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -27,28 +46,30 @@ const ContactoForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Aquí llamas a tu backend o servicio de email
-    console.log('Formulario enviado:', formData);
+    try {
+      await axios.post(`${API_URL}/api/contacto`, formData);
+      setMensaje('¡Formulario enviado con éxito!');
+      setFormData({
+        nombre: '',
+        correo: '',
+        telefono: '',
+        intereses: [],
+        mensaje: '',
+      });
+    } catch (error) {
+      console.error('Error al enviar el formulario:', error);
+      setMensaje('Error al enviar el formulario.');
+    }
 
-    // Simular éxito
-    setMensaje('¡Formulario enviado con éxito!');
-    setFormData({
-      nombre: '',
-      correo: '',
-      telefono: '',
-      intereses: [],
-    });
   };
 
   return (
     <div className="contacto-form-container">
       <div className="contacto-info">
         <h2>¡Contáctanos!</h2>
-        <h3>Somos expertos en asesoría laboral</h3>
-        <p>Escríbenos y uno de nuestros consultores te contactará pronto.</p>
       </div>
 
       <form className="contacto-form" onSubmit={handleSubmit}>
@@ -75,47 +96,28 @@ const ContactoForm = () => {
           value={formData.telefono}
           onChange={handleChange}
         />
-
+        <textarea
+          name="mensaje"
+          placeholder="Mensaje..."
+          value={formData.mensaje}
+          onChange={handleChange}
+        />
         <div className="checkbox-group">
-          <label>
-            <input
-              type="checkbox"
-              value="Asesoría y representación jurídica"
-              checked={formData.intereses.includes('Asesoría y representación jurídica')}
-              onChange={handleChange}
-            />
-            Asesoría y representación jurídica
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              value="Contratación en el sector salud"
-              checked={formData.intereses.includes('Contratación en el sector salud')}
-              onChange={handleChange}
-            />
-            Contratación en el sector salud
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              value="Litigios de alto impacto"
-              checked={formData.intereses.includes('Litigios de alto impacto')}
-              onChange={handleChange}
-            />
-            Litigios de alto impacto
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              value="Registro de Marca"
-              checked={formData.intereses.includes('Registro de Marca')}
-              onChange={handleChange}
-            />
-            Registro de Marca
-          </label>
+          {interesesDisponibles.map((interes) => (
+            <label key={interes.id}>
+              <input
+                type="checkbox"
+                value={interes.nombre}
+                checked={formData.intereses.includes(interes.nombre)}
+                onChange={handleChange}
+              />
+              {interes.nombre}
+            </label>
+          ))}
         </div>
 
-        <button type="submit" className="btn-contactar">CONTACTAR ASESOR</button>
+
+        <button type="submit" className="btn-contactar">Enviar</button>
         {mensaje && <p className="mensaje-exito">{mensaje}</p>}
       </form>
     </div>
