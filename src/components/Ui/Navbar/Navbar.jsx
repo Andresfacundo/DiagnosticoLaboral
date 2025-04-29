@@ -117,7 +117,7 @@ const Navbar = ({id}) => {
                         )}
                         
                         {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
-                        <li className='nosotros'><NavLink onClick={closeMenu}>Nosotros</NavLink></li>
+                        <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros'>Nosotros</NavLink></li>
                         
                     </ul>
                         {isAuthenticated ? (
