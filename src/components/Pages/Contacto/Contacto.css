@@ -34,10 +34,32 @@
   border-radius: 5px;
   padding: .5rem 0 .5rem 0;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .mensaje-exito{
   color: #DFBD7C;
   font-weight: 650;
+}
+
+.box-policy{
+  padding-bottom: 1rem;
+}
+
+.box-policy #policyCheck{
+  margin: 0 10px 0 0;
+}
+
+.box-policy label{
+  color: #fff;
+  line-height: 1.6rem;
+
+}
+.box-policy a{
+  color: #DFBD7C;
+  text-decoration: none;
+}
+.box-policy a:hover{
+  text-decoration: underline;
 }
 

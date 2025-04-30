@@ -11,13 +11,7 @@ import Footer from './components/Layouts/Footer/Footer.jsx'
 import InfoDiagnostico from './components/Ui/InfoDiagnostico/InfoDiagnostico.jsx'
 import AboutDiagnosis from './components/Ui/AboutDiagnosis/AboutDiagnosis.jsx'
 
-
-
-
-
 function App() {
-
-
 
   return (
     <>

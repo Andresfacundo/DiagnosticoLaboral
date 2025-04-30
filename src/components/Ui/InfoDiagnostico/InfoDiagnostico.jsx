@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './InfoDiagnostico.css'; // Puedes crear este archivo CSS para los estilos
 import { NavLink } from 'react-router-dom';
 
 const InfoDiagnostico = () => {
+
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <div className="container">
       <h2>Diagnóstico Laboral</h2>
@@ -38,8 +44,27 @@ const InfoDiagnostico = () => {
             el asesoramiento legal profesional. Si requiere asesoría, puede contactarnos.
           </p>
         </div>
-        
-        <NavLink to='form'>Iniciar diagnóstico</NavLink>
+        <div className='content-policy'>
+          <div className='checkbox-policy'>
+            <input type="checkbox"
+            id='policyCheck'
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+            />
+            <label htmlFor="policyCheck">
+              He leído la <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales</a> y autorizo el tratamiento de mis datos con base en la política.
+            </label>
+          </div>        
+          <NavLink
+            to={isChecked ? 'form' : '#'}
+            className={`start-btn ${!isChecked ? 'disabled' : ''}`}
+            onClick={(e) => {
+              if (!isChecked) e.preventDefault();
+            }}
+          >
+            Iniciar diagnóstico
+          </NavLink>
+        </div>
       </div>
     </div>
   );

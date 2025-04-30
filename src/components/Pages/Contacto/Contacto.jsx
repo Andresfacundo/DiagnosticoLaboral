@@ -14,12 +14,16 @@ const ContactoForm = () => {
   
   const [mensaje, setMensaje] = useState('');
   const [interesesDisponibles, setInteresesDisponibles] = useState([]);
+  const [isChecked, setIsChecked] = useState(false);
 
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  }
   useEffect(() => {
     // Obtener intereses desde el backend
     const fetchIntereses = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/intereses');
+        const res = await axios.get(`${API_URL}/api/intereses`);
         setInteresesDisponibles(res.data);
       } catch (error) {
         console.error('Error al obtener intereses:', error);
@@ -115,9 +119,21 @@ const ContactoForm = () => {
             </label>
           ))}
         </div>
+        <div className='box-policy'>
+            <input type="checkbox"
+            id='policyCheck'
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+            />
+            <label htmlFor="policyCheck">
+              He leído la <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales</a> y autorizo el tratamiento de mis datos con base en la política.
+            </label>
+          </div>  
 
 
-        <button type="submit" className="btn-contactar">Enviar</button>
+        <button type="submit" className="btn-contactar" onClick={e => {
+          if(!isChecked) e.preventDefault();
+        }}>Enviar</button>
         {mensaje && <p className="mensaje-exito">{mensaje}</p>}
       </form>
     </div>
