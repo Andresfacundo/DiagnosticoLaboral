@@ -22,7 +22,7 @@ const InfoDiagnostico = () => {
         </p>
         
         <p>
-        El cuestionario tiene 26 preguntas y tomará aproximadamente 10-15 minutos en completarse. 
+        El cuestionario tiene 40 preguntas y tomará aproximadamente 10-15 minutos en completarse. 
         Las respuestas y la información proporcionada son confidenciales.
         </p>
         
