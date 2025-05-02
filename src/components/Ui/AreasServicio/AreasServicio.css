@@ -1,0 +1,16 @@
+.content-card-servicio{
+    border: 1px solid #33333333;
+    border-radius: 5px;
+}
+.item-card-servicio{
+    background-color: #dfbc7c;
+    text-align: center;
+}
+.item-card-servicio h3{
+    padding: 16px;
+    margin: 0;
+}
+.content-list-servicios ul {
+    padding-right: 1rem;
+    line-height: 1.7rem;
+}

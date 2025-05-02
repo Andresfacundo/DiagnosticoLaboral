@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './InfoDiagnostico.css'; // Puedes crear este archivo CSS para los estilos
+import './InfoDiagnostico.css';
 import { NavLink } from 'react-router-dom';
 
 const InfoDiagnostico = () => {
@@ -29,19 +29,16 @@ const InfoDiagnostico = () => {
         <h3>Instrucciones:</h3>
         
         <ul>
-          <li>Responde todas las preguntas con la mayor honestidad posible</li>
+          <li>Responda todas las preguntas con la mayor honestidad posible</li>
           <li>
-            Si no estás seguro de alguna respuesta, selecciona la opción que mejor represente tu
-            situación
+          Si no está seguro de alguna respuesta, seleccione la opción que mejor represente su situación.
           </li>
           <li>Al final del cuestionario, recibirá un informe con los resultados.</li>
-          <li>Puede guardar los resultados para consultarlos posteriormente.</li>
         </ul>
         
         <div className="note">
           <p>
-            <strong>Nota:</strong> Esta herramienta proporciona información orientativa y no sustituye 
-            el asesoramiento legal profesional. Si requiere asesoría, puede contactarnos.
+            <strong>Nota:</strong> Esta herramienta proporciona información orientativa y no sustituye el asesoramiento legal profesional. Si requiere asesoría, puede contactarnos.
           </p>
         </div>
         <div className='content-policy'>
