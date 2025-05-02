@@ -29,7 +29,7 @@ const InfoDiagnostico = () => {
         <h3>Instrucciones:</h3>
         
         <ul>
-          <li>Responda todas las preguntas con la mayor honestidad posible</li>
+          <li>Responda todas las preguntas con la mayor honestidad posible.</li>
           <li>
           Si no está seguro de alguna respuesta, seleccione la opción que mejor represente su situación.
           </li>

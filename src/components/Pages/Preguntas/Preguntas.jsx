@@ -21,15 +21,14 @@ const Preguntas = () => {
     
     // Lista de categorías disponibles
     const categorias = [
-        "Colectivo",
-        "Contratación",
-        "Litigios",
+        "Compensación y prestaciones sociales",
+        "Litigios o reclamaciones",
         "Normas laborales",
-        "Remunaración",
-        "Documentación",
-        "Seguridad social",
-        "SST",
-        "Terceros"
+        "Afiliaciones y seguridad social",
+        "Terceros",
+        "SGSST",
+        "Contratación",
+        "Colectivo",
     ];
 
     const getAuthConfig = () => {
