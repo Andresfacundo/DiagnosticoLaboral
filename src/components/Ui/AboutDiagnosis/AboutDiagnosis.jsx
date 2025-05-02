@@ -42,39 +42,40 @@ const AboutDiagnosis = () => {
     },
     { 
       id: 6,
+      letter: 'J', 
+      name: 'Juan Sebastián Delgado Muñoz', 
+      role: 'Auxiliar Contable',
+      description: 'Contador público, ⁠especialista en alta gerencia, ⁠técnico en asistencia administrativa con más de dos años de experiencia en auditoría de informes financieros, análisis de datos y gestión de facturas.'
+    },
+    { 
+      id: 7,
       letter: 'Y', 
       name: 'Yenifer Castrillón Gutiérrez', 
       role: 'Auxiliar Administrativa',
       description: 'Estudiante de Octavo semestre de Contaduría Pública con más de 20 años de experiencia en procesos de facturación, gestión de cartera, inventarios, envíos, pago a proveedores, elaboración de registros contables y conciliaciones bancarias.'
     },
     { 
-      id: 7,
+      id: 8,
       letter: 'V', 
       name: 'Valeria Rincon Mateus', 
       role: 'Asociada junior',
       description: 'Abogada actualmente cursando especialización en Derecho Contractual. Con más de seis años de experiencia en Derecho inmobiliario, notarial, contractual y comercial.'
     },
     { 
-      id: 8,
+      id: 9,
       letter: 'K', 
       name: 'Kevin Esteban Baena Ramírez', 
       role: 'Asociado junior',
       description: 'Abogado actualmente cursando especialización en Derecho Laboral y Seguridad Social. Con más de dos años de experiencia como abogado litigante en las áreas laboral y civil, así como en la gestión de procesos judiciales de la rama judicial.'
     },
     { 
-      id: 9,
+      id: 10,
       letter: 'A', 
       name: 'Arlex Mauricio Vallejo Agudelo', 
       role: 'Asociado junior',
       description: 'Abogado con más de tres años de experiencia como asesor jurídico de empresas, tramites notariales y derecho inmobiliario.'
     },
-    { 
-      id: 10,
-      letter: 'J', 
-      name: 'Juan Sebastián Delgado Muñoz', 
-      role: 'Auxiliar Contable',
-      description: 'Contador público, ⁠especialista en alta gerencia, ⁠técnico en asistencia administrativa con más de dos años de experiencia en auditoría de informes financieros, análisis de datos y gestión de facturas.'
-    },
+    
     { 
       id: 11,
       letter: 'Y', 
