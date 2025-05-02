@@ -29,30 +29,30 @@ const AboutDiagnosis = () => {
     { 
       id: 4,
       letter: 'D', 
-      name: 'Daniela Angarita Galindo', 
-      role: 'Asociada junior',
-      description: 'Abogada actualmente cursando especialización de Derecho Laboral y Seguridad Social. 9 años de experiencia profesional en distintas áreas del derecho, con principal enfoque en derecho laboral.'
-    },
-    { 
-      id: 5,
-      letter: 'D', 
       name: 'Daniela Marulanda Morales', 
       role: 'Contadora',
       description: 'Contadora pública con más de ocho años de experiencia en la liquidación y presentación de obligaciones tributarias, estados financieros; información financiera para entes de supervisión y organismos como la DIAN, Superintendencia de Sociedades, DANE e Industria y Comercio; revisión y control de la información contable, incluyendo la validación de facturas, recibos de caja, notas contables y comprobantes de egreso.'
     },
     { 
-      id: 6,
+      id: 5,
       letter: 'J', 
       name: 'Juan Sebastián Delgado Muñoz', 
       role: 'Auxiliar Contable',
       description: 'Contador público, ⁠especialista en alta gerencia, ⁠técnico en asistencia administrativa con más de dos años de experiencia en auditoría de informes financieros, análisis de datos y gestión de facturas.'
     },
     { 
-      id: 7,
+      id: 6,
       letter: 'Y', 
       name: 'Yenifer Castrillón Gutiérrez', 
       role: 'Auxiliar Administrativa',
       description: 'Estudiante de Octavo semestre de Contaduría Pública con más de 20 años de experiencia en procesos de facturación, gestión de cartera, inventarios, envíos, pago a proveedores, elaboración de registros contables y conciliaciones bancarias.'
+    },
+    { 
+      id: 7,
+      letter: 'D', 
+      name: 'Daniela Angarita Galindo', 
+      role: 'Asociada junior',
+      description: 'Abogada actualmente cursando especialización de Derecho Laboral y Seguridad Social. 9 años de experiencia profesional en distintas áreas del derecho, con principal enfoque en derecho laboral.'
     },
     { 
       id: 8,
