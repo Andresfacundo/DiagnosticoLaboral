@@ -37,6 +37,20 @@
     /* border: 2px solid blue; */
     gap: 1.8rem;
 }
+.content-gap{
+    display: flex;
+    align-items: center;
+    /* border: 2px solid red; */
+    
+}
+.content-gap a{
+    padding-bottom: 1rem;
+}
+.content-gap img{
+    width: 120px;
+    object-fit: cover;
+
+}
 .content-list-nav .login a{
     text-decoration: none;
     color: #000;

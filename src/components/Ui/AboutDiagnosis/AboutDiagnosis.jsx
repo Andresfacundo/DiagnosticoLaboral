@@ -100,7 +100,7 @@ const AboutDiagnosis = () => {
       <div className="about-diagnosis-content">
         <div className="content-nosotros">
           <h2>Nosotros</h2>
-          <p>¡Conoce quíenes hacen parte de GVA</p>
+          <p>¡Conoce quíenes hacen parte de GVA!</p>
         </div>
       </div>
 

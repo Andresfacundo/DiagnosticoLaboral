@@ -1,12 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import gap from '../../../../public/gap.png'
-import './GAP.css'
 
-const GAP = () => {
+const GAP = ({className}) => {
   return (
     <>
-      <div className='content-gap'>
+      <div className={className}>
         <Link to='/'>
           <img src={gap} alt='GAP' />
         </Link>

@@ -94,7 +94,7 @@ const Navbar = ({id}) => {
             <nav className='navbar'>
                 <div className="navbar-logo">
                     <GVA/>
-                    <GAP/>
+                    <GAP className='content-gap'/>
                     
                 </div>
                 

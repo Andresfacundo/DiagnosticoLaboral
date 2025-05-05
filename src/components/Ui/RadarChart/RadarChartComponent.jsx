@@ -10,7 +10,6 @@ import {
 import CustomTooltip from "../CustomToolTip/CustomToolTip";
 
 const RadarChartComponent = ({ categorias }) => {
-  // Datos de ejemplo
   const data = categorias;
 
   return (
