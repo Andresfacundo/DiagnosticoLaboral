@@ -50,6 +50,8 @@ const InfoDiagnostico = () => {
             />
             <label htmlFor="policyCheck">
               He leído la <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales</a> y autorizo el tratamiento de mis datos con base en la política.
+              <br />
+              <p>Toda la información brindada es absolutamente confidencial y no será compartida con terceros.</p>
             </label>
           </div>        
           <NavLink

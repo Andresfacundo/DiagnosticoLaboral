@@ -33,12 +33,13 @@
 }
 .content-img{
     padding-bottom: 1rem;
+    display: flex;
+    gap: 1.8rem;
 }
 .content-img img{
     width: 110px;
     
 }
-
 .item-interes ul, li a{
     list-style: none;
     text-decoration: none;

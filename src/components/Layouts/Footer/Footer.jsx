@@ -4,6 +4,7 @@ import './Footer.css'
 import { NavLink, useLocation } from 'react-router-dom'
 import authService from '../../../Services/authService'
 import Contacto from '../../Pages/Contacto/Contacto'
+import GAP from '../../Ui/GAP/GAP'
 
 const UrlWasa = import.meta.env.VITE_WASA;
 const gps = import.meta.env.VITE_UBICACION;
@@ -62,6 +63,7 @@ const Footer = () => {
                     <div className='content-contacto'>
                         <div className='content-img'>
                             <img src={gva} alt="icono-GVA" />
+                            <GAP/>
                         </div>
                         <div className='item-img'>
                             <i className="fa-brands fa-whatsapp"></i>

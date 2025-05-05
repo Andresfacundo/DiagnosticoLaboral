@@ -61,8 +61,7 @@ const Home = () => {
             </section>
             <section className='box-caracteristicas'>
                 <div className='title-caracteristicas'>
-                    <h2>Áreas de servicio</h2>
-                    <p>Nuestra plataforma ofrece herramientas para evaluar y mejorar las condiciones laborales</p>
+                    <h2>Áreas de servicio</h2>                    
                 </div>
                 <div className='content-item-caracteristicas'>   
 

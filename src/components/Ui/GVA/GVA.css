@@ -1,9 +1,11 @@
 .content-gva{
     display: flex;
     align-items: center;
-
+    /* border: 2px solid red; */
+    
 }
 .content-gva img{
+    /* border: 2px solid blue; */
     width: 110px;
     object-fit: contain;
 

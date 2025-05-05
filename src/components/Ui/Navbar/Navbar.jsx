@@ -8,6 +8,9 @@ import hamburgerIcon from '../../../../public/menu.svg' // You'll need to add th
 import closeIcon from '../../../../public/close-menu.svg' // You'll need to add this image
 import axios from 'axios'
 import authService from '../../../Services/authService.js'
+import gap from '../../../../public/gap.png'
+import GAP from '../GAP/GAP.JSX'
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Navbar = ({id}) => {
@@ -91,6 +94,8 @@ const Navbar = ({id}) => {
             <nav className='navbar'>
                 <div className="navbar-logo">
                     <GVA/>
+                    <GAP/>
+                    
                 </div>
                 
                 <div className="hamburger-menu">
