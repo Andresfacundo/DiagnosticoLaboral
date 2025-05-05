@@ -9,7 +9,7 @@ import closeIcon from '../../../../public/close-menu.svg' // You'll need to add 
 import axios from 'axios'
 import authService from '../../../Services/authService.js'
 import gap from '../../../../public/gap.png'
-import GAP from '../GAP/GAP.JSX'
+import GAP from '../GAP/GAP.jsx'
 
 const API_URL = import.meta.env.VITE_API_URL;
 
