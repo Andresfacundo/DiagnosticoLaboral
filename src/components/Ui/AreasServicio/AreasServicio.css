@@ -14,3 +14,20 @@
     padding-right: 1rem;
     line-height: 1.7rem;
 }
+.services-gap{
+    display: flex;
+}
+.services-gap ul{
+    width: 100%;
+} 
+.services-gap div{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-right: 5rem;
+} 
+.services-gap div img{
+    width: 400px;
+}
+    
+    

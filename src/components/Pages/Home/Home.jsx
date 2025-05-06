@@ -2,6 +2,7 @@ import React from 'react'
 import './Home.css'
 import { useEffect } from 'react'
 import AreasServicio from '../../Ui/AreasServicio/AreasServicio'
+import AreasGap from '../../Ui/AreasGAP/AreasGap'
 
 
 const Home = () => {
@@ -65,6 +66,25 @@ const Home = () => {
                 </div>
                 <div className='content-item-caracteristicas'>   
 
+                    <AreasGap style='content-list-servicios' className='content-card-servicio' nameClass='item-card-servicio' style2='servicios-gap' content='Gestión y administración de personal' 
+                        content2={[
+                        "Revisión de antecedentes.",
+                        "Programación examen ingreso.",
+                        "Afiliación seguridad social.",
+                        "Documentos de contratación.",
+                        "Registro de novedades y liquidación de nómina.",
+                        "Reporte de novedades y pre nómina.",
+                        "Emisión nómina electrónica.",
+                        "Archivo plano pago de bancos.",
+                        "Archivo plano seguridad social.",
+                        "Contabilización nómina.",
+                        "Liquidación de acreencias laborales.",
+                        "Certificado laboral.",
+                        "Certificado de ingresos y retenciones.",
+                        "Carta autorizando retiro de cesantías.",
+                        "Documentos de retiro por cualquier causa.",
+                        "Orden para examen de retiro.",
+                        ]}/>                                
                     <AreasServicio style='content-list-servicios' className='content-card-servicio' nameClass='item-card-servicio' content='Derecho laboral y seguridad' content2={[
                         "Derecho laboral individual.",
                         "Derecho laboral colectivo.",
@@ -92,7 +112,8 @@ const Home = () => {
                         "Salvoconductos.",
                         "Certificados movimientos migratorios.",
                         "Permisos de entrada"
-                        ]}/>                                
+                        ]}/>    
+                        <div className='content-comercial-civil'>
                     <AreasServicio style='content-list-servicios' className='content-card-servicio' nameClass='item-card-servicio' content='Derecho comercial' content2={[
                         "Derecho contractual.",
                         "Derecho coporativo.",
@@ -102,13 +123,14 @@ const Home = () => {
                         "Protección de datos personales.",
                         "E-Commerce.",
                         "Derecho inmobiliario."
-                        ]}/>                                
+                    ]}/>                                
                     <AreasServicio style='content-list-servicios' className='content-card-servicio' nameClass='item-card-servicio' content='Derecho civil' content2={[
                         "Derecho de familia.",
                         "Derecho de sucesiones.",
                         "Derecho de bienes y patrimonios.",
                         "Procesos ejecutivos."
-                        ]}/>                                                
+                    ]}/>                                                
+                    </div>                            
                 </div>
 
 
