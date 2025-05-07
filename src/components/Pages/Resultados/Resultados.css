@@ -526,8 +526,8 @@
 /* Añadir estos estilos a tu archivo Resultados.css */
 
 .recomendaciones-seccion {
-  margin-top: 2rem;
-  padding: 1.5rem;
+  margin-top: 30px;
+  padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -543,15 +543,15 @@
 .recomendaciones-lista {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 20px;
 }
 
 .recomendacion-item {
   background-color: white;
-  /* border-radius: 6px; */
-  padding: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-bottom: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .recomendacion-header {
@@ -559,9 +559,18 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
 }
 
 .recomendacion-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
   margin: 0;
   font-size: 1.1rem;
   color: #333;
@@ -569,7 +578,7 @@
 
 .recomendacion-porcentaje {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 18px;
 }
 
 .recomendacion-texto {
@@ -578,3 +587,33 @@
   margin: 0.5rem 0 0;
 }
 
+.recomendacion-contenido h4 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  /* color: #333; */
+  font-size: 17px;
+  font-weight: 600;
+  /* border: 2px solid red; */
+}
+
+.recomendacion-contenido p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.recomendacion-contenido .subtitulo {
+  font-weight: 600;
+  color: #444;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.recomendacion-contenido ul {
+  margin: 10px 0 15px 0;
+  padding-left: 20px;
+}
+
+.recomendacion-contenido li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
