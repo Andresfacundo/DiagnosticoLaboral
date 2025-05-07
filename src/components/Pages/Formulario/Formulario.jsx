@@ -196,7 +196,7 @@ const Formulario = () => {
                         className={`input ${errores.identificacion ? 'input-error' : ''}`}
                         type="number"
                         name="identificacion"
-                        placeholder="Número de identificación"
+                        placeholder="Número de identificación (sin dígito de verificación)"
                         value={empleador.identificacion}
                         onChange={manejarCambio}
                         required
