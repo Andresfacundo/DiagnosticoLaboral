@@ -368,6 +368,27 @@ const Resultados = () => {
           </div>
         </div>
       </div>
+
+
+      {/* Sección de recomendaciones para categorías con bajo cumplimiento */}
+      {categoriasConBajoCumplimiento.length > 0 && (
+        <div className="recomendaciones-seccion">
+          <h2>Recomendaciones</h2>
+          <div className="recomendaciones-lista">
+            {categoriasConBajoCumplimiento.map((categoria, index) => (
+              <div key={index} className="recomendacion-item">
+                <div className="recomendacion-header">
+                  <h3>{categoria.nombre}</h3>
+                  <div className="recomendacion-porcentaje" style={{ color: obtenerColorPorcentaje(categoria.porcentaje) }}>
+                    {Math.round(categoria.porcentaje)}%
+                  </div>
+                </div>
+                <p className="recomendacion-texto">{categoria.recomendacion}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div className='content-description'>
         <p>En GAP, contamos con un equipo de abogados especialistas en derecho laboral y seguridad social, donde ponemos a disposición nuestros servicios para identificar los riesgos y ayudar a implementar soluciones que permitan a los empleadores enfocarse en sus negocios.</p>
         <p>Entendemos que la gestión y administración del personal puede ser una tarea compleja y que requiere de un alto nivel de precisión. </p>
@@ -408,26 +429,6 @@ const Resultados = () => {
         <p>E. Proyección y divulgación de reglamentos y/o políticas aplicables. </p>
 
       </div>
-
-      {/* Sección de recomendaciones para categorías con bajo cumplimiento */}
-      {categoriasConBajoCumplimiento.length > 0 && (
-        <div className="recomendaciones-seccion">
-          <h2>Recomendaciones</h2>
-          <div className="recomendaciones-lista">
-            {categoriasConBajoCumplimiento.map((categoria, index) => (
-              <div key={index} className="recomendacion-item">
-                <div className="recomendacion-header">
-                  <h3>{categoria.nombre}</h3>
-                  <div className="recomendacion-porcentaje" style={{ color: obtenerColorPorcentaje(categoria.porcentaje) }}>
-                    {Math.round(categoria.porcentaje)}%
-                  </div>
-                </div>
-                <p className="recomendacion-texto">{categoria.recomendacion}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Botones de acción */}
       <div className="diagnostico-acciones">

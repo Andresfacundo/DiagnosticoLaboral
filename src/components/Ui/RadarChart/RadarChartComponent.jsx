@@ -14,10 +14,10 @@ const RadarChartComponent = ({ categorias }) => {
 
   return (
     <RadarChart
-      cx={300}
+      cx={390}
       cy={250}
       outerRadius={140}
-      width={600}
+      width={800}
       height={500}
       data={data}
     >

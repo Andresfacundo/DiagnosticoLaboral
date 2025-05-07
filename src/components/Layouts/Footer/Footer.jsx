@@ -79,9 +79,9 @@ const Footer = () => {
                         </div>
                         <div className='item-img'>
                             <i className="fa-solid fa-location-dot"></i>
-                            <a target='_blank' href={gps}>Calle 22 Norte #9-18 Barrio coinca</a>
+                            <a target='_blank' href={gps}>Calle 22 Norte #9-18 Barrio coinca, Armenia-Quindío</a>
                         </div>
-                        <div className='item-img'>Lun-Vie: 8:00 - 18:00</div>
+                        <div className='item-img'>Lunes a Viernes: 8:00 AM a 6:00 PM</div>
                     </div>
                     <div className="contacto-form-wrapper">
                         <Contacto />

@@ -514,6 +514,10 @@
     width: 150px;
   }
 }
+.content-description{
+  padding: 0 2rem 0 2rem;;
+}
+
 .content-description-item{
   display: flex;
   line-height: 1.9rem;
@@ -573,3 +577,4 @@
   line-height: 1.5;
   margin: 0.5rem 0 0;
 }
+
