@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import './AboutDiagnosis.css';// Placeholder image, replace with actual image path
+import './AboutDiagnosis.css';
+import juan from '../../../assets/Juan.png';
+import maria from '../../../assets/maria.png';
+import santiago from '../../../assets/santiago.png';
+import angarita from '../../../assets/angarita.png';
+import valeria from '../../../assets/Valeria.png';
+import kevin from '../../../assets/Kevin.png';
+import mauricio from '../../../assets/Mauricio.png';
+import yineth from '../../../assets/Yineth-1.png';
+import marulanda from '../../../assets/marulanda.png';
+import yenifer from '../../../assets/Yenifer.png';
+import sebastian from '../../../assets/sebastian1.png';
+
 
 const AboutDiagnosis = () => {
   // Extended team data with more information
@@ -10,7 +22,7 @@ const AboutDiagnosis = () => {
       name: 'María Gómez', 
       role: 'Socio',
       description: 'Abogada bilingüe con máster en derecho tributario. Con más de ocho años de experiencia en manejo de personal; contratos civiles y comerciales; procesos de determinación de obligaciones adelantados por la Unidad Administrativa Especial de Gestión Pensional y Contribuciones Parafiscales de la Protección Social (la “UGPP”); trámites migratorios; defensa jurídica en procesos ordinarios laborales; preparación de conceptos legales y recomendaciones prácticas respecto a asuntos cotidianos en el manejo de relaciones laborales.',
-      photo: '../../../../public/Maria-Gomez.png'
+      photo: maria
       
     },
     { 
@@ -19,7 +31,7 @@ const AboutDiagnosis = () => {
       name: 'Juan Daniel Valencia Echeverry', 
       role: 'Socio',
       description: 'Abogado bilingüe especialista en derecho laboral. Con más de diez años de experiencia en manejo de personal, procesos de sustitución patronal, procesos de determinación de obligaciones adelantados por la Unidad Administrativa Especial de Gestión Pensional y Contribuciones Parafiscales de la Protección Social (la “UGPP”), trámites administrativos y sancionatorios ante el Servicio Nacional de Aprendizaje, investigación y asistencia en procesos disciplinarios; defensa jurídica en procesos ordinarios laborales y acciones de tutela en materia laboral y de seguridad social; preparación de conceptos legales y recomendaciones prácticas respecto a asuntos cotidianos en el manejo de relaciones laborales.',
-      photo: '../../../../public/Juan Daniel Valencia1.png'
+      photo: juan
     },
     { 
       id: 3,
@@ -27,7 +39,7 @@ const AboutDiagnosis = () => {
       name: 'Santiago Aristizábal', 
       role: 'Socio',
       description: 'Abogado bilingüe especialista en derecho comercial. Con más de siete años de experiencia en derecho comercial, contractual, societario, urbano y civil, asesorando a empresas y particulares en la estructuración, negociación y formalización de proyectos y negocios jurídicos; elaboración de acuerdos comerciales, civiles, societarios e inmobiliarios, asegurando que cada negocio cumpla con los requisitos legales y fiscales que se alineen con las metas y estrategias de los clientes.',
-      photo: '../../../../public/Santiago-Aristizabal-1.png'
+      photo: santiago
     },
     { 
       id: 4,
@@ -35,7 +47,7 @@ const AboutDiagnosis = () => {
       name: 'Daniela Angarita Galindo', 
       role: 'Asociada junior',
       description: 'Abogada actualmente cursando especialización de Derecho Laboral y Seguridad Social. Con más de nueve años de experiencia profesional en distintas áreas del derecho, con principal enfoque en derecho laboral.',
-      photo: '../../../../public/Daniela-Angarita-1.png'
+      photo: angarita
     },
     { 
       id: 5,
@@ -43,7 +55,7 @@ const AboutDiagnosis = () => {
       name: 'Valeria Rincon Mateus', 
       role: 'Asociada junior',
       description: 'Abogada actualmente cursando especialización en Derecho Contractual. Con más de seis años de experiencia en Derecho inmobiliario, notarial, contractual y comercial.',
-      photo: '../../../../public/Valeria.png'
+      photo: valeria
     },
     { 
       id: 6,
@@ -51,7 +63,7 @@ const AboutDiagnosis = () => {
       name: 'Kevin Esteban Baena Ramírez', 
       role: 'Asociado junior',
       description: 'Abogado actualmente cursando especialización en Derecho Laboral y Seguridad Social. Con más de dos años de experiencia como abogado litigante en las áreas laboral y civil, así como en la gestión de procesos judiciales de la rama judicial.',
-      photo: '../../../../public/Kevin01.png'
+      photo: kevin
     },
     { 
       id: 7,
@@ -59,7 +71,7 @@ const AboutDiagnosis = () => {
       name: 'Arlex Mauricio Vallejo Agudelo', 
       role: 'Asociado junior',
       description: 'Abogado con más de tres años de experiencia como asesor jurídico de empresas, tramites notariales y derecho inmobiliario.',
-      photo: '../../../../public/Mauricio.png'
+      photo: mauricio
     },
     { 
       id: 8,
@@ -67,7 +79,7 @@ const AboutDiagnosis = () => {
       name: 'Yineth Tabares Torres', 
       role: 'Auxiliar de nómina',
       description: 'Auxiliar contable y estudiante de Bibliotecología. Con más de trece años de experiencia en gestión documental, procesos administrativos y gestión del talento humano.',
-      photo: '../../../../public/Yineth-1.png'
+      photo: yineth
     },
     
     { 
@@ -76,7 +88,7 @@ const AboutDiagnosis = () => {
       name: 'Daniela Marulanda Morales', 
       role: 'Contadora',
       description: 'Contadora pública con más de ocho años de experiencia en la liquidación y presentación de obligaciones tributarias, estados financieros; información financiera para entes de supervisión y organismos como la DIAN, Superintendencia de Sociedades, DANE e Industria y Comercio; revisión y control de la información contable, incluyendo la validación de facturas, recibos de caja, notas contables y comprobantes de egreso.',
-      photo: '../../../../public/Daniela-Marulanda01.png'
+      photo: marulanda
     },
     { 
       id: 10,
@@ -84,7 +96,7 @@ const AboutDiagnosis = () => {
       name: 'Juan Sebastián Delgado Muñoz', 
       role: 'Auxiliar Contable',
       description: 'Contador público, ⁠especialista en alta gerencia, ⁠técnico en asistencia administrativa con más de dos años de experiencia en auditoría de informes financieros, análisis de datos y gestión de facturas.',
-      photo: '../../../../public/Sebastian1.png'
+      photo: sebastian
     },
     { 
       id: 11,
@@ -92,7 +104,7 @@ const AboutDiagnosis = () => {
       name: 'Yenifer Castrillón Gutiérrez', 
       role: 'Auxiliar Administrativa',
       description: 'Estudiante de Octavo semestre de Contaduría Pública con más de veinte años de experiencia en procesos de facturación, gestión de cartera, inventarios, envíos, pago a proveedores, elaboración de registros contables y conciliaciones bancarias.',
-      photo: '../../../../public/Yenifer.png'
+      photo: yenifer
     },
   ];
 
