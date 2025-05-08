@@ -21,8 +21,8 @@ const Resultados = () => {
   const datosRadar = Object.entries(resultados.categorias).map(([categoria, datos]) => ({
     subject: categoria,
     A: parseFloat(datos.porcentaje.toFixed(2)),
-    preguntas: datos.preguntas.length, // Porcentaje de cumplimiento por categoría
-    fullMark: 100, // Máximo valor
+    preguntas: datos.preguntas.length,
+    fullMark: 100,    
   }));
   
   // Colores para los gráficos
@@ -436,48 +436,52 @@ const Resultados = () => {
               </div>
             ))}
           </div>
-        </div>
-      )}
-      <div className='content-description'>
-        <p>En GAP, contamos con un equipo de abogados especialistas en derecho laboral y seguridad social, donde ponemos a disposición nuestros servicios para identificar los riesgos y ayudar a implementar soluciones que permitan a los empleadores enfocarse en sus negocios.</p>
-        <p>Entendemos que la gestión y administración del personal puede ser una tarea compleja y que requiere de un alto nivel de precisión. </p>
-        <p>Nuestra prioridad es proporcionar respuestas rápidas, efectivas y eficientes, garantizando que sus necesidades sean atendidas con la máxima prontitud. Además, nuestra amplia experiencia en legislación laboral y seguridad social nos permiten para ofrecer una asesoría personalizada y adaptada a las necesidades específicas de cada cliente. </p>
-        <p>En GVA, no creemos en soluciones genéricas, en su lugar, trabajamos para entender las circunstancias únicas.</p>
-        <p>A continuación, encuentra una lista enunciativa (no taxativa) de los procesos realizamos en GAP:</p>
-        <div className='content-description-item'>
-          <ul>
-            <li>Revisión de antecedentes</li>
-            <li>Programación examen ingreso</li>
-            <li>Afiliación seguridad social</li>
-            <li>Documentos de contratación</li>
-            <li>Registro de novedades y liquidación de nómina</li>
-            <li>Reporte de novedades y pre nómina</li>
-            
-          </ul>
-          <ul>
-            <li>Emisión nómina electrónica</li>
-            <li>Archivo plano pago de bancos</li>
-            <li>Archivo plano seguridad social</li>
-            <li>Contabilización nómina</li>
-            <li>Liquidación de acreencias laborales</li>
-            <li>Certificado laboral</li>
+          <div className='content-description recomendacion-item recomendaciones-seccion'>
+            <p>En GAP, contamos con un equipo de abogados especialistas en derecho laboral y seguridad social, donde ponemos a disposición nuestros servicios para identificar los riesgos y ayudar a implementar soluciones que permitan a los empleadores enfocarse en sus negocios.</p>
+            <p>Entendemos que la gestión y administración del personal puede ser una tarea compleja y que requiere de un alto nivel de precisión. </p>
+            <p>Nuestra prioridad es proporcionar respuestas rápidas, efectivas y eficientes, garantizando que sus necesidades sean atendidas con la máxima prontitud. Además, nuestra amplia experiencia en legislación laboral y seguridad social nos permiten para ofrecer una asesoría personalizada y adaptada a las necesidades específicas de cada cliente. </p>
+            <p>En GVA, no creemos en soluciones genéricas, en su lugar, trabajamos para entender las circunstancias únicas.</p>
+            <p>A continuación, encuentra una lista enunciativa (no taxativa) de los procesos realizamos en GAP:</p>
+            <div className='content-description-item'>
+              <ul>
+                <li>Revisión de antecedentes</li>
+                <li>Programación examen ingreso</li>
+                <li>Afiliación seguridad social</li>
+                <li>Documentos de contratación</li>
+                <li>Registro de novedades y liquidación de nómina</li>
+                <li>Reporte de novedades y pre nómina</li>
+                
+              </ul>
+              <ul>
+                <li>Emisión nómina electrónica</li>
+                <li>Archivo plano pago de bancos</li>
+                <li>Archivo plano seguridad social</li>
+                <li>Contabilización nómina</li>
+                <li>Liquidación de acreencias laborales</li>
+                <li>Certificado laboral</li>
 
-          </ul>
-          <ul>
-            <li>Certificado de ingresos y retenciones</li>
-            <li>Carta autorizando retiro de cesantías</li>
-            <li>Documentos de retiro por cualquier causa</li>
-            <li>Orden para examen de retiro</li>
-          </ul>
-        </div>
-        <p>Así mismo, el cliente tendrá acceso a los servicios de consultoría en Derecho Laboral (individual y colectivo) y Seguridad Social, incluyendo, pero sin limitarse: </p>
-        <p>A. Consultas vía mail, telefónicas.</p>
-        <p>B. Contratos y otrosíes, y demás documentos.</p>
-        <p>C. Acompañamiento y asesoría virtual en procesos disciplinarios. </p>
-        <p>D. Elaboración de esquemas de contratación y compensación. </p>
-        <p>E. Proyección y divulgación de reglamentos y/o políticas aplicables. </p>
+              </ul>
+              <ul>
+                <li>Certificado de ingresos y retenciones</li>
+                <li>Carta autorizando retiro de cesantías</li>
+                <li>Documentos de retiro por cualquier causa</li>
+                <li>Orden para examen de retiro</li>
+              </ul>
+            </div>
+            <p>Así mismo, el cliente tendrá acceso a los servicios de consultoría en Derecho Laboral (individual y colectivo) y Seguridad Social, incluyendo, pero sin limitarse: </p>
+            <p>A. Consultas vía mail, telefónicas.</p>
+            <p>B. Contratos y otrosíes, y demás documentos.</p>
+            <p>C. Acompañamiento y asesoría virtual en procesos disciplinarios. </p>
+            <p>D. Elaboración de esquemas de contratación y compensación. </p>
+            <p>E. Proyección y divulgación de reglamentos y/o políticas aplicables. </p>
 
       </div>
+      <div className="aviso-legal recomendacion-item">
+        <p><strong>Aviso Legal:</strong> El diagnóstico ofrecido es de carácter orientativo e informativo. No constituye asesoría legal personalizada ni puede ser interpretado como una recomendación jurídica definitiva. Su contenido se genera únicamente a partir de la información suministrada por usted, sin verificación ni validación adicional. Para atender situaciones específicas, recomendamos siempre acudir a un abogado laboral con experiencia. Esta herramienta no crea una relación abogado-cliente ni garantiza la aplicabilidad de los resultados en casos particulares.</p>
+      </div>
+        </div>
+      )}
+      
 
       {/* Botones de acción */}
       <div className="diagnostico-acciones">

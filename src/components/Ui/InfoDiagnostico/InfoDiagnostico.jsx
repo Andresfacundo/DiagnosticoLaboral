@@ -43,15 +43,13 @@ const InfoDiagnostico = () => {
         </div>
         <div className='content-policy'>
           <div className='checkbox-policy'>
-            <input type="checkbox"
+            <label htmlFor="policyCheck" className='checkbox-label'>
+            <input type="checkbox" className='checkbox'
             id='policyCheck'
             checked={isChecked}
             onChange={handleCheckboxChange}
             />
-            <label htmlFor="policyCheck">
-              He leído la <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales</a> y autorizo el tratamiento de mis datos con base en la política.
-              <br />
-              <p>Toda la información brindada es absolutamente confidencial y no será compartida con terceros.</p>
+              He leído y acepto los Términos, Condiciones y Políticas. Toda la información brindada es absolutamente confidencial y no será compartida con terceros. Puede revisar nuestra <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales</a> y autorizo el tratamiento de mis datos con base en la política.
             </label>
           </div>        
           <NavLink

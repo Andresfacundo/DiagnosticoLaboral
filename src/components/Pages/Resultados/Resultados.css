@@ -617,3 +617,12 @@
   margin-bottom: 8px;
   line-height: 1.5;
 }
+.aviso-legal{
+  margin-top: 30px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  line-height: 1.8rem;
+
+}

@@ -1,161 +1,99 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./HistorialResultados.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Registros = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const [empleadores, setEmpleadores] = useState([]);
-  const [idSeleccionado, setIdSeleccionado] = useState(id || '');
-  const [empleadorInfo, setEmpleadorInfo] = useState(null);
-  const [respuestas, setRespuestas] = useState([]);
-  const [preguntas, setPreguntas] = useState([]);
-  const [porcentajesCategorias, setPorcentajesCategorias] = useState([]);
-  const [cumplimientoGeneral, setCumplimientoGeneral] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [historial, setHistorial] = useState([]);
+  const [filtro, setFiltro] = useState({ documento: "", razonSocial: "" });
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Carga inicial de empleadores para el dropdown
   useEffect(() => {
-    axios.get('/api/empleadores')
-      .then(res => setEmpleadores(res.data))
-      .catch(err => setError('Error al cargar lista de clientes'));
+    const fetchHistorial = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/empleadores`);
+        setHistorial(response.data);
+        // console.log("Historial de resultados:", response.data[0].identificacion);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error al cargar el historial:", err);
+        setError("Error al cargar el historial. Por favor intente nuevamente.");
+        setLoading(false);
+      }
+    };
+
+    fetchHistorial();
   }, []);
 
-  // Función para calcular cumplimiento
-  const calcularCumplimiento = (resp, preg) => {
-    const mapa = {};
-    preg.forEach(p => { mapa[p.id] = p; });
-    const stats = {};
-    let totalC = 0;
-    let totalP = 0;
-    resp.forEach(r => {
-      const p = mapa[r.preguntaId];
-      if (!p) return;
-      const cat = p.categoria;
-      stats[cat] = stats[cat] || { cumplen: 0, total: 0 };
-      stats[cat].total += 1;
-      if (r.cumplio) {
-        stats[cat].cumplen += 1;
-        totalC += 1;
-      }
-      totalP += 1;
-    });
-    const cats = Object.keys(stats).map(cat => {
-      const d = stats[cat];
-      return { categoria: cat, porcentaje: d.total ? Math.round((d.cumplen / d.total) * 100) : 0 };
-    });
-    setPorcentajesCategorias(cats);
-    setCumplimientoGeneral(totalP ? Math.round((totalC / totalP) * 100) : 0);
+  const handleFiltroChange = (e) => {
+    const { name, value } = e.target;
+    setFiltro((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Carga datos del cliente cuando cambia selección
-  useEffect(() => {
-    if (!idSeleccionado) return;
-    setLoading(true);
-    setError(null);
-    axios.get(`/api/empleadores/${idSeleccionado}`)
-      .then(res => setEmpleadorInfo(Array.isArray(res.data) ? res.data[0] : res.data))
-      .catch(err => setError('Error al cargar datos del cliente'));
-    axios.get(`/api/empleadores/${idSeleccionado}`)
-      .then(res => setRespuestas(res.data))
-      .catch(err => setError('Error al cargar respuestas'));
-    axios.get(`/api/empleadores/${idSeleccionado}`)
-      .then(res => setPreguntas(res.data))
-      .catch(err => setError('Error al cargar preguntas'))
-      .finally(() => setLoading(false));
-  }, [idSeleccionado]);
+  const resultadosFiltrados = historial.filter((resultado) => {
+    const coincideDocumento = resultado.identificacion
+    console.log('resultado',coincideDocumento)
+      // .toLowerCase()
+      // .includes(filtro.documento.toLowerCase());
+    const coincideRazonSocial = resultado.nombres
+    console.log('resultadosasdasdd',coincideRazonSocial)
+      // .toLowerCase()
+      // .includes(filtro.razonSocial.toLowerCase());
+    return coincideDocumento && coincideRazonSocial;
+  });
 
-  // Recalcular cuando cambian respuestas/preguntas
-  useEffect(() => {
-    if (respuestas.length > 0 && preguntas.length > 0) {
-      calcularCumplimiento(respuestas, preguntas);
-    }
-  }, [respuestas, preguntas]);
-
-  // Maneja cambio en el dropdown
-  const handleClienteChange = (e) => {
-    const nuevoId = e.target.value;
-    setIdSeleccionado(nuevoId);
-    navigate(`/admin/resultados/${nuevoId}`);
-  };
+  if (loading) return <p>Cargando historial...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      <h1>Resultados Detallados por Cliente</h1>
-
-      {/* Selección de cliente */}
-      <div>
-        <label>Seleccione un cliente: </label>
-        <select value={idSeleccionado} onChange={handleClienteChange}>
-          <option value="">-- Elegir cliente --</option>
-          {empleadores.map(emp => (
-            <option key={emp.id} value={emp.id}>{emp.nombre}</option>
-          ))}
-        </select>
+    <div className="historial-container">
+      <h1>Historial de Resultados</h1>
+      <div className="filtros">
+        <input
+          type="text"
+          name="documento"
+          placeholder="Filtrar por número de documento"
+          value={filtro.documento}
+          onChange={handleFiltroChange}
+        />
+        <input
+          type="text"
+          name="razonSocial"
+          placeholder="Filtrar por razón social"
+          value={filtro.razonSocial}
+          onChange={handleFiltroChange}
+        />
       </div>
-
-      {loading && <p>Cargando datos...</p>}
-      {error && <p style={{color:'red'}}>{error}</p>}
-
-      {/* Datos básicos del empleador */}
-      {empleadorInfo && (
+      <div className="tabla-resultados">
         <table>
           <thead>
-            <tr><th>Nombre</th><th>Fecha</th></tr>
+            <tr>
+              <th>Razón Social</th>
+              <th>Número de Documento</th>
+              <th>Porcentaje de Cumplimiento</th>
+              <th>Fecha</th>
+            </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{empleadorInfo.nombre}</td>
-              <td>{new Date(empleadorInfo.fecha).toLocaleDateString()}</td>
-            </tr>
+            {resultadosFiltrados.length > 0 ? (
+              resultadosFiltrados.map((resultado, index) => (
+                <tr key={index}>
+                  <td>{resultado.empleador.nombres}</td>
+                  <td>{resultado.empleador.identificacion}</td>
+                  <td>{Math.round(resultado.porcentajeCumplimiento)}%</td>
+                  <td>{resultado.fecha}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">No se encontraron resultados.</td>
+              </tr>
+            )}
           </tbody>
         </table>
-      )}
-
-      {/* Cumplimiento general */}
-      {empleadorInfo && (
-        <div>
-          <h2>Cumplimiento General: {cumplimientoGeneral}%</h2>
-        </div>
-      )}
-
-      {/* Gráfico radar */}
-      {porcentajesCategorias.length > 0 && (
-        <RadarChart width={300} height={250} data={porcentajesCategorias}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="categoria" />
-          <PolarRadiusAxis angle={30} domain={[0, 100]} />
-          <Radar name="Cumplimiento" dataKey="porcentaje" fill="#8884d8" fillOpacity={0.6} />
-        </RadarChart>
-      )}
-
-      {/* Recomendaciones */}
-      {porcentajesCategorias.length > 0 && (
-        <div>
-          <h3>Recomendaciones</h3>
-          {porcentajesCategorias
-            .filter(c => c.porcentaje < 60)
-            .map(catData => (
-              <div key={catData.categoria}>
-                <p>En la categoría <b>{catData.categoria}</b> (cumplimiento {catData.porcentaje}%), sugerimos revisar:</p>
-                <ul>
-                  {respuestas
-                    .filter(r => {
-                      const p = preguntas.find(q => q.id === r.preguntaId);
-                      return p && p.categoria === catData.categoria && !r.cumplio;
-                    })
-                    .map(r => {
-                      const texto = preguntas.find(q => q.id === r.preguntaId)?.texto || '';
-                      return <li key={r.preguntaId}>{texto}</li>;
-                    })
-                  }
-                </ul>
-              </div>
-            ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 };

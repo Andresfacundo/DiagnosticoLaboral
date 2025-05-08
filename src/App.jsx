@@ -10,7 +10,7 @@ import Login from './components/Ui/Login/Login.jsx'
 import Footer from './components/Layouts/Footer/Footer.jsx'
 import InfoDiagnostico from './components/Ui/InfoDiagnostico/InfoDiagnostico.jsx'
 import AboutDiagnosis from './components/Ui/AboutDiagnosis/AboutDiagnosis.jsx'
-// import Registros from './components/Ui/Registros/Registros.jsx'
+import Registros from './components/Ui/Registros/Registros.jsx'
 
 function App() {
 
@@ -27,7 +27,7 @@ function App() {
       <Route path='login' element={<Login/>}/>
       <Route path='diagnostico' element={<InfoDiagnostico/>}/>
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
-      {/* <Route path='registros' element={<Registros/>}/> */}
+      <Route path='registros' element={<Registros/>}/>
     </Routes>
     <Footer/>        
     </>
