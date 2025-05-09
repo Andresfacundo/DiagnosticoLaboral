@@ -14,11 +14,11 @@ const Cuestionario = () => {
     const [enviando, setEnviando] = useState(false);
     const [error, setError] = useState("");
     const [empleadorId, setEmpleadorId] = useState(null);
+    const [diagnostico, setDiagnostico] = useState(null);
 
     useEffect(() => {
         const obtenerPreguntas = async () => {
             try {
-                // Obtener el ID del empleador del localStorage
                 const idEmpleador = localStorage.getItem("empleadorId");
                 if (!idEmpleador) {
                     setError("No se encontró información del empleador. Por favor regrese al inicio.");
@@ -39,8 +39,6 @@ const Cuestionario = () => {
                     comentario: "",
                     documento: null
                 })));
-
-                // Inicializamos el progreso
                 setProgreso(0);
             } catch (error) {
                 console.error("Error al obtener preguntas", error);
@@ -60,13 +58,12 @@ const Cuestionario = () => {
     };
 
     const siguientePregunta = () => {
-        // Validar que se haya seleccionado una respuesta
         if (!respuestas[preguntaActual].respuesta) {
             setError("Por favor, seleccione una respuesta antes de continuar.");
             return;
         }
 
-        setError(""); // Limpiar cualquier error previo
+        setError("");
 
         if (preguntaActual < preguntas.length - 1) {
             setPreguntaActual(preguntaActual + 1);
@@ -82,27 +79,42 @@ const Cuestionario = () => {
                 return;
             }
 
-            setError(""); // Limpiar errores previos
+            setError(""); 
             setEnviando(true);
 
-            // Asegurarnos que el empleadorId esté disponible
             if (!empleadorId) {
                 throw new Error("ID de empleador no disponible");
             }
 
-            // Guardar las respuestas en localStorage para usarlas en el diagnóstico
+            // Guardar respuestas en localStorage
             localStorage.setItem("respuestas", JSON.stringify(respuestas));
 
-            // Enviar respuestas al servidor
+            // Primero obtener las preguntas actualizadas para asegurarnos de tener todos los pesos
+            const preguntasResponse = await axios.get(`${API_URL}/api/preguntas`);
+            const preguntasActualizadas = preguntasResponse.data;
+
+            // Procesar el diagnóstico en el backend enviando respuestas y preguntas
+            const diagnosticoResponse = await axios.post(`${API_URL}/api/diagnostico`, {
+                respuestas: respuestas,
+                preguntas: preguntasActualizadas
+            });
+            
+            // Guardar el resultado completo del diagnóstico
+            if (diagnosticoResponse.data) {
+                localStorage.setItem("diagnosticoCompleto", JSON.stringify(diagnosticoResponse.data));
+                setDiagnostico(diagnosticoResponse.data);
+            }
+
+            // Opcional: guardar también las respuestas en el backend si se requiere
             await axios.post(`${API_URL}/api/respuestas/${empleadorId}`, {
                 respuestas
             });
 
-            // Navegar a la página de diagnóstico
+            // Navegar a la página de resultados
             navigate("/resultados");
         } catch (error) {
-            console.error("Error al enviar respuestas", error);
-            setError("Error al enviar respuestas: " + (error.response?.data?.mensaje || error.message));
+            console.error("Error al procesar diagnóstico", error);
+            setError("Error al generar el diagnóstico: " + (error.response?.data?.message || error.message));
         } finally {
             setEnviando(false);
         }
@@ -123,6 +135,19 @@ const Cuestionario = () => {
                         Volver al inicio
                     </button>
                 )}
+            </div>
+        );
+    }
+
+    // Si ya se obtuvo un diagnóstico pero aún no se navega
+    if (diagnostico) {
+        return (
+            <div className="cuestionario-container">
+                <h2 className="cuestionario-header">Diagnóstico Completado</h2>
+                <p>Su diagnóstico ha sido generado exitosamente.</p>
+                <button className="navigation-button primary" onClick={() => navigate("/resultados")}>
+                    Ver Resultados
+                </button>
             </div>
         );
     }

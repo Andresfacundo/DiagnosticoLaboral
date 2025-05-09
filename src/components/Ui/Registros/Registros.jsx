@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import procesarDatos from "../../../utils/diagnosticoUtils";
 import "./Registros.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -12,68 +11,14 @@ const Registros = () => {
   const [error, setError] = useState(null);
   const [diagnosticoSeleccionado, setDiagnosticoSeleccionado] = useState(null);
   const [detallesDiagnostico, setDetallesDiagnostico] = useState(null);
-  const [resultados, setResultados] = useState({
-      porcentajeCumplimiento: 0,
-      empleador: null,
-      respuestas: [],
-      categorias: {},
-      loading: true,
-      error: null,
-      fecha: new Date().toLocaleString()
-    });
   
-
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
-        const empleadorId = JSON.parse(localStorage.getItem("empleadorId"));
-        const response = await axios.get(`${API_URL}/api/empleadores`);
-        console.log("Empleadores:", response.data);
-        const historialConCumplimiento = response.data.map((empleador) => ({
-          ...empleador,
-          cumplimiento: Math.round(porcentajeCumplimiento), // Ejemplo: reemplaza con el cálculo real
-        }));     
-        
-        setHistorial(historialConCumplimiento);
-        if (!empleadorId) {
-          setResultados(prev => ({
-            ...prev,
-            loading: false,
-            error: "No se encontró información del empleador. Por favor regrese al inicio."
-          }));
-          return;
-        }
-
-        const empleadorResponse = await axios.get(`${API_URL}/api/empleadores/${empleadorId}`);
-        const empleadorInfo = empleadorResponse.data;
-
-        let respuestas = JSON.parse(localStorage.getItem("respuestas"));
-        
-        if (!respuestas) {
-          const respuestasResponse = await axios.get(`${API_URL}/api/respuestas`);
-          const respuestasEmpleador = respuestasResponse.data.find(r => r.empleadorId === empleadorId);
-          respuestas = respuestasEmpleador ? respuestasEmpleador.respuestas : [];
-        }
-        
-        const preguntasResponse = await axios.get(`${API_URL}/api/preguntas`);
-        const preguntas = preguntasResponse.data;
-        
-        const datosAnalizados = procesarDatos(respuestas, preguntas);
-        const porcentajeCumplimiento = datosAnalizados.porcentajeGeneral;
-        console.log('r',datosAnalizados);
-        const cumplimiento = datosAnalizados.porcentajeGeneral;
-        
-        setResultados({
-          porcentajeCumplimiento: datosAnalizados.porcentajeGeneral,
-          empleador: empleadorInfo,
-          respuestas: respuestas,
-          categorias: datosAnalizados.categoriasAnalizadas,
-          loading: false,
-          error: null,
-          fecha: new Date().toLocaleString(),
-          areasRiesgo: datosAnalizados.areasRiesgo
-        })
-        
+        setLoading(true);
+        const response = await axios.get(`${API_URL}/api/diagnostico`); 
+        setHistorial(response.data);
+        console.log("Datos del historial:", response.data);
         setLoading(false);
       } catch (err) {
         console.error("Error al cargar el historial:", err);
@@ -85,21 +30,20 @@ const Registros = () => {
     fetchHistorial();
   }, []);
 
-  const cargarDetallesDiagnostico = async (empleadorId) => {
+  const cargarDetallesDiagnostico = async (diagnosticoId) => {
     try {
       setLoading(true);
-      const respuestasResponse = await axios.get(`${API_URL}/api/respuestas`);
       
-      const preguntasResponse = await axios.get(`${API_URL}/api/preguntas`);
-
+      // Obtener el diagnóstico específico por su ID
+      const diagnosticoResponse = await axios.get(`${API_URL}/api/diagnostico/${diagnosticoId}`);
+      const diagnosticoData = diagnosticoResponse.data;
       
-      const respuestas = respuestasResponse.data;
-      const preguntas = preguntasResponse.data;
-
-      const resultadosProcesados = procesarDatos(respuestas, preguntas);
+      if (!diagnosticoData) {
+        throw new Error("No se encontró el diagnóstico solicitado");
+      }
       
-      setDiagnosticoSeleccionado(empleadorId);
-      setDetallesDiagnostico(resultadosProcesados);
+      setDiagnosticoSeleccionado(diagnosticoId);
+      setDetallesDiagnostico(diagnosticoData.resultado);
       setLoading(false);
     } catch (err) {
       console.error("Error al cargar detalles del diagnóstico:", err);
@@ -114,34 +58,80 @@ const Registros = () => {
   };
 
   const resultadosFiltrados = historial.filter((resultado) => {
-    const coincideDocumento = resultado.identificacion
+    // Validar que las propiedades existan antes de usarlas
+    const identificacion = resultado.empleador?.identificacion || 
+                          resultado.identificacion || 
+                          "";
+    const nombres = resultado.empleador?.nombres || 
+                   resultado.nombres || 
+                   resultado.razonSocial || 
+                   "";
+    
+    const coincideDocumento = identificacion
       .toLowerCase()
       .includes(filtro.documento.toLowerCase());
-    const coincideRazonSocial = resultado.nombres
+    const coincideRazonSocial = nombres
       .toLowerCase()
       .includes(filtro.razonSocial.toLowerCase());
+    
     return coincideDocumento && coincideRazonSocial;
   });
-  console.log("Resultados filtrados:", resultadosFiltrados);
+  console.log("Resultados filtradoss:", resultadosFiltrados);
 
-  // Función para volver a la lista de empleadores
+  // Función para volver a la lista de diagnósticos
   const volverALista = () => {
     setDiagnosticoSeleccionado(null);
     setDetallesDiagnostico(null);
   };
 
-  if (loading) return <p>Cargando información...</p>;
-  if (error) return <p>{error}</p>;
+  // Función para formatear fecha
+  const formatearFecha = (fechaStr) => {
+    try {
+      const fecha = new Date(fechaStr);
+      return fecha.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return fechaStr || "Fecha no disponible";
+    }
+  };
+
+  if (loading) return (
+    <div className="loading-container">
+      <p>Cargando información...</p>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="error-container">
+      <p>{error}</p>
+      <button onClick={() => window.location.reload()} className="btn-reintentar">
+        Reintentar
+      </button>
+    </div>
+  );
 
   // Si hay un diagnóstico seleccionado, mostrar sus detalles
   if (diagnosticoSeleccionado && detallesDiagnostico) {
-    const empleador = historial.find(emp => emp.id === diagnosticoSeleccionado);
+    // Encontrar el diagnóstico en el historial
+    const diagnosticoActual = historial.find(diag => diag.id === diagnosticoSeleccionado);
+    const nombreEmpleador = diagnosticoActual?.empleador?.nombres || 
+                          diagnosticoActual?.nombres || 
+                          "Empleador";
     
     return (
       <div className="detalles-diagnostico-container">
         <button onClick={volverALista} className="btn-volver">← Volver a la lista</button>
         
-        <h1>Detalles de Diagnóstico: {empleador?.nombres}</h1>
+        <h1>Detalles de Diagnóstico: {nombreEmpleador}</h1>
+        <p className="fecha-diagnostico">
+          Realizado el: {formatearFecha(diagnosticoActual?.creadoEn || diagnosticoActual?.fecha)}
+        </p>
+        
         <div className="resumen-diagnostico">
           <h2>Resumen de Cumplimiento</h2>
           <div className="estadisticas-generales">
@@ -181,7 +171,7 @@ const Registros = () => {
             </div>
           </div>
           
-          {detallesDiagnostico.areasRiesgo.length > 0 && (
+          {detallesDiagnostico.areasRiesgo && detallesDiagnostico.areasRiesgo.length > 0 && (
             <div className="areas-riesgo">
               <h3>Áreas de Riesgo</h3>
               <ul>
@@ -194,7 +184,7 @@ const Registros = () => {
         </div>
         
         <h2>Detalle por Categorías</h2>
-        {Object.entries(detallesDiagnostico.categoriasAnalizadas).map(([categoria, datos], idx) => (
+        {detallesDiagnostico.categoriasAnalizadas && Object.entries(detallesDiagnostico.categoriasAnalizadas).map(([categoria, datos], idx) => (
           <div key={idx} className="categoria-detalle">
             <h3>{categoria} - {Math.round(datos.porcentaje)}% de cumplimiento</h3>
             <table className="tabla-preguntas">
@@ -212,7 +202,7 @@ const Registros = () => {
                     <td>{pregunta.texto}</td>
                     <td>{pregunta.respuesta}</td>
                     <td>{pregunta.comentario || "-"}</td>
-                    <td>{porcentajeCumplimiento}%</td>
+                    <td>{pregunta.cumplimiento}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -223,10 +213,10 @@ const Registros = () => {
     );
   }
 
-  // Mostrar la lista de empleadores
+  // Mostrar la lista de diagnósticos
   return (
     <div className="historial-container">
-      <h1>Historial de Resultados</h1>
+      <h1>Historial de Diagnósticos</h1>
       <div className="filtros">
         <input
           type="text"
@@ -249,7 +239,6 @@ const Registros = () => {
             <tr>
               <th>Razón Social</th>
               <th>Número de Documento</th>
-              <th>Número de trabajadores</th>
               <th>Porcentaje de Cumplimiento</th>
               <th>Fecha</th>
               <th>Acciones</th>
@@ -257,26 +246,41 @@ const Registros = () => {
           </thead>
           <tbody>
             {resultadosFiltrados.length > 0 ? (
-              resultadosFiltrados.map((resultado, index) => (
-                <tr key={index}>
-                  <td>{resultado.nombres}</td>
-                  <td>{resultado.identificacion}</td>
-                  <td>{resultado.trabajadores}</td>
-                  <td>{resultado.cumplimiento}%</td>
-                  <td>{resultado.fecha}</td>
-                  <td>
-                    <button 
-                      onClick={() => cargarDetallesDiagnostico(resultado.id)} 
-                      className="btn-ver-detalles"
-                    >
-                      Ver detalles
-                    </button>
-                  </td>
-                </tr>
-              ))
+              resultadosFiltrados.map((diagnostico, index) => {
+                const porcentaje = diagnostico.resultado?.porcentajeGeneral || 
+                                diagnostico.porcentajeGeneral || 
+                                diagnostico.cumplimiento || 0;
+                                
+                const nombreEmpleador = diagnostico.empleador?.nombres || 
+                                      diagnostico.nombres || 
+                                      "No disponible";
+                                      
+                const identificacion = diagnostico.empleador?.identificacion || 
+                                     diagnostico.identificacion || 
+                                     "No disponible";
+                                     
+                const fecha = diagnostico.creadoEn || diagnostico.fecha || new Date();
+                
+                return (
+                  <tr key={index}>
+                    <td>{nombreEmpleador}</td>
+                    <td>{identificacion}</td>
+                    <td>{Math.round(porcentaje)}%</td>
+                    <td>{formatearFecha(fecha)}</td>
+                    <td>
+                      <button 
+                        onClick={() => cargarDetallesDiagnostico(diagnostico.id)} 
+                        className="btn-ver-detalles"
+                      >
+                        Ver detalles
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan="6">No se encontraron resultados.</td>
+                <td colSpan="5">No se encontraron resultados.</td>
               </tr>
             )}
           </tbody>
