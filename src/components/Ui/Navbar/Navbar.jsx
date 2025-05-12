@@ -113,14 +113,16 @@ const Navbar = ({id}) => {
                         
                         {/* Solo mostrar Gestión de preguntas para admin/superadmin */}
                         {hasAccess('admin') && (
-                            <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>
+                            <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>                            
                         )}
-                        
+                        {hasAccess('admin') && (
+                            <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
+                        )}
                         {/* Solo mostrar Calculadora para admin/superadmin */}
                         {hasAccess('admin') && (
                             <li className='calculadora'><a href="https://calculadora-gap-six.vercel.app/" onClick={closeMenu} target='_blank'>Calculadora</a></li>
                         )}
-                        
+                                                
                         {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
                         <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros'>Nosotros</NavLink></li>
                         

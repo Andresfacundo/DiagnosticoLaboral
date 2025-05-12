@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Registros.css";
-import  procesarDatos from "../../../utils/diagnosticoUtils"; // Asegúrate de que la ruta sea correcta
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,52 +14,25 @@ const Registros = () => {
   
   useEffect(() => {
     const fetchHistorial = async () => {
-      
       try {
         setLoading(true);
-        const empleadorId = JSON.parse(localStorage.getItem("empleadorId"));
-        const [empleadoresRes, respuestasRes, preguntasRes] = await Promise.all([
-          axios.get(`${API_URL}/api/empleadores`),
-          axios.get(`${API_URL}/api/respuestas`),
-          axios.get(`${API_URL}/api/preguntas`)
-        ]);
-    
-        const respuestas = respuestasRes.data;
-        const preguntas = preguntasRes.data;
-    
-        const historialConCumplimiento = empleadoresRes.data.map((empleador) => {
-          const respuestasEmpleador = respuestas.find(r => r.id === empleador.id);
-          const datos = procesarDatos(respuestasEmpleador?.respuestas || [], preguntas);
-          console.log("Historial:", datos);
-          return {
-            ...empleador,
-            cumplimiento: Math.round(datos.porcentajeGeneral),
-            fecha: respuestasEmpleador?.fecha || "Sin fecha"
-          };
-        });
-        
-        setHistorial(historialConCumplimiento);
-        
-        console.log("Historial con cumplimiento:", historialConCumplimiento);
+        const response = await axios.get(`${API_URL}/api/diagnostico`); 
+        setHistorial(response.data);
+        console.log("Datos del historial:", response.data);
+        setLoading(false);
       } catch (err) {
         console.error("Error al cargar el historial:", err);
         setError("Error al cargar el historial. Por favor intente nuevamente.");
-        
-      }
-      finally {
         setLoading(false);
       }
     };
 
-    
-    
     fetchHistorial();
   }, []);
-  // console.log("Historial:", historial);
-  
+
   const cargarDetallesDiagnostico = async (diagnosticoId) => {
     try {
-      
+      setLoading(true);
       
       // Obtener el diagnóstico específico por su ID
       const diagnosticoResponse = await axios.get(`${API_URL}/api/diagnostico/${diagnosticoId}`);
@@ -76,7 +48,7 @@ const Registros = () => {
     } catch (err) {
       console.error("Error al cargar detalles del diagnóstico:", err);
       setError("Error al cargar los detalles. Por favor intente nuevamente.");
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -104,7 +76,7 @@ const Registros = () => {
     
     return coincideDocumento && coincideRazonSocial;
   });
-  console.log("Resultados filtrados:", resultadosFiltrados);
+  console.log("Resultados filtradoss:", resultadosFiltrados);
 
   // Función para volver a la lista de diagnósticos
   const volverALista = () => {
@@ -176,7 +148,7 @@ const Registros = () => {
               <span className="etiqueta">Total de Preguntas</span>
             </div>
           </div>
-          
+                
           {detallesDiagnostico.areasRiesgo && detallesDiagnostico.areasRiesgo.length > 0 && (
             <div className="areas-riesgo">
               <h3>Áreas de Riesgo</h3>
@@ -199,7 +171,7 @@ const Registros = () => {
                   <th>Pregunta</th>
                   <th>Respuesta</th>
                   <th>Comentario</th>
-                  {/* <th>Cumplimiento</th> */}
+                  
                 </tr>
               </thead>
               <tbody>
@@ -208,7 +180,7 @@ const Registros = () => {
                     <td>{pregunta.texto}</td>
                     <td>{pregunta.respuesta}</td>
                     <td>{pregunta.comentario || "-"}</td>
-                    {/* <td>{pregunta.cumplimiento}%</td> */}
+                    
                   </tr>
                 ))}
               </tbody>
@@ -245,7 +217,6 @@ const Registros = () => {
             <tr>
               <th>Razón Social</th>
               <th>Número de Documento</th>
-              <th>Número de trabajadores</th>
               <th>Porcentaje de Cumplimiento</th>
               <th>Fecha</th>
               <th>Acciones</th>
@@ -254,10 +225,9 @@ const Registros = () => {
           <tbody>
             {resultadosFiltrados.length > 0 ? (
               resultadosFiltrados.map((diagnostico, index) => {
-                const porcentaje = diagnostico.cumplimiento || 
-                                diagnostico.porcentajeGeneral || 0;
-                                
-                                
+                const porcentaje = diagnostico.resultado?.porcentajeGeneral || 
+                                diagnostico.porcentajeGeneral || 
+                                diagnostico.cumplimiento || 0;
                                 
                 const nombreEmpleador = diagnostico.empleador?.nombres || 
                                       diagnostico.nombres || 
@@ -267,15 +237,12 @@ const Registros = () => {
                                      diagnostico.identificacion || 
                                      "No disponible";
                                      
-                const fecha = diagnostico.cread|| diagnostico.fecha || new Date();
-                const trabajadores = diagnostico.trabajadores || "No disponible"
-
+                const fecha = diagnostico.creadoEn || diagnostico.fecha || new Date();
                 
                 return (
                   <tr key={index}>
                     <td>{nombreEmpleador}</td>
                     <td>{identificacion}</td>
-                    <td>{trabajadores}</td>
                     <td>{Math.round(porcentaje)}%</td>
                     <td>{formatearFecha(fecha)}</td>
                     <td>
