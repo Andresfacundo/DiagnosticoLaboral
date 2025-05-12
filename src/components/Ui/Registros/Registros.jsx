@@ -16,9 +16,28 @@ const Registros = () => {
     const fetchHistorial = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/api/diagnostico`); 
-        setHistorial(response.data);
-        console.log("Datos del historial:", response.data);
+        
+        const [diagnosticosResponse, empleadorResponse] = await Promise.all([
+          axios.get(`${API_URL}/api/diagnostico`),
+          axios.get(`${API_URL}/api/empleadores`)
+        ]);
+        
+        const diagnosticosData = diagnosticosResponse.data;
+        const empleadoresData = empleadorResponse.data;
+        
+        const mapEmpleadores = {};        
+        empleadoresData.forEach((empleador) => {
+          mapEmpleadores[empleador.id] = empleador
+        });
+
+        const historialCombinado = diagnosticosData.map((diagnostico) =>{
+          const empleador = mapEmpleadores[diagnostico.id] || {};
+          return {
+            ...diagnostico,
+            empleador
+          };
+        });
+        setHistorial(historialCombinado);
         setLoading(false);
       } catch (err) {
         console.error("Error al cargar el historial:", err);
@@ -26,10 +45,11 @@ const Registros = () => {
         setLoading(false);
       }
     };
-
+    
     fetchHistorial();
   }, []);
-
+  console.log("Historial:", historial);
+  
   const cargarDetallesDiagnostico = async (diagnosticoId) => {
     try {
       setLoading(true);
@@ -76,7 +96,6 @@ const Registros = () => {
     
     return coincideDocumento && coincideRazonSocial;
   });
-  console.log("Resultados filtradoss:", resultadosFiltrados);
 
   // Función para volver a la lista de diagnósticos
   const volverALista = () => {
@@ -239,6 +258,7 @@ const Registros = () => {
             <tr>
               <th>Razón Social</th>
               <th>Número de Documento</th>
+              <th>Número de trabajadores</th>
               <th>Porcentaje de Cumplimiento</th>
               <th>Fecha</th>
               <th>Acciones</th>
@@ -260,11 +280,13 @@ const Registros = () => {
                                      "No disponible";
                                      
                 const fecha = diagnostico.creadoEn || diagnostico.fecha || new Date();
+                const trabajadores = diagnostico.empleador?.trabajadores || "No disponible"
                 
                 return (
                   <tr key={index}>
                     <td>{nombreEmpleador}</td>
                     <td>{identificacion}</td>
+                    <td>{trabajadores}</td>
                     <td>{Math.round(porcentaje)}%</td>
                     <td>{formatearFecha(fecha)}</td>
                     <td>
