@@ -57,8 +57,7 @@ const Resultados = () => {
         const preguntasResponse = await axios.get(`${API_URL}/api/preguntas`);
         const preguntas = preguntasResponse.data;
 
-        const datosAnalizados = procesarDatos(respuestas, preguntas);
-        console.log(datosAnalizados);
+        const datosAnalizados = procesarDatos(respuestas, preguntas);        
         
         
         setResultados({

@@ -10,15 +10,29 @@ const Registros = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [diagnosticoSeleccionado, setDiagnosticoSeleccionado] = useState(null);
-  const [detallesDiagnostico, setDetallesDiagnostico] = useState(null);
+  const [detallesDiagnostico, setDetallesDiagnostico] = useState(null);  
   
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/api/diagnostico`); 
-        setHistorial(response.data);
-        console.log("Datos del historial:", response.data);
+        const [empleadoresResponse, diagnosticosResponse ] = await Promise.all([
+          axios.get(`${API_URL}/api/empleadores`),
+          axios.get(`${API_URL}/api/diagnostico`),            
+        ]);
+        
+        const empleador = empleadoresResponse.data;       
+
+        const response = diagnosticosResponse.data.map((diagnostico) => {
+          const empleadorEncontrado = empleador.find((e) => e.id === diagnostico.id);
+          return {
+            ...diagnostico,
+            empleador: empleadorEncontrado || {},
+            cumplimiento: diagnostico.resultado?.porcentajeGeneral || 0,
+          };
+        });
+    
+        setHistorial(response);              
         setLoading(false);
       } catch (err) {
         console.error("Error al cargar el historial:", err);
@@ -75,8 +89,7 @@ const Registros = () => {
       .includes(filtro.razonSocial.toLowerCase());
     
     return coincideDocumento && coincideRazonSocial;
-  });
-  console.log("Resultados filtradoss:", resultadosFiltrados);
+  });  
 
   // Función para volver a la lista de diagnósticos
   const volverALista = () => {
@@ -217,6 +230,7 @@ const Registros = () => {
             <tr>
               <th>Razón Social</th>
               <th>Número de Documento</th>
+              <th>Número de trabajadores</th>
               <th>Porcentaje de Cumplimiento</th>
               <th>Fecha</th>
               <th>Acciones</th>
@@ -238,11 +252,16 @@ const Registros = () => {
                                      "No disponible";
                                      
                 const fecha = diagnostico.creadoEn || diagnostico.fecha || new Date();
+
+                const trabajadores = diagnostico.empleador?.trabajadores ||
+                                  diagnostico.trabajadores || 
+                                  "No disponible";
                 
                 return (
                   <tr key={index}>
                     <td>{nombreEmpleador}</td>
                     <td>{identificacion}</td>
+                    <td>{trabajadores}</td>
                     <td>{Math.round(porcentaje)}%</td>
                     <td>{formatearFecha(fecha)}</td>
                     <td>
