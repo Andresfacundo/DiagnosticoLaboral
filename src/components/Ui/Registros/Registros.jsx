@@ -113,6 +113,13 @@ const Registros = () => {
     }
   };
 
+  // Función para determinar el nivel de cumplimiento
+  const getNivelCumplimiento = (porcentaje) => {
+    if (porcentaje >= 80) return "alto";
+    if (porcentaje >= 60) return "medio";
+    return "bajo";
+  };
+
   if (loading) return (
     <div className="loading-container">
       <p>Cargando información...</p>
@@ -135,6 +142,8 @@ const Registros = () => {
     const nombreEmpleador = diagnosticoActual?.empleador?.nombres || 
                           diagnosticoActual?.nombres || 
                           "Empleador";
+    const porcentajeGeneral = Math.round(detallesDiagnostico.porcentajeGeneral);
+    const nivelCumplimiento = getNivelCumplimiento(porcentajeGeneral);
     
     return (
       <div className="detalles-diagnostico-container">
@@ -149,7 +158,7 @@ const Registros = () => {
           <h2>Resumen de Cumplimiento</h2>
           <div className="estadisticas-generales">
             <div className="estadistica">
-              <span className="valor">{Math.round(detallesDiagnostico.porcentajeGeneral)}%</span>
+              <span className={`valor nivel-${nivelCumplimiento}`}>{porcentajeGeneral}%</span>
               <span className="etiqueta">Cumplimiento General</span>
             </div>
             <div className="estadistica">
@@ -175,31 +184,34 @@ const Registros = () => {
         </div>
         
         <h2>Detalle por Categorías</h2>
-        {detallesDiagnostico.categoriasAnalizadas && Object.entries(detallesDiagnostico.categoriasAnalizadas).map(([categoria, datos], idx) => (
-          <div key={idx} className="categoria-detalle">
-            <h3>{categoria} - {Math.round(datos.porcentaje)}% de cumplimiento</h3>
-            <table className="tabla-preguntas">
-              <thead>
-                <tr>
-                  <th>Pregunta</th>
-                  <th>Respuesta</th>
-                  <th>Comentario</th>
-                  
-                </tr>
-              </thead>
-              <tbody>
-                {datos.preguntas.map((pregunta) => (
-                  <tr key={pregunta.id}>
-                    <td>{pregunta.texto}</td>
-                    <td>{pregunta.respuesta}</td>
-                    <td>{pregunta.comentario || "-"}</td>
-                    
+        {detallesDiagnostico.categoriasAnalizadas && Object.entries(detallesDiagnostico.categoriasAnalizadas).map(([categoria, datos], idx) => {
+          const porcentajeCategoria = Math.round(datos.porcentaje);
+          const nivelCategoria = getNivelCumplimiento(porcentajeCategoria);
+          
+          return (
+            <div key={idx} className={`categoria-detalle nivel-${nivelCategoria}`}>
+              <h3>{categoria} - {porcentajeCategoria}% de cumplimiento</h3>
+              <table className="tabla-preguntas">
+                <thead>
+                  <tr>
+                    <th>Pregunta</th>
+                    <th>Respuesta</th>
+                    <th>Comentario</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
+                </thead>
+                <tbody>
+                  {datos.preguntas.map((pregunta) => (
+                    <tr key={pregunta.id}>
+                      <td>{pregunta.texto}</td>
+                      <td>{pregunta.respuesta}</td>
+                      <td>{pregunta.comentario || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -239,9 +251,9 @@ const Registros = () => {
           <tbody>
             {resultadosFiltrados.length > 0 ? (
               resultadosFiltrados.map((diagnostico, index) => {
-                const porcentaje = diagnostico.resultado?.porcentajeGeneral || 
+                const porcentaje = Math.round(diagnostico.resultado?.porcentajeGeneral || 
                                 diagnostico.porcentajeGeneral || 
-                                diagnostico.cumplimiento || 0;
+                                diagnostico.cumplimiento || 0);
                                 
                 const nombreEmpleador = diagnostico.empleador?.nombres || 
                                       diagnostico.nombres || 
@@ -257,12 +269,14 @@ const Registros = () => {
                                   diagnostico.trabajadores || 
                                   "No disponible";
                 
+                const nivelCumplimiento = getNivelCumplimiento(porcentaje);
+                
                 return (
-                  <tr key={index}>
+                  <tr key={index} data-cumplimiento={nivelCumplimiento}>
                     <td>{nombreEmpleador}</td>
                     <td>{identificacion}</td>
                     <td>{trabajadores}</td>
-                    <td>{Math.round(porcentaje)}%</td>
+                    <td data-value={porcentaje}>{porcentaje}%</td>
                     <td>{formatearFecha(fecha)}</td>
                     <td>
                       <button 
@@ -277,7 +291,7 @@ const Registros = () => {
               })
             ) : (
               <tr>
-                <td colSpan="5">No se encontraron resultados.</td>
+                <td colSpan="6">No se encontraron resultados.</td>
               </tr>
             )}
           </tbody>
