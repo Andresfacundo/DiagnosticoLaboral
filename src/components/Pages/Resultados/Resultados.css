@@ -443,21 +443,18 @@
 
 /* Estilos para impresión */
 @media print {
-  .diagnostico-container {
-    box-shadow: none;
-    margin: 0;
-    padding: 1rem;
-  }
-  
+  .btn-imprimir,
+  .btn-nuevo-diagnostico,
+  .navbar,
+  #footer,
   .diagnostico-acciones {
-    display: none;
+    display: none !important;
   }
-  
-  .categoria-card:hover {
-    transform: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  body {
+    background: white !important;
   }
 }
+
 
 /* Responsive para dispositivos pequeños */
 @media (max-width: 768px) {

@@ -29,7 +29,7 @@ function App() {
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
     </Routes>
-    <Footer />        
+    <Footer id='footer'/>        
     </>
   )
 }

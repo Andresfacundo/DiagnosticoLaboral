@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import del from "../../../../public/delete.svg";
 import "./Registros.css";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -43,6 +45,18 @@ const Registros = () => {
 
     fetchHistorial();
   }, []);
+
+  const eliminarDiagnostico = async (id) => {
+    const confirmacion = window.confirm("¿Está seguro de que desea eliminar este diagnóstico?");
+    if(!confirmacion) return;
+    try {
+      await axios.delete(`${API_URL}/api/diagnostico/${id}`);
+      setHistorial((prevHistorial) => prevHistorial.filter((item) => item.id !== id));
+    }catch (error) {
+      console.error("Error al eliminar el diagnóstico:", error);
+      setError("Error al eliminar el diagnóstico. Por favor intente nuevamente.");
+    }
+  }
 
   const cargarDetallesDiagnostico = async (diagnosticoId) => {
     try {
@@ -278,13 +292,25 @@ const Registros = () => {
                     <td>{trabajadores}</td>
                     <td data-value={porcentaje}>{porcentaje}%</td>
                     <td>{formatearFecha(fecha)}</td>
-                    <td>
+                    <td className="acciones">
+                      {historial.map((item) => 
+                        item.id === diagnostico.id && (
+                          <button 
+                            key={item.id} 
+                            onClick={() => eliminarDiagnostico(item.id)}                             
+                            className="btn-elimina"
+                          >
+                            <img src={del} alt="" />
+                          </button>
+                        )
+                      )}
                       <button 
                         onClick={() => cargarDetallesDiagnostico(diagnostico.id)} 
                         className="btn-ver-detalles"
                       >
                         Ver detalles
                       </button>
+                   
                     </td>
                   </tr>
                 );

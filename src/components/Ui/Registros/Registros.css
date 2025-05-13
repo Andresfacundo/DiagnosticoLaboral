@@ -87,7 +87,12 @@ table {
 table th,
 table td {
   padding: 1rem;
-  text-align: left;
+  text-align: center;
+}
+.acciones{
+  /* border: 2px solid red; */
+  display: flex;
+  gap: 1rem;
 }
 
 table th {
@@ -122,16 +127,19 @@ table tr:last-child {
 /* Botones */
 .btn-ver-detalles,
 .btn-volver,
-.btn-reintentar {
-  padding: 0.5rem 1rem;
+.btn-reintentar{
   border: none;
-  border-radius: var(--border-radius);
+  padding: .5rem;
+  border-radius: 5px;
   cursor: pointer;
-  font-weight: 500;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+}
+.btn-elimina{
+  border: none;
+  cursor: pointer;
+}
+.btn-elimina img{
+  width: 22px;
+  height: 22px;
 }
 
 .btn-ver-detalles {

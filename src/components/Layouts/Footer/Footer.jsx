@@ -11,7 +11,7 @@ const gps = import.meta.env.VITE_UBICACION;
 const correo = import.meta.env.VITE_EMAIL;
 const INSTAGRAM = import.meta.env.VITE_INSTAGRAM;
 
-const Footer = () => {
+const Footer = ({id}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userRole, setUserRole] = useState('invitado');
     const location = useLocation();
@@ -53,7 +53,7 @@ const Footer = () => {
     };
 
     return (
-        <div className="footer-wrapper">
+        <div id={id}className="footer-wrapper">
             {/* Aquí el formulario Contacto */}
             
 
