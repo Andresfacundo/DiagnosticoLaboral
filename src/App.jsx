@@ -13,23 +13,23 @@ import AboutDiagnosis from './components/Ui/AboutDiagnosis/AboutDiagnosis.jsx'
 import Registros from './components/Ui/Registros/Registros.jsx'
 import { isTokenExpired } from './utils/valiteExpiration.js'
 import { useEffect } from 'react'
-// import LoggingOut from './components/Ui/LogoutAutomatico/LoggingOut.jsx'
+import LoggingOut from './components/Ui/LogoutAutomatico/LoggingOut.jsx'
 
 function App() {
   const navigate = useNavigate();
   
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (isTokenExpired(token)) {
+    if (token && isTokenExpired(token)) {
       localStorage.removeItem('token');
-      // navigate('/');
+      navigate('/cerrando-sesion');
     };
 
     const interval = setInterval(() => {
       const token = localStorage.getItem('token');
-      if(isTokenExpired(token)) {
+      if(token && isTokenExpired(token)) {
         localStorage.removeItem('token');
-        //  navigate('/');
+        navigate('/cerrando-sesion');
       }
     }, 60000); // minuto
     return () => clearInterval(interval);
@@ -38,7 +38,7 @@ function App() {
   return (
     
     <>
-    {/* <Logo/> */}
+    
     <Navbar id='navbar'/>
     <Routes>
       <Route path='/' element={<Home/>}/>
@@ -50,7 +50,7 @@ function App() {
       <Route path='diagnostico' element={<InfoDiagnostico/>}/>
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
-      {/* <Route path="/cerrando-sesion" element={<LoggingOut />} /> */}
+      <Route path="/cerrando-sesion" element={<LoggingOut />} />
 
     </Routes>
     <Footer id='footer'/>        

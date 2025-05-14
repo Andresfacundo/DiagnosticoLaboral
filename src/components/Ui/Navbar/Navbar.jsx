@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import GVA from '../GVA/GVA.jsx'
 import './Navbar.css'
 import user from '../../../../public/usuario.png'
@@ -10,6 +10,7 @@ import axios from 'axios'
 import authService from '../../../Services/authService.js'
 import gap from '../../../../public/gap.png'
 import GAP from '../GAP/GAP.jsx'
+import LoggingOut from '../LogoutAutomatico/LoggingOut.jsx'
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -18,6 +19,8 @@ const Navbar = ({id}) => {
     const [userRole, setUserRole] = useState('invitado');
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const navigate = useNavigate();
     
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -67,29 +70,29 @@ const Navbar = ({id}) => {
     };
 
     const handleLogout = async () => {
+        setIsLoggingOut(true); // Mostrar el spinner
         const token = authService.getToken();
         try {
-            if(token){
+            if (token) {
                 await axios.post(`${API_URL}/api/auth/logout`, {}, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
             }
-            authService.logout();
-            setIsAuthenticated(false);
-            setUserRole('invitado');
-            closeMenu();
-
         } catch (error) {
             console.error('Error durante el logout:', error);
+        } finally {
             authService.logout();
             setIsAuthenticated(false);
             setUserRole('invitado');
+            setIsLoggingOut(false);
+            navigate('/cerrando-sesion');
         }
-    }
+    };
+
     
     return (
+        <>
+        {isLoggingOut && <LoggingOut />}
         <div id={id} className='navbar-container'>
             <nav className='navbar'>
                 <div className="navbar-logo">
@@ -129,7 +132,7 @@ const Navbar = ({id}) => {
                     </ul>
                         {isAuthenticated ? (
                             <li className='login'>
-                                <NavLink to='login' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
+                                <NavLink to='/login' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
                                     <img src={logout} alt='icon-logout' className='logo-user' />
                                     <span className="menu-text">Cerrar sesión</span>
                                 </NavLink>
@@ -145,6 +148,7 @@ const Navbar = ({id}) => {
                 </div>
             </nav>
         </div>
+        </> 
     )
 }
 
