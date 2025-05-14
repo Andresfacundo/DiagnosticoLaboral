@@ -1,0 +1,332 @@
+/* Estilos generales */
+*{
+  box-sizing: border-box;
+}
+body{
+  background-color: #eae9ecb2;
+}
+
+  /* Estilos de los resultados */
+  .pdf-colors {
+    background-color: #eae9ecb2; /* Fondo deseado */
+    color: #333; /* Texto oscuro */
+  }
+  
+  .pdf-colors .result-card .result-parafiscales  {
+    background-color: #fff; 
+    color: #333; 
+  }
+
+  .results-container {
+    font-family: "Jost", serif ;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    margin-top: 30px;
+  }
+  .results-container .alert{
+    background-color: #889AA4;
+    border-radius: 5px;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    color: #fff;
+    justify-content: space-around;
+    padding: 10px;
+    box-shadow: 0px  0px 11px 3px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    right: 9px;
+    top: 1rem;
+    position: fixed;
+  }
+
+  .container-button{
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 1rem;
+  }
+  .results-grid {
+    display: grid;
+    /* grid-template-columns: repeat(auto-fit, minmax(2px, 1fr)); */
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 20px;
+    padding-bottom: 2rem;
+  }
+
+  .result-card{
+    color: #333;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 11px;
+    box-shadow: 0rem 0rem 11px 3px rgba(170, 168, 168, 0.5);
+    display: flex;
+    flex-direction: column;
+  }
+  .result-card .delete-button{
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+  }
+  .result-card .selector{
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    top: 5px;
+    cursor: pointer;
+
+  }
+  .result-card h2{
+    border-bottom: 1px solid #889AA4;
+  }
+  h2{
+    margin: 0;
+    text-align: center;
+    padding-bottom: 1rem;
+    
+  }
+
+  .container-img{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 10px;
+  
+  }
+  .container-img img{
+    width: 250px;
+  }
+
+   @keyframes fadeInOut{
+    from {
+      opacity: 0;
+      transform: translateX(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+   }
+
+  .result-parafiscales{
+    color: #333;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-radius: 8px;
+    padding: 11px;
+    box-shadow: 0rem 0rem 11px 3px rgba(170, 168, 168, 0.5);
+    display: flex;
+    flex-direction: column;    
+  }
+  .result-parafiscales h2{
+    border-bottom: 1px solid #889AA4;
+
+  }
+  .box-parafiscales{
+    display: flex;
+  }
+  .box-concepto{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+  }
+  
+  .result-parafiscales h3{
+    padding-bottom: 14px;
+    margin-bottom: 0;margin-top: 14px;
+    
+  }
+
+  .result-ibc{
+    align-items: center;
+    font-weight: 600;
+    width: 50%;
+    
+  }
+  .content-ibc{
+    border-bottom: 1px solid #889AA4;
+    height: 2.5rem;
+    text-align: center;
+  }
+  .box-ibc {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+  }
+  .box-ibc .operator{
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .box-ibc .salary{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+  }
+  .box-ibc .salary p{
+    width: 100%;
+  }
+  .contentImg button{
+    background-color: #DFBD7C;
+    border: none;
+    padding: 7px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    align-self: self-end;
+
+  }
+  .contentImg button img{
+    width: 25px;
+    padding: 0;
+    margin-right:10px;
+
+  }
+  .contentImg {
+    padding: 10px 0 10px 0;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    /* justify-content: center; */
+    height: 100%;
+
+  }
+  .result-card .gomezV{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-self: flex-end;
+    height: 100%;
+  }
+ 
+  .result-card .gomezV img{
+    margin-right: 1rem;
+    width: 90px; 
+
+  }
+  .result-parafiscales .gomezV img{
+    margin-right: 1rem;
+    width: 90px;
+  }
+  .result-parafiscales .gomezV{
+    display: flex;
+    justify-content: flex-end;
+  }
+  .content-proyecctions .title{
+    border-bottom: 1px solid #889AA4;
+    display: flex;
+    justify-content: space-around;
+
+  }
+  .box-parafiscales .title{
+    border-bottom: 1px solid #889AA4;
+    display: flex;
+    justify-content: space-around;
+  }
+  .title2{
+    display: none;
+  }
+  .result{
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .employer-proyecctions {
+    width: 100%;
+  }
+  .box-employer p{
+    width: 100%;
+  }
+  .employer-proyecctions .box-employer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+  }
+  .employee-proyecctions{
+    width: 100%;
+  }
+  .box-employee p{
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+  .box-employee p span{
+    width: 100%;
+
+  }
+  .employee-proyecctions .box-employee{
+    display: flex;
+    justify-content: space-around;
+    align-items: center; 
+    text-align: center;
+  }
+
+  /* Estilos responsivos */
+  @media (max-width: 920px){
+    .content-proyecctions .title h3:nth-child(2){
+      display: none;
+    }
+    .title2{
+      width: 100%;
+      display: block;
+      text-align: center;
+      border-top: 1px solid #889AA4;
+      border-bottom: 1px solid #889AA4;
+
+    }
+    .content-proyecctions .result{
+      display: flex;
+      flex-wrap: wrap;
+
+    }
+  }
+  @media (max-width: 768px) {
+
+    .box-parafiscales{
+      justify-content: space-around;
+      flex-direction: column;
+      border: none;
+    }
+ 
+  .result-ibc{
+    width: 100%;
+  }
+  .box-parafiscales .title{
+    border-top: 1px solid #889AA4;
+  }
+  
+
+  }
+  @media (max-width: 480px){
+    .results-grid{
+      grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    }
+
+    .item-ibc p:nth-child(3){
+      margin: 16px 0 16px 0;
+  }
+}
+  /* Animaciones */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .results-container {
+    animation: fadeIn 0.3s ease-out;
+  }

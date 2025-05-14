@@ -1,0 +1,24 @@
+.boxButton {
+    width: 33%;
+    justify-content: center;
+    display: flex;
+
+}
+
+.boton {
+    display: flex;
+    align-items: center;
+    background-color: #DFBD7C;
+    width: 98%;
+    height: auto;
+    padding: .2rem;
+    border-radius: 5px;
+    color: #000;
+    text-decoration: none;
+    justify-content: center;
+
+}
+
+.boton img {
+    width: 25px;
+}

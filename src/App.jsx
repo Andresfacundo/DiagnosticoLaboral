@@ -14,6 +14,7 @@ import Registros from './components/Ui/Registros/Registros.jsx'
 import { isTokenExpired } from './utils/valiteExpiration.js'
 import { useEffect } from 'react'
 import LoggingOut from './components/Ui/LogoutAutomatico/LoggingOut.jsx'
+import NotFound from "./components/UI/NotFound/NotFound";
 
 function App() {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ function App() {
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
       <Route path="/cerrando-sesion" element={<LoggingOut />} />
+      <Route path="*" Component={NotFound}/>
 
     </Routes>
     <Footer id='footer'/>        
