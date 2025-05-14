@@ -9,7 +9,7 @@ const LoggingOut = () => {
   useEffect(() => {
     // Redirigir luego de 2 segundos
     const timeout = setTimeout(() => {
-      navigate('/login');
+      navigate('/');
     }, 2000);
 
     return () => clearTimeout(timeout);
