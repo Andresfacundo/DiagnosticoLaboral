@@ -31,7 +31,7 @@ function App() {
         localStorage.removeItem('token');
         //  navigate('/');
       }
-    }, 5000); // minuto
+    }, 60000); // minuto
     return () => clearInterval(interval);
 
   },[navigate]);
