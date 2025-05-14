@@ -8,6 +8,36 @@ const procesarDatos = (respuestas, preguntas) => {
     const categoriasAnalizadas = {};
     const puntajePorCategoria = [];
 
+    // Función auxiliar para obtener el peso máximo de todas las respuestas
+    function obtenerPesoMaximo(respuestas) {
+        if (!respuestas) return 0;
+        return Math.max(...Object.values(respuestas).filter(valor => typeof valor === 'number'));
+    }
+
+    // Función para calcular el cumplimiento basado en el valor de la respuesta
+    function calcularCumplimiento(respuesta, respuestas, pesoTotal) {
+        if (!respuestas || !pesoTotal) return 0;
+        const valor = respuestas[respuesta] || 0;
+        return (valor / pesoTotal) * 100;
+    }
+
+    // Función para obtener el valor de una respuesta
+    function obtenerValorRespuesta(respuesta, pregunta) {
+        // Si hay un valor específico definido para esta respuesta, úsalo
+        if (pregunta.respuestas && pregunta.respuestas[respuesta] !== undefined) {
+            return pregunta.respuestas[respuesta];
+        }
+        
+        // Si no hay un valor específico, usa la lógica predeterminada como fallback
+        if (respuesta === "Sí" || respuesta === "Si") {
+            return pregunta.peso;
+        } else if (respuesta === "Parcialmente") {
+            return pregunta.peso * 0.5;
+        } else {
+            return 0;
+        }
+    }
+
     categoriasUnicas.forEach(categoria => {
         const respuestasCat = respuestasConDetalles.filter(r => r.pregunta && r.pregunta.categoria === categoria);
 
@@ -23,32 +53,32 @@ const procesarDatos = (respuestas, preguntas) => {
         const preguntasCategoria = [];
 
         respuestasCat.forEach(r => {
+            // Incrementar el contador apropiado
             if (r.respuesta === "Sí" || r.respuesta === "Si") {
                 conteo.Si++;
-                puntajeObtenido += r.pregunta.respuestas?.Si || r.pregunta.peso;
             } else if (r.respuesta === "No") {
                 conteo.No++;
-                puntajeObtenido += r.pregunta.respuestas?.No || 0;
             } else if (r.respuesta === "No aplica") {
                 conteo.NA++;
-                puntajeObtenido += r.pregunta.respuestas?.["No aplica"] || 0;
             } else if (r.respuesta === "Parcialmente") {
                 conteo.Parcialmente++;
-                puntajeObtenido += (r.pregunta.respuestas?.Parcialmente || r.pregunta.peso * 0.5); 
             }
 
-            puntajePosible += r.pregunta.respuestas?.Si || r.pregunta.peso;
+            // Obtener el valor de la respuesta de manera flexible
+            puntajeObtenido += obtenerValorRespuesta(r.respuesta, r.pregunta);
+            
+            // Calcular el puntaje posible (peso máximo) para esta pregunta
+            const pesoMax = r.pregunta.peso || obtenerPesoMaximo(r.pregunta.respuestas);
+            puntajePosible += pesoMax;
 
             preguntasCategoria.push({
                 id: r.pregunta.id,
                 texto: r.pregunta.texto,
                 respuesta: r.respuesta,
                 comentario: r.comentario || "",
-                valorRespuesta: r.respuesta === "Sí" || r.respuesta === "Si"
-                    ? (r.pregunta.respuestas?.Si || r.pregunta.peso)
-                    : (r.pregunta.respuestas?.[r.respuesta] || 0),
-                pesoTotal: r.pregunta.respuestas?.Si || r.pregunta.peso,
-                cumplimiento: r.respuesta === "Sí" || r.respuesta === "Si" ? 100 : r.respuesta === "Parcialmente" ? 50 : 0
+                valorRespuesta: r.pregunta.respuestas?.[r.respuesta] || 0,
+                pesoTotal: pesoMax,
+                cumplimiento: calcularCumplimiento(r.respuesta, r.pregunta.respuestas, pesoMax)
             });
         });
 
@@ -84,17 +114,12 @@ const procesarDatos = (respuestas, preguntas) => {
 
     respuestasConDetalles.forEach(r => {
         if (r.pregunta) {
-            if (r.respuesta === "Sí" || r.respuesta === "Si") {
-                puntajeTotal += r.pregunta.respuestas?.Si || r.pregunta.peso;
-            } else if (r.respuesta === "No") {
-                puntajeTotal += r.pregunta.respuestas?.No || 0;
-            } else if (r.respuesta === "No aplica") {
-                puntajeTotal += r.pregunta.respuestas?.["No aplica"] || 0;
-            } else if (r.respuesta === "Parcialmente") {
-                puntajeTotal += (r.pregunta.respuestas?.Parcialmente || r.pregunta.peso * 0.5);
-            }
-
-            puntajeMaximo += r.pregunta.respuestas?.Si || r.pregunta.peso;
+            // Usar la misma función para obtener el valor de respuesta
+            puntajeTotal += obtenerValorRespuesta(r.respuesta, r.pregunta);
+            
+            // Calcular el peso máximo de la misma manera
+            const pesoMax = r.pregunta.peso || obtenerPesoMaximo(r.pregunta.respuestas);
+            puntajeMaximo += pesoMax;
         }
     });
 
