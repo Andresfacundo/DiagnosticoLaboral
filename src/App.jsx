@@ -22,16 +22,16 @@ function App() {
     const token = localStorage.getItem('token');
     if (isTokenExpired(token)) {
       localStorage.removeItem('token');
-      navigate('/');
+      // navigate('/');
     };
 
     const interval = setInterval(() => {
       const token = localStorage.getItem('token');
       if(isTokenExpired(token)) {
         localStorage.removeItem('token');
-        navigate('/');
+        //  navigate('/');
       }
-    }, 60000); // minuto
+    }, 5000); // minuto
     return () => clearInterval(interval);
 
   },[navigate]);
