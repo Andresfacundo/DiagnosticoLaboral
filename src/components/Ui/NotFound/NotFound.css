@@ -1,17 +1,15 @@
 .container-notFound{
-    font-family: "Jost", serif;
-    font-optical-sizing: auto;
-    /* border: 2px solid red; */
+    font-optical-sizing: auto;    
+    margin: 5rem auto;
 }
 .items h1{
     font-size: 5rem;
     color: black;
     font-weight: 700;
-    margin: 4rem 0 0 0 ;
+    margin: 0;
     text-align: center;
 }
 .item-notFound{
-    /* border: 2px solid rgb(0, 60, 255); */
     display: flex;
     flex-direction: column;
     justify-content: center;

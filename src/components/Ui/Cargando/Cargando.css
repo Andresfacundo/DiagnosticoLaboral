@@ -1,5 +1,5 @@
 
-.logging-out-container {
+.cargando {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,11 +9,11 @@
   font-size: 23px;
 }
 
-.spinner {
+.spinning {
   width: 90px;
   height: 90px;
-  border: 8px solid #ccc;
-  border-top: 8px solid #DFBD7C;
+  border: 7px solid #ccc;
+  border-top: 7px solid #DFBD7C;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;

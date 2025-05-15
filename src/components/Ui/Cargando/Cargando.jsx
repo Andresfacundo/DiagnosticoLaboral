@@ -1,25 +1,24 @@
-// src/components/LoggingOut.jsx
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './LoggingOut.css';
+import './Cargando.css';
 
-const LoggingOut = () => {
+const Cargando = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       navigate('/login');
-    }, 2000);
+    }, 1500);
 
     return () => clearTimeout(timeout);
   }, [navigate]);
 
   return (
-    <div className="logging-out-container">
-      <div className="spinner"></div>
-      <p>Cerrando sesión...</p>
+    <div className="cargando">
+      <div className="spinning"></div>
+      <p>Cargando...</p>
     </div>
   );
 };
 
-export default LoggingOut;
+export default Cargando;

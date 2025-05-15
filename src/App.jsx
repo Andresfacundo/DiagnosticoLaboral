@@ -14,6 +14,8 @@ import Registros from './components/Ui/Registros/Registros.jsx'
 import { isTokenExpired } from './utils/valiteExpiration.js'
 import { useEffect } from 'react'
 import LoggingOut from './components/Ui/LogoutAutomatico/LoggingOut.jsx'
+import Cargando from './components/Ui/Cargando/Cargando.jsx'
+
 
 
 import FormularioCalculadora from './components/Pages/FormularioCalculadora/FormularioCalculadora.jsx'
@@ -58,6 +60,7 @@ function App() {
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
       <Route path="/cerrando-sesion" element={<LoggingOut />} />
+      <Route path="/cargando" element={<Cargando />} />
 
 
       <Route path="/form/calculadora" element={<FormularioCalculadora/>} />
