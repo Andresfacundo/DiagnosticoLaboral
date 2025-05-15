@@ -51,6 +51,11 @@ function App() {
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
       <Route path="/cerrando-sesion" element={<LoggingOut />} />
+      <Route path="*" element={<NotFound/>}/>
+      <Route path="notAvaible" element={<NotAvaible/>}/>
+      <Route path="Comparar" element={<Comparar/>}/>
+      <Route path="/form/calculadora" element={<FormularioCalculadora/>} />
+      <Route path="Resultados/calculadora" element={<ResultadosCalculadora/>} />
 
     </Routes>
     <Footer id='footer'/>        
