@@ -5,7 +5,7 @@ import "./FormularioCalculadora.css";
 import Calculadora from "../../../assets/calculator-line.png";
 import { calcularNomina } from "../../../Services/api.js";
 import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora.jsx";
-import "../../UI/NavbarCalculadora/NavbarCalculadora.css";
+import "../../Ui/NavbarCalculadora/NavbarCalculadora.css";
 import ok from "../../../assets/ok.png";
 
 const FormularioCalculadora = () => {
