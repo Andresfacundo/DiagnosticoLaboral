@@ -1,4 +1,4 @@
-/* ComparativeGraph.css */
+
 .grafic-diferent {
     width: 100%;
     padding: 20px 0;
@@ -6,7 +6,7 @@
   
   .graph-container {
     display: flex;
-    /* border: 2px solid red; */
+
     justify-content: space-between;
     align-items: flex-end;
     max-width: 800px;
@@ -16,7 +16,7 @@
   }
   
   .graph-column {
-    /* border: 2px solid red; */
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -73,7 +73,7 @@
   }
   
 
-  /* Estilos responsivos */
+
   @media (max-width: 640px) {
     .graph-container {
       flex-wrap: wrap;

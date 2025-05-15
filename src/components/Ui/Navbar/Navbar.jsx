@@ -123,7 +123,7 @@ const Navbar = ({id}) => {
                         )}
                         {/* Solo mostrar Calculadora para admin/superadmin */}
                         {hasAccess('admin') && (
-                            <li className='calculadora'><a href="https://calculadora-gap-six.vercel.app/" onClick={closeMenu} target='_blank'>Calculadora</a></li>
+                            <li className='calculadora'><a href="/form/calculadora" onClick={closeMenu}>Calculadora</a></li>
                         )}
                                                 
                         {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}

@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../NavbarCalculadora/Navbar";
+import Navbar from "../NavbarCalculadora/NavbarCalculadora";
 import "./NotAvaible.css";
 
 const NotAvaible = () => {

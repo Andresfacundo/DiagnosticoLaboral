@@ -1,5 +1,5 @@
 import React from 'react';
-import Parrafos from '../../UI/Parrafos/Parrafos';
+import Parrafos from '../Ui/Parrafos/Parrafos';
 import formatCurrency from '../../utils/formatUtils';
 import './ResultDiference.css'
 

@@ -1,15 +1,10 @@
-/* Estilos generales */
 *{
   box-sizing: border-box;
 }
-body{
-  background-color: #eae9ecb2;
-}
 
-  /* Estilos de los resultados */
   .pdf-colors {
-    background-color: #eae9ecb2; /* Fondo deseado */
-    color: #333; /* Texto oscuro */
+    background-color: #eae9ecb2;
+    color: #333;
   }
   
   .pdf-colors .result-card .result-parafiscales  {
@@ -18,9 +13,6 @@ body{
   }
 
   .results-container {
-    font-family: "Jost", serif ;
-    font-optical-sizing: auto;
-    font-weight: 400;
     margin-top: 30px;
   }
   .results-container .alert{
@@ -34,15 +26,18 @@ body{
     padding: 10px;
     box-shadow: 0px  0px 11px 3px rgba(0, 0, 0, 0.1);
     position: absolute;
-    right: 9px;
-    top: 1rem;
+    right: 10px;
+    top: 8rem;
     position: fixed;
+    z-index: 3;
   }
 
   .container-button{
     display: flex;
     justify-content: space-around;
     padding-bottom: 1rem;
+    max-width: 1300px;
+    margin: 0 auto;
   }
   .results-grid {
     display: grid;
@@ -51,11 +46,13 @@ body{
     grid-template-rows: auto 1fr auto;
     gap: 20px;
     padding-bottom: 2rem;
+    max-width: 1300px;
+    margin: 0 auto;
   }
 
   .result-card{
     color: #333;
-    background: #f8f9fa;
+    background-color: #fff;
     border-radius: 8px;
     padding: 11px;
     box-shadow: 0rem 0rem 11px 3px rgba(170, 168, 168, 0.5);
@@ -77,12 +74,10 @@ body{
   }
   .result-card h2{
     border-bottom: 1px solid #889AA4;
+    text-align: center;    
   }
-  h2{
-    margin: 0;
+  .content-result h2 {
     text-align: center;
-    padding-bottom: 1rem;
-    
   }
 
   .container-img{
@@ -110,7 +105,7 @@ body{
 
   .result-parafiscales{
     color: #333;
-    background: #f8f9fa;
+    background: #fff;
     border-radius: 8px;
     border-radius: 8px;
     padding: 11px;
@@ -120,6 +115,7 @@ body{
   }
   .result-parafiscales h2{
     border-bottom: 1px solid #889AA4;
+    text-align: center;
 
   }
   .box-parafiscales{
@@ -145,8 +141,8 @@ body{
     
   }
   .content-ibc{
-    border-bottom: 1px solid #889AA4;
-    height: 2.5rem;
+    border-bottom: 0.1px solid #889AA4;
+    height: 2.4rem;
     text-align: center;
   }
   .box-ibc {
@@ -197,6 +193,8 @@ body{
     display: flex;
     /* justify-content: center; */
     height: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
 
   }
   .result-card .gomezV{

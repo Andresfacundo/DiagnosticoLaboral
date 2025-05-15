@@ -1,28 +1,28 @@
 import React from "react";
-import Boton from "../Boton/Boton.jsx";
 import Calculadora from "../../../assets/calculator-line.png";
 import Comparar from "../../../assets/arrow-left-right-line.png";
 import Resultado from "../../../assets/Chart Vertical.png";
 import "./Navbar.css";
+import BotonCalculadora from "../../UI/BotonCalculadora/BotonCalculadora";
 
 const Navbar = () => {
   return (
     <>
-      <Boton
-        route="/"
+      <BotonCalculadora
+        route="/form/calculadora"
         styleB="boxButton"
         className="boton"
-        img={Calculadora}
+        img={Calculadora}   
         content="Formulario"
       />
-      <Boton
+      <BotonCalculadora
         styleB="boxButton"
         className="boton"
         img={Resultado}
         content="Resultados"
-        route="/Resultados"
+        route="/Resultados/calculadora"
       />
-      <Boton 
+      <BotonCalculadora 
         route="/Comparar"
         styleB="boxButton testing"
         className="boton"

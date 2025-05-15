@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import gomez from "../../../assets/Group 17.png";
 import "../../../components/SalaryCalculator.css";
-import "./Formulario.css";
+import "./FormularioCalculadora.css";
 import Calculadora from "../../../assets/calculator-line.png";
-import { calcularNomina } from "../../../services/services.js";
-import Navbar from "../../UI/Navbar/Navbar.jsx";
+import { calcularNomina } from "../../../Services/api.js";
+import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora.jsx";
 import "../../UI/Navbar/Navbar.css";
 import ok from "../../../assets/ok.png";
 
-const Formulario = () => {
+const FormularioCalculadora = () => {
   const salarioMinimo = 1423500;
 
   const [formData, setFormData] = useState({
-    tipoSalario: "", // Changed default to empty to force selection
+    tipoSalario: "", 
     salario: "",
     otrosPagosSalariales: "",
     otrosPagosNoSalariales: "",
@@ -25,7 +25,9 @@ const Formulario = () => {
     retencionFuente: "",
   });
   const [showAlert, setShowAlert] = useState(false);
-  const [formErrors, setFormErrors] = useState({}); // Add state for form errors
+  const [formErrors, setFormErrors] = useState({}); 
+
+  
 
   // Función para formatear números con separadores de miles
   const formatNumber = (value) => {
@@ -158,7 +160,7 @@ const Formulario = () => {
       )}
       <div className="calculator-card">
         <div className="container-button">
-          <Navbar />
+          <NavbarCalculadora />
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-grid">
@@ -300,4 +302,4 @@ const Formulario = () => {
   );
 };
 
-export default Formulario;
+export default FormularioCalculadora;

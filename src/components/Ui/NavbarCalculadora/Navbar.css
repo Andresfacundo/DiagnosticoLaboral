@@ -5,7 +5,7 @@
 
 }
 
-.boton {
+.boxButton .boton {
     display: flex;
     align-items: center;
     background-color: #DFBD7C;
