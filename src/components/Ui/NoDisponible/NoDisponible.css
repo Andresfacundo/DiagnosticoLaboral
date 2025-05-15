@@ -1,19 +1,17 @@
 .not-content-result{
-    /* border: 2px solid red; */
-    font-family: "Jost", serif;
     font-optical-sizing: auto;
-    font-weight: 400;
     gap: 20px;
-    /* border: 2px solid red; */
     align-items: center;
     display: flex;
     flex-direction: column;
+    max-width: 1300px;
+    margin: 5rem auto;
 }
 .content-navbar{
     display: flex;
-    /* border: 2px solid red; */
-    width: 80%;justify-content: space-around;
-  }
+    width: 80%;
+    justify-content: space-around;
+}
 
 .boxTittle{
     background: #f8f9fa;
@@ -22,7 +20,7 @@
     box-shadow: 0rem 0rem 11px 3px rgba(170, 168, 168, 0.5);
     justify-content: center;
     display: flex;
-    width: 80%;
+    width: 100%;
 
 }
 @media (max-width: 768px) {

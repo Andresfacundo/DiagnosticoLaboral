@@ -4,8 +4,7 @@ import "./NoDisponible.css";
 
 const NoDisponible = () => {
   return (
-    <div className="not-content-result">
-      <h1>Resultados</h1>
+    <div className="not-content-result">      
         <div className="content-navbar">
           <NavbarCalculadora />
         </div>
