@@ -122,6 +122,7 @@ table tr:last-child {
 .btn-elimina{
   border: none;
   cursor: pointer;
+  background: none;
 }
 .btn-elimina img{
   width: 22px;

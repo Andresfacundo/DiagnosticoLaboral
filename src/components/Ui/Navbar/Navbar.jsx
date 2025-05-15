@@ -123,11 +123,11 @@ const Navbar = ({id}) => {
                         )}
                         {/* Solo mostrar Calculadora para admin/superadmin */}
                         {hasAccess('admin') && (
-                            <li className='calculadora'><a href="/form/calculadora" onClick={closeMenu}>Calculadora</a></li>
+                            <li className='calculadora'><NavLink to="/form/calculadora" onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Calculadora</NavLink></li>
                         )}
                                                 
                         {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
-                        <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros'>Nosotros</NavLink></li>
+                        <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros' className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Nosotros</NavLink></li>
                         
                     </ul>
                         {isAuthenticated ? (
