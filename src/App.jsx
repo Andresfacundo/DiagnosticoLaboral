@@ -14,12 +14,6 @@ import Registros from './components/Ui/Registros/Registros.jsx'
 import { isTokenExpired } from './utils/valiteExpiration.js'
 import { useEffect } from 'react'
 import LoggingOut from './components/Ui/LogoutAutomatico/LoggingOut.jsx'
-import NotFound from "./components/UI/NotFound/NotFound";
-import NotAvaible from './components/Ui/NotAvaible/NotAvaible.jsx'
-import Comparar from './components/Pages/Comparar/Comparar.jsx'
-import FormularioCalculadora from './components/Pages/FormularioCalculadora/FormularioCalculadora.jsx'
-import ResultadosCalculadora from './components/Pages/ResultadosCalculadora/ResultadosCalculadora.jsx'
-
 
 function App() {
   const navigate = useNavigate();
@@ -57,11 +51,6 @@ function App() {
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
       <Route path="/cerrando-sesion" element={<LoggingOut />} />
-      <Route path="*" element={<NotFound/>}/>
-      <Route path="notAvaible" element={<NotAvaible/>}/>
-      <Route path="Comparar" element={<Comparar/>}/>
-      <Route path="/form/calculadora" element={<FormularioCalculadora/>} />
-      <Route path="Resultados/calculadora" element={<ResultadosCalculadora/>} />
 
     </Routes>
     <Footer id='footer'/>        
