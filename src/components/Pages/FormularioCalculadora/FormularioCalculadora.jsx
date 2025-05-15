@@ -5,14 +5,14 @@ import "./FormularioCalculadora.css";
 import Calculadora from "../../../assets/calculator-line.png";
 import { calcularNomina } from "../../../Services/api.js";
 import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora.jsx";
-import "../../UI/Navbar/Navbar.css";
+import "../../UI/NavbarCalculadora/NavbarCalculadora.css";
 import ok from "../../../assets/ok.png";
 
 const FormularioCalculadora = () => {
   const salarioMinimo = 1423500;
 
   const [formData, setFormData] = useState({
-    tipoSalario: "", // Changed default to empty to force selection
+    tipoSalario: "", 
     salario: "",
     otrosPagosSalariales: "",
     otrosPagosNoSalariales: "",
