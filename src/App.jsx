@@ -14,6 +14,12 @@ import Registros from './components/Ui/Registros/Registros.jsx'
 import { isTokenExpired } from './utils/valiteExpiration.js'
 import { useEffect } from 'react'
 import LoggingOut from './components/Ui/LogoutAutomatico/LoggingOut.jsx'
+import NotFound from '../src/components/Ui/NotFound/NotFound.jsx'
+import NotAvaible from '../src/components/Ui/NotAvaible/NotAvaible.jsx'
+import Comparar from '../src/components/Pages/Comparar/Comparar.jsx'
+import FormularioCalculadora from '../src/components/Pages/Comparar/Comparar.jsx'
+import ResultadosCalculadora from '../src/components/Pages/ResultadosCalculadora/ResultadosCalculadora.jsx'
+
 
 function App() {
   const navigate = useNavigate();
