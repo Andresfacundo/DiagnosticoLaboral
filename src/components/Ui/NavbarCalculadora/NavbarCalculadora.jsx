@@ -3,7 +3,7 @@ import Calculadora from "../../../assets/calculator-line.png";
 import Comparar from "../../../assets/arrow-left-right-line.png";
 import Resultado from "../../../assets/Chart Vertical.png";
 import "./Navbar.css";
-import BotonCalculadora from "../../UI/BotonCalculadora/BotonCalculadora";
+import BotonCalculadora from "../BotonCalculadora/BotonCalculadora";
 
 const Navbar = () => {
   return (
