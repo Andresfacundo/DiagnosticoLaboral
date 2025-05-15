@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora.jsx";
 import Parrafos from "../../Ui/ParrafosCalculadora/ParrafosCalculadora.jsx";
 import gomez from "../../../assets/Group 17.png";
-import NotAvaible from "../../UI/NotAvaible/NotAvaible";
+import NotAvaible from "../../Ui/NoDisponible/NoDisponible.jsx";
 import deleteIcon from '../../../assets/delete.png';
 import ok from'../../../assets/ok.png';
 import "../../../utils/GeneratePdf.css";

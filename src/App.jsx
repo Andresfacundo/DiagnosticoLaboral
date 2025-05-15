@@ -20,7 +20,7 @@ import FormularioCalculadora from './components/Pages/FormularioCalculadora/Form
 import ResultadosCalculadora from './components/Pages/ResultadosCalculadora/ResultadosCalculadora.jsx'
 import Comparar from './components/Pages/Comparar/Comparar.jsx'
 import NotFound from './components/Ui/NotFound/NotFound.jsx'
-import NotAvaible from './components/UI/NotAvaible/NotAvaible.jsx'
+import NoDisponible from './components/Ui/NoDisponible/NoDisponible.jsx'
 
 function App() {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ function App() {
       <Route path="Resultados/calculadora" element={<ResultadosCalculadora/>} />
       <Route path="Comparar" element={<Comparar/>}/>
       <Route path="*" element={<NotFound/>}/>
-      <Route path="notAvaible" element={<NotAvaible/>}/>
+      <Route path="NoDisponible" element={<NoDisponible/>}/>
 
     </Routes>
     <Footer id='footer'/>        

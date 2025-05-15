@@ -1,8 +1,8 @@
 import React from "react";
-import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora";
+import NavbarCalculadora from "../NavbarCalculadora/NavbarCalculadora";
 import "./NotAvaible.css";
 
-const NotAvaible = () => {
+const NoDisponible = () => {
   return (
     <div className="not-content-result">
       <h1>Resultados</h1>
@@ -16,4 +16,4 @@ const NotAvaible = () => {
   );
 };
 
-export default NotAvaible;
+export default NoDisponible;
