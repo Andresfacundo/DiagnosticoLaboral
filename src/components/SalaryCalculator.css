@@ -2,8 +2,9 @@
   box-sizing: border-box;
 }
 
+  /* Estilos de los resultados */
   .pdf-colors {
-    background-color: #eae9ecb2;
+    background-color: #eae9ecb2; 
     color: #333;
   }
   
@@ -13,7 +14,13 @@
   }
 
   .results-container {
+    font-optical-sizing: auto;
     margin-top: 30px;
+    max-width: 1300px;
+    margin: 4rem auto;
+  }
+  .results-container h2{
+    text-align: center;
   }
   .results-container .alert{
     background-color: #889AA4;
@@ -26,18 +33,17 @@
     padding: 10px;
     box-shadow: 0px  0px 11px 3px rgba(0, 0, 0, 0.1);
     position: absolute;
-    right: 10px;
+    right: 9px;
     top: 8rem;
     position: fixed;
-    z-index: 3;
+    z-index: 2;
+    animation: fadeInOut 0.6s ease-in-out;
   }
 
   .container-button{
     display: flex;
     justify-content: space-around;
     padding-bottom: 1rem;
-    max-width: 1300px;
-    margin: 0 auto;
   }
   .results-grid {
     display: grid;
@@ -46,13 +52,11 @@
     grid-template-rows: auto 1fr auto;
     gap: 20px;
     padding-bottom: 2rem;
-    max-width: 1300px;
-    margin: 0 auto;
   }
 
   .result-card{
     color: #333;
-    background-color: #fff;
+    background: #fff;
     border-radius: 8px;
     padding: 11px;
     box-shadow: 0rem 0rem 11px 3px rgba(170, 168, 168, 0.5);
@@ -74,10 +78,12 @@
   }
   .result-card h2{
     border-bottom: 1px solid #889AA4;
-    text-align: center;    
   }
-  .content-result h2 {
+  .result-card h2{
+    margin: 0;
     text-align: center;
+    padding-bottom: 1rem;
+    
   }
 
   .container-img{
@@ -115,7 +121,6 @@
   }
   .result-parafiscales h2{
     border-bottom: 1px solid #889AA4;
-    text-align: center;
 
   }
   .box-parafiscales{
@@ -141,7 +146,7 @@
     
   }
   .content-ibc{
-    border-bottom: 0.1px solid #889AA4;
+    border-bottom: 1px solid #889AA4;
     height: 2.4rem;
     text-align: center;
   }
@@ -193,8 +198,6 @@
     display: flex;
     /* justify-content: center; */
     height: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
 
   }
   .result-card .gomezV{
@@ -324,7 +327,4 @@
       transform: translateY(0);
     }
   }
-  
-  .results-container {
-    animation: fadeIn 0.3s ease-out;
-  }
+

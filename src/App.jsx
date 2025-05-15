@@ -14,12 +14,13 @@ import Registros from './components/Ui/Registros/Registros.jsx'
 import { isTokenExpired } from './utils/valiteExpiration.js'
 import { useEffect } from 'react'
 import LoggingOut from './components/Ui/LogoutAutomatico/LoggingOut.jsx'
-import NotFound from '../src/components/Ui/NotFound/NotFound.jsx'
-import NotAvaible from '../src/components/Ui/NotAvaible/NotAvaible.jsx'
-import Comparar from '../src/components/Pages/Comparar/Comparar.jsx'
-import FormularioCalculadora from '../src/components/Pages/Comparar/Comparar.jsx'
-import ResultadosCalculadora from '../src/components/Pages/ResultadosCalculadora/ResultadosCalculadora.jsx'
 
+
+import FormularioCalculadora from './components/Pages/FormularioCalculadora/FormularioCalculadora.jsx'
+import ResultadosCalculadora from './components/Pages/ResultadosCalculadora/ResultadosCalculadora.jsx'
+import Comparar from './components/Pages/Comparar/Comparar.jsx'
+import NotFound from './components/Ui/NotFound/NotFound.jsx'
+import NotAvaible from './components/UI/NotAvaible/NotAvaible.jsx'
 
 function App() {
   const navigate = useNavigate();
@@ -57,11 +58,13 @@ function App() {
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
       <Route path="/cerrando-sesion" element={<LoggingOut />} />
-      <Route path="*" element={<NotFound/>}/>
-      <Route path="notAvaible" element={<NotAvaible/>}/>
-      <Route path="Comparar" element={<Comparar/>}/>
+
+
       <Route path="/form/calculadora" element={<FormularioCalculadora/>} />
       <Route path="Resultados/calculadora" element={<ResultadosCalculadora/>} />
+      <Route path="Comparar" element={<Comparar/>}/>
+      <Route path="*" element={<NotFound/>}/>
+      <Route path="notAvaible" element={<NotAvaible/>}/>
 
     </Routes>
     <Footer id='footer'/>        

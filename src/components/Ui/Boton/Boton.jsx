@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const BotonCalculadora = ({ styleB, content, className, route, img }) => {
+const Boton = ({ styleB, content, className, route, img }) => {
   return (
     <div className={styleB}>
       <NavLink to={route} className={className}><img src={img} alt="icono" />{content}</NavLink>
@@ -9,4 +9,4 @@ const BotonCalculadora = ({ styleB, content, className, route, img }) => {
   );
 };
 
-export default BotonCalculadora;
+export default Boton;

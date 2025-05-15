@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../NavbarCalculadora/NavbarCalculadora";
+import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora";
 import "./NotAvaible.css";
 
 const NotAvaible = () => {
@@ -7,7 +7,7 @@ const NotAvaible = () => {
     <div className="not-content-result">
       <h1>Resultados</h1>
         <div className="content-navbar">
-          <Navbar />
+          <NavbarCalculadora />
         </div>
         <div className="boxTittle"> 
           <h3>Resultados No disponibles</h3>

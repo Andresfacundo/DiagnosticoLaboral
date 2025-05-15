@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import NavbarCalculadora from '../../Ui/NavbarCalculadora/NavbarCalculadora'
+import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora";
 import "./Comparar.css";
 import gomez from "../../../assets/Group 17.png";
-import ResumenComparativo from "../../Ui/Comparative/ResumenComparativo";
+import ResumenComparativo from "../../UI/Comparative/ResumenComparativo";
 import ResultDiference from "../../Layouts/ResultDiference";
 import GeneratePDF from "../../../utils/GeneratePdf";
 import download from "../../../assets/Download.png"
@@ -38,7 +38,7 @@ const Comparar = () => {
 
   return (
     <div className="box-navbar">
-      <h1>Comparación</h1>
+      {/* <h1>Comparación</h1> */}
       <div className="content-navbar">
         <NavbarCalculadora />
       </div>
@@ -46,7 +46,7 @@ const Comparar = () => {
         <div className="content-compare" >
           <div className="box-select-compare" data-html2canvas-ignore="true">
             <div className="contentImg" data-html2canvas-ignore="true">
-              <button onClick={() => GeneratePDF("pdfContent", "Comparación")} className="generate-pdf-selector-button"><img src={download} />Generar PDF</button>
+              <button onClick={() => GeneratePDF("pdfContent", "comparacion")} className="generate-pdf-selector-button"><img src={download} />Generar PDF</button>
             </div>
             <h3>Actual</h3>
             <select

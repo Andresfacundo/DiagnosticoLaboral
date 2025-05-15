@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
+import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora.jsx";
+import Parrafos from "../../Ui/ParrafosCalculadora/ParrafosCalculadora.jsx";
 import gomez from "../../../assets/Group 17.png";
-import NotAvaible from "../../Ui/NotAvaible/NotAvaible";
+import NotAvaible from "../../UI/NotAvaible/NotAvaible";
 import deleteIcon from '../../../assets/delete.png';
 import ok from'../../../assets/ok.png';
 import "../../../utils/GeneratePdf.css";
 import donwload from '../../../assets/Download.png';
 import GeneratePDF from "../../../utils/GeneratePdf";
-import Navbar from "../../Ui/NavbarCalculadora/NavbarCalculadora";
-import Parrafos from "../../Ui/Parrafos/Parrafos";
 
 
-const ResultadosCalculadora = () => {
+const Resultados = () => {
   const [results, setResults] = useState([]); //Estado que almacena los resultados
   const [showAlert, setShowAlert] = useState(false);
   const [showPDFModal, setShowPDFModal] = useState(false);
@@ -71,7 +71,7 @@ const ResultadosCalculadora = () => {
       {results.length > 0 ? (
         <div className="results-container">
           <div className="container-button">
-            <Navbar />
+            <NavbarCalculadora />
             {showPDFModal && (
               <div className="pdf-selection-modal">
                 <div className="modal-content">
@@ -116,7 +116,7 @@ const ResultadosCalculadora = () => {
             </div>
           )}
           {results.map((result, index) => (  
-            <div  className='content-result'key={index} id={`result-${index}`}>
+            <div key={index} id={`result-${index}`}>
               <h2>Resultado {results.length - index}</h2>
                   <div className="contentImg" data-html2canvas-ignore="true">
                     <button onClick={openPDFModal} className="generate-pdf-selector-button"><img src={donwload} />Generar PDF</button>
@@ -320,4 +320,4 @@ const ResultadosCalculadora = () => {
   );
 };
 
-export default ResultadosCalculadora;
+export default Resultados;

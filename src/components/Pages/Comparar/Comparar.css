@@ -1,32 +1,27 @@
 /* Estilos generales */
 .box-navbar{
+    font-optical-sizing: auto;
     gap: 2rem;
     display: flex;
     flex-direction: column;
     width: 100%;
+    max-width: 1300px;
+    margin: 4rem auto;
 }
-.box-navbar h1{
+.box-navbar h2{
     text-align: center;
 }
-.box-navbar h1,h2,h3{
-    color: #333;
-}
+
 .box-navbar .content-navbar{
     width: 100%;
     display: flex;
     justify-content: space-around;
-    max-width: 1300px;
-    margin:  0 auto;
-
 }
 .content-card{
     display: flex;
     justify-content: space-around;
     width: 100%;
     gap: 1rem;
-    max-width: 1300px;
-    margin:  0 auto;
-    padding-bottom: 4rem;
 }
 .content-compare{
     padding: 2rem 2rem 0 2rem;
@@ -40,9 +35,6 @@
 }
 .content-compare .contentImg .generate-pdf-selector-button{
     top: 0;
-}
-.content-compare h2{
-    text-align: center;
 }
 .box-input{
     width: 100%;

@@ -2,7 +2,7 @@ import React from 'react'
 import  formatCurrency  from '../../../utils/formatUtils';
 
 
-const Parrafos = ({ content, results, content1, content2, operador }) => {
+const ParrafosCalculadora = ({ content, results, content1, content2, operador }) => {
   let value = 0;
 
   if (Array.isArray(results)) {
@@ -23,4 +23,4 @@ const Parrafos = ({ content, results, content1, content2, operador }) => {
 };
 
 
-export default Parrafos;
+export default ParrafosCalculadora;

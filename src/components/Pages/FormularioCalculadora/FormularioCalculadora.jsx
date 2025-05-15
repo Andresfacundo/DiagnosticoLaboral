@@ -12,7 +12,7 @@ const FormularioCalculadora = () => {
   const salarioMinimo = 1423500;
 
   const [formData, setFormData] = useState({
-    tipoSalario: "", 
+    tipoSalario: "", // Changed default to empty to force selection
     salario: "",
     otrosPagosSalariales: "",
     otrosPagosNoSalariales: "",
@@ -25,9 +25,7 @@ const FormularioCalculadora = () => {
     retencionFuente: "",
   });
   const [showAlert, setShowAlert] = useState(false);
-  const [formErrors, setFormErrors] = useState({}); 
-
-  
+  const [formErrors, setFormErrors] = useState({}); // Add state for form errors
 
   // Función para formatear números con separadores de miles
   const formatNumber = (value) => {
@@ -152,7 +150,7 @@ const FormularioCalculadora = () => {
 
   return (
     <div className="calculator-container">
-      <h1>Calculadora Laboral</h1>
+      {/* <h1>Calculadora Laboral</h1> */}
       {showAlert && (
         <div className='alert'>
           <img src={ok} alt="icono" /> ¡Cálculo de Nómina realizado con éxito!

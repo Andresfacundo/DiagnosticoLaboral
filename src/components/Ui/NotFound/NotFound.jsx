@@ -1,6 +1,6 @@
 import React from 'react'
 import './NotFound.css'
-import Boton from '../BotonCalculadora/BotonCalculadora';
+import Boton from '../Boton/Boton';
 import inicio from '../../../assets/inicio.png'
 
 
