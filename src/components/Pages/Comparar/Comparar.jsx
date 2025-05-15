@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora";
 import "./Comparar.css";
 import gomez from "../../../assets/Group 17.png";
-import ResumenComparativo from "../../UI/Comparative/ResumenComparativo";
+import ResumenComparativo from "../../Ui/ResumenComparativo/ResumenComparativo";
 import ResultDiference from "../../Layouts/ResultDiference";
 import GeneratePDF from "../../../utils/GeneratePdf";
 import download from "../../../assets/Download.png"
