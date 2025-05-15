@@ -1,6 +1,6 @@
 import React from "react";
 import NavbarCalculadora from "../NavbarCalculadora/NavbarCalculadora";
-import "./NotAvaible.css";
+import "./NoDisponible.css";
 
 const NoDisponible = () => {
   return (
