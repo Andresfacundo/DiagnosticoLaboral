@@ -15,6 +15,7 @@ const Resultados = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [showPDFModal, setShowPDFModal] = useState(false);
   const [selectedResults, setSelectedResults] = useState([]);
+  console.log(results)
 
   useEffect(() => {
     const storedResults = localStorage.getItem("Resultados");
@@ -138,6 +139,7 @@ const Resultados = () => {
                       <p>Pensionado</p>
                       <p>Exonerado</p>
                       <p>Clase de riesgo</p>
+                      <p>Auxilio de transporte</p>
                     </div>
                     <div className="">
                       <Parrafos  results={result} content1="calculations" content2="tipoSalario"/>
@@ -149,6 +151,7 @@ const Resultados = () => {
                       <Parrafos  results={result} content1="calculations" content2="pensionado"/>
                       <Parrafos  results={result} content1="calculations" content2="exonerado"/>
                       <Parrafos  results={result} content1="calculations" content2="claseRiesgo"/>
+                      <Parrafos  results={result} content1="calculations" content2="auxilioDeTransporte"/>
                     </div>
                   </div>
                   <div className="gomezV">
@@ -200,7 +203,7 @@ const Resultados = () => {
                         </div>
                         <div className="box-employee">
                           <p>ReteFuente</p>
-                          <Parrafos results={result} />
+                          <Parrafos results={result} content1="calculations" content2="retencionFuente"/>
                         </div>
                         <div className="box-employee">
                           <p>Deducciones</p>

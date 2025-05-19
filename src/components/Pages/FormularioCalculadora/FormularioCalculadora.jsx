@@ -211,16 +211,7 @@ const FormularioCalculadora = () => {
                 placeholder="$"
               />
             </div>
-            <div className="form-group">
-              <label>Retencion En La fuente</label>
-              <input
-                id="retencionFuente"
-                name="retencionFuente"
-                value={formData.retencionFuente}
-                onChange={handleInputChange}
-                placeholder="$"
-              />
-            </div>
+
             <div className="form-group">
               <label>Deducciones</label>
               <input
