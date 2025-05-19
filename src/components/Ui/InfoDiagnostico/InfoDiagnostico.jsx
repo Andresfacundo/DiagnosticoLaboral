@@ -49,8 +49,7 @@ const InfoDiagnostico = () => {
             checked={isChecked}
             onChange={handleCheckboxChange}
             />
-              He leído y acepto los Términos, Condiciones y Políticas. Toda la información brindada es absolutamente confidencial y no será compartida con terceros. Puede revisar nuestra <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales</a> y autorizo el tratamiento de mis datos con base en la política.
-            </label>
+              He leído y acepto los Términos, Condiciones y Políticas. Toda la información brindada es absolutamente confidencial y no será compartida con terceros. Puede revisar nuestra <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales.</a></label>
           </div>        
           <NavLink
             to={isChecked ? 'form' : '#'}
