@@ -95,41 +95,44 @@ const Navbar = ({id}) => {
         {isLoggingOut && <LoggingOut />}
         <div id={id} className='navbar-container'>
             <nav className='navbar'>
-                <div className="navbar-logo">
-                    <GVA/>
-                    <GAP className='content-gap'/>
+                <div className='navbar-header'>
+                    <div className="navbar-logo">
+                        <GVA/>
+                        <GAP className='content-gap'/>
+                        
+                    </div>
                     
-                </div>
-                
-                <div className="hamburger-menu">
-                    <button onClick={toggleMenu} className="menu-toggle">
-                        {menuOpen 
-                            ? <img src={closeIcon} alt="Cerrar menú" className="menu-icon" /> 
-                            : <img src={hamburgerIcon} alt="Abrir menú" className="menu-icon" />
-                        }
-                    </button>
+                    <div className="hamburger-menu">
+                        <button onClick={toggleMenu} className="menu-toggle">
+                            {menuOpen 
+                                ? <img src={closeIcon} alt="Cerrar menú" className="menu-icon" /> 
+                                : <img src={hamburgerIcon} alt="Abrir menú" className="menu-icon" />
+                            }
+                        </button>
+                    </div>
                 </div>
                 <div className='content-list-nav'>
                     <ul className={`nav-list ${menuOpen ? 'nav-active' : ''}`}>
-                        <li className='home'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Inicio</NavLink></li>
-                        <li className='diagnostico'><NavLink to='diagnostico' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico</NavLink></li>
+                        <div className='content-nav-list'>       
+                            <li className='home'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Inicio</NavLink></li>
+                            <li className='diagnostico'><NavLink to='diagnostico' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico</NavLink></li>
+                            
+                            {/* Solo mostrar Gestión de preguntas para admin/superadmin */}
+                            {hasAccess('admin') && (
+                                <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>                            
+                            )}
+                            {hasAccess('admin') && (
+                                <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
+                            )}
+                            {/* Solo mostrar Calculadora para admin/superadmin */}
+                            {hasAccess('admin') && (
+                                <li className='calculadora'><NavLink to="/form/calculadora" onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Calculadora</NavLink></li>
+                            )}
+                                                    
+                            {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
+                            <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros' className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Nosotros</NavLink></li>
+                        </div>
                         
-                        {/* Solo mostrar Gestión de preguntas para admin/superadmin */}
-                        {hasAccess('admin') && (
-                            <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>                            
-                        )}
-                        {hasAccess('admin') && (
-                            <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
-                        )}
-                        {/* Solo mostrar Calculadora para admin/superadmin */}
-                        {hasAccess('admin') && (
-                            <li className='calculadora'><NavLink to="/form/calculadora" onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Calculadora</NavLink></li>
-                        )}
-                                                
-                        {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
-                        <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros' className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Nosotros</NavLink></li>
-                        
-                    </ul>
                         {isAuthenticated ? (
                             <li className='login'>
                                 <NavLink to='/login' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
@@ -145,6 +148,7 @@ const Navbar = ({id}) => {
                                 </NavLink>
                             </li>
                         )}
+                    </ul>
                 </div>
             </nav>
         </div>

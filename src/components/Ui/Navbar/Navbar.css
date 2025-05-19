@@ -92,6 +92,11 @@
     background-color: #DFBD7C;
     transition: 0.4s;
 }
+.content-nav-list{
+    display: flex;
+    margin: 0 auto;
+    gap: 20px;
+}
 
 .botonActivo {
     background-color: #DFBD7C;
@@ -147,13 +152,22 @@
 }
 
 @media screen and (max-width: 768px) {
+    .content-list-nav{
+        width: 0;
+    }
     .hamburger-menu {
         display: flex;
-        align-items: center;
+        align-items: center;        
+        /* border: 2px solid red; */
     }
     
     .navbar {
         padding: 0 15px;
+    }
+    .navbar-header{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
     }
     
     .nav-list {
@@ -173,6 +187,10 @@
         gap: 15px;
         z-index: 1;
     }
+    .content-nav-list{
+        display: flex;
+        flex-direction: column;       
+    }
     
     .nav-list.nav-active {
         transform: translateY(0);
@@ -182,13 +200,13 @@
     
     .nav-list li {
         width: 100%;
+        /* border: 2px solid red; */
         text-align: left;
     }
     
     .nav-list a {
         width: 90%;
         padding: 12px 20px;
-        border-radius: 0;
         justify-content: flex-start;
         margin: 0 auto;
     }
@@ -201,8 +219,18 @@
     
     .botonActivo {
         background-color: #DFBD7C;
+        padding:  0;
+        margin: 0;
         border-radius: 20px;
+
     }
+    .login .botonActivo{
+        margin: 0 auto;
+        background-color: transparent;
+        padding: 0;
+
+    }
+
 }
 
 @media screen and (max-width: 480px) {

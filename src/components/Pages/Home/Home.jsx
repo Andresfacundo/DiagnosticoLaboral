@@ -46,7 +46,7 @@ const Home = () => {
         <div className='box-home'>
             <section className='box-asesoria'>
                 <div className='content-home'>
-                    <div class="title-container">
+                    <div className="title-container">
                         <h3>Asesoría en</h3>
                         <p id='typingText'></p>
                     </div>
