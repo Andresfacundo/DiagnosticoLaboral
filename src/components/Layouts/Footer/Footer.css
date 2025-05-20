@@ -56,6 +56,13 @@
     color: #fff;
 
 }
+@media (max-width: 480px) {
+    .box-footer{
+        padding: 2rem;
+    }
+    
+}
+
 
 
 
