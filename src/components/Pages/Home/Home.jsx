@@ -58,6 +58,11 @@ const Home = () => {
                         tributario y corporativo, con el objetivo de proteger y fortalecer cada etapa del desarrollo 
                         empresarial. Estamos aquí para crecer contigo.
                     </span>
+                    <span>
+                        Impulsamos el crecimiento empresarial con soluciones legales confiables. 
+                        Nuestro equipo de profesionales brinda asesoría especializada en derecho 
+                        laboral, tributario y corporativo para proteger y fortalecer su negocio.
+                    </span>
                 </div>
             </section>
             <section className='box-caracteristicas'>
