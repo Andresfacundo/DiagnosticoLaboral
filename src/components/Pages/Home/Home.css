@@ -1,9 +1,5 @@
 .box-home{
     width: 100%;
-    /* padding-top: 6rem; */
-    font-family: "Jost", serif ;
-    font-optical-sizing: auto;
-    font-weight: 400;
     align-content: center;
 }
 
@@ -31,10 +27,14 @@
     margin-right: 8rem;
 }
 .content-home{
+    width: 100%;
+    max-width: 1300px;
     text-align: center;
     color: #333;
     animation: fadeIn 0.4s ease-out;
-    padding: 0 5rem 0 5rem;    
+    padding: 0 2rem;
+    margin: 0 auto;
+    /* border: 2px solid red; */
 }
 .content-home h3{
     font-size: 30px;
@@ -57,6 +57,7 @@
     flex-direction: row;
     align-items: center;
     gap: 1rem;
+    justify-content: center;
 
 }
 .box-asesoria .content-home .title-container {
@@ -132,6 +133,22 @@
     display: flex;
     justify-content: space-around;
     grid-column: 1/4;
+}
+
+@media (max-width: 480px){
+    .content-home{
+        padding: 1rem;
+    }
+    .content-home span{
+        font-size: 16px;
+    }
+    .content-home h3{
+        font-size: 20px;
+    }
+    .title-container p{
+        /* border: 2px solid red; */
+        font-size: 20px;
+    }
 }
 
 
