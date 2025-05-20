@@ -110,3 +110,16 @@
 .checkbox-policy a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 480px){
+
+  .container h2 {
+    font-size: 28px;
+  }
+  .info-title{
+    font-size: 19px;
+  }
+  .card {
+    padding: 1rem;
+  }
+}

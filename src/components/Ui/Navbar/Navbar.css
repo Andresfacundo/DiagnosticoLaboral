@@ -150,6 +150,86 @@
         font-size: 0.9rem;
     }
 }
+@media screen and (max-width: 920px) {
+    .content-list-nav{
+        width: 0;        
+    }
+    .hamburger-menu {
+        display: flex;
+        align-items: center;        
+        /* border: 2px solid red; */
+    }
+    
+    .navbar {
+        padding: 0 15px;        
+    }
+    .navbar-header{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;    
+    }
+    
+    .nav-list {
+        position: absolute;
+        flex-direction: column;
+        background-color: white;
+        width: 100%;
+        top: 100%;
+        left: 0;
+        padding: 20px 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        transform: translateY(-150%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        margin-left: 0;
+        gap: 15px;
+        z-index: 1;
+        
+    }
+    .content-nav-list{
+        display: flex;
+        flex-direction: column;    
+    }
+    
+    .nav-list.nav-active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-list li {
+        width: 100%;
+        /* text-align: left; */
+        text-align: center;
+    }
+    
+    .nav-list a {
+        padding: 0px auto;
+        margin: 0 auto;
+    }
+    
+    /* Muestra el texto junto al ícono en el menú móvil */    
+    .menu-text {
+        display: inline;
+        margin-left: 8px;
+    }
+    
+    .botonActivo {
+        background-color: #DFBD7C;
+        padding:  0;
+        margin: 0;
+        border-radius: 20px;
+
+    }
+    .login .botonActivo{
+        margin: 0 auto;
+        background-color: transparent;
+        padding: 0;
+
+    }
+
+}
 
 @media screen and (max-width: 768px) {
     .content-list-nav{
@@ -200,12 +280,11 @@
     
     .nav-list li {
         width: 100%;
-        /* border: 2px solid red; */
         text-align: left;
     }
     
     .nav-list a {
-        width: 90%;
+        /* width: 90%; */
         padding: 12px 20px;
         justify-content: flex-start;
         margin: 0 auto;

@@ -59,13 +59,7 @@
 }
 
 /* Encabezado */
-.diagnostico-header {
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #e0e0e0;
-  /* border: 2px solid red; */
-}
+
 
 .empresa-info {
   display: flex;
@@ -622,4 +616,28 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   line-height: 1.8rem;
 
+}
+@media (max-width: 920px){
+   .empresa-info h1{
+    font-size: 1.6rem;
+  }
+  .empresa-info .box-gap {
+    width: 300px;
+    align-items: center;
+  }
+
+}
+@media (max-width: 480px){
+  .empresa-info h1{
+    font-size: 1.6rem;
+  }
+  .empresa-info .box-gap{
+    display: none;
+  }
+  .content-description-item{
+    line-height: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    
+  }
 }

@@ -14,7 +14,7 @@ const AreasServicio = ({ content, content2, className, style2, nameClass, style 
                         {Array.isArray(content2) &&
                             content2.map((item, index) => <li key={index}>{item}</li>)}
                     </ul>
-                    <div>
+                    <div className='services-gap-img'>
                         <img src={gap} alt="" />
                     </div>
                 </div>

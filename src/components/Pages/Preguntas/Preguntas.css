@@ -280,3 +280,17 @@
     height: 20px;
 
   }
+@media (max-width: 480px){
+    .preguntas-container{
+        padding: 1rem;
+    }
+    .categoria-filter {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    .preguntas-item{
+        padding:.5rem;
+    }
+
+}
