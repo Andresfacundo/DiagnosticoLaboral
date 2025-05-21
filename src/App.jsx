@@ -23,6 +23,7 @@ import ResultadosCalculadora from './components/Pages/ResultadosCalculadora/Resu
 import Comparar from './components/Pages/Comparar/Comparar.jsx'
 import NotFound from './components/Ui/NotFound/NotFound.jsx'
 import NoDisponible from './components/Ui/NoDisponible/NoDisponible.jsx'
+import EditarConstantes from './components/Ui/EditarConstantes.jsx/EditarConstantes.jsx'
 
 function App() {
   const navigate = useNavigate();
@@ -64,6 +65,8 @@ function App() {
 
 
       <Route path="/form/calculadora" element={<FormularioCalculadora/>} />
+      <Route path="/form/configuracion" element={<EditarConstantes/>} />
+
       <Route path="Resultados/calculadora" element={<ResultadosCalculadora/>} />
       <Route path="Comparar" element={<Comparar/>}/>
       <Route path="*" element={<NotFound/>}/>

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import gomez from "../../../assets/Group 17.png";
 import "../../../components/SalaryCalculator.css";
 import "./FormularioCalculadora.css";
 import Calculadora from "../../../assets/calculator-line.png";
@@ -7,6 +6,8 @@ import { calcularNomina } from "../../../Services/api.js";
 import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora.jsx";
 import "../../Ui/NavbarCalculadora/NavbarCalculadora.css";
 import ok from "../../../assets/ok.png";
+import configuracion from '../../../assets/configuraciones.svg'
+import { NavLink } from "react-router-dom";
 
 const FormularioCalculadora = () => {
   const salarioMinimo = 1423500;
@@ -274,16 +275,24 @@ const FormularioCalculadora = () => {
                   <option value="Si">Si</option>
                   <option value="No">No</option>
                 </select>
+                
               </div>
+              
             )}
           </div>
           <div className="nomina">
-            <button type="submit">
+            
+            <button className='btn-1' type="submit">
               <img src={Calculadora} alt="icono" />
               Calcular Nómina
             </button>
-
-            <img className='gomez' src={gomez} alt="icono" />
+            <div className="configuracion">
+              <NavLink to='/form/configuracion'>
+                <img src={configuracion} alt="" />
+              </NavLink>
+              
+              
+            </div>
           </div>
         </form>
       </div>
