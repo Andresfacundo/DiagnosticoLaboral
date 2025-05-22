@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Contacto.css';
 import axios from "axios"
+import { Link } from 'react-router-dom';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const ContactoForm = () => {
@@ -126,7 +127,7 @@ const ContactoForm = () => {
             onChange={handleCheckboxChange}
             />
             <label htmlFor="policyCheck">
-              He leído la <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales</a> y autorizo el tratamiento de mis datos con base en la política.
+              He leído la <Link to="/politica-datos" rel="noopener noreferrer">Política de tratamiento de datos personales</Link> y autorizo el tratamiento de mis datos con base en la política.
             </label>
           </div>  
 

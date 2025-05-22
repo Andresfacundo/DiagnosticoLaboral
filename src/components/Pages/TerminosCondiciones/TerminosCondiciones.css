@@ -1,0 +1,65 @@
+.tc-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+  padding: 2rem 1.5rem;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.tc-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.tc-date {
+  color: #888;
+  font-size: 0.95em;
+}
+
+.tc-content {
+  max-height: 350px;
+  overflow-y: auto;
+  transition: max-height 0.3s;
+  font-size: 1.07em;
+  line-height: 1.7;
+  color: #222;
+}
+
+.tc-full {
+  max-height: 1300px;
+}
+
+.tc-collapsed {
+  max-height: 350px;
+}
+
+.tc-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.tc-btn {
+  background: #DFBD7C;
+  color: #fff;
+  border: none;
+  padding: 0.7em 1.5em;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  margin: 0.5em 0;
+  transition: background 0.2s;
+}
+
+@media (max-width: 600px) {
+  .tc-container {
+    padding: 1rem 0.5rem;
+  }
+  .tc-content {
+    font-size: 1em;
+  }
+}

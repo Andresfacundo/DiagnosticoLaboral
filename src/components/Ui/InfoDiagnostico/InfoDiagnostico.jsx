@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './InfoDiagnostico.css';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const InfoDiagnostico = () => {
 
@@ -49,7 +49,7 @@ const InfoDiagnostico = () => {
             checked={isChecked}
             onChange={handleCheckboxChange}
             />
-              He leído y acepto los Términos, Condiciones y Políticas. Toda la información brindada es absolutamente confidencial y no será compartida con terceros. Puede revisar nuestra <a href="/politica-datos" target="_blank" rel="noopener noreferrer">Política de tratamiento de datos personales.</a></label>
+              He leído y acepto los Términos, Condiciones y Políticas. Toda la información brindada es absolutamente confidencial y no será compartida con terceros. Puede revisar nuestra <Link to='/politica-datos'href="/politica-datos"  rel="noopener noreferrer">Política de tratamiento de datos personales.</Link></label>
           </div>        
           <NavLink
             to={isChecked ? 'form' : '#'}

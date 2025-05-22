@@ -24,6 +24,7 @@ import Comparar from './components/Pages/Comparar/Comparar.jsx'
 import NotFound from './components/Ui/NotFound/NotFound.jsx'
 import NoDisponible from './components/Ui/NoDisponible/NoDisponible.jsx'
 import EditarConstantes from './components/Ui/EditarConstantes.jsx/EditarConstantes.jsx'
+import TerminosCondiciones from './components/Pages/TerminosCondiciones/TerminosCondiciones.jsx'
 
 function App() {
   const navigate = useNavigate();
@@ -62,6 +63,8 @@ function App() {
       <Route path='historial' element={<Registros/>}/>
       <Route path="/cerrando-sesion" element={<LoggingOut />} />
       <Route path="/cargando" element={<Cargando />} />
+      <Route path="/politica-datos" element={<TerminosCondiciones />} />
+
 
 
       <Route path="/form/calculadora" element={<FormularioCalculadora/>} />

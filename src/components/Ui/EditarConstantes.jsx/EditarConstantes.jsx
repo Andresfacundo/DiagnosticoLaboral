@@ -99,7 +99,7 @@ const EditarConstantes = () => {
                 <button
                     type="button"
                     className="btn-volver"
-                    onClick={() => navigate(-1)}>
+                    onClick={() => navigate("/form/calculadora")}>
                     Volver atrás
                 </button>
             </form>

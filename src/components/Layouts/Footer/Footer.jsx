@@ -97,7 +97,7 @@ const Footer = ({id}) => {
                                 <li><NavLink to='/questions'>Gestión de preguntas</NavLink></li>
                             )}
                             {hasAccess('admin') && (
-                                <li><NavLink to='https://calculadora-gap-six.vercel.app/' target='_blank'>Calculadora</NavLink></li>
+                                <li><NavLink to='/form/calculadora'>Calculadora</NavLink></li>
                             )}
                             <li><NavLink to='nosotros'>Nosotros</NavLink></li>
                         </ul>
