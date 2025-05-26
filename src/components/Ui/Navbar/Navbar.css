@@ -139,6 +139,12 @@
     height: 30px;
 }
 
+@media (max-width: 1366px) {
+    .nav-list{
+        margin: 0;
+    }
+
+
 /* Media queries para hacer el diseño responsivo */
 @media screen and (max-width: 992px) {
     .nav-list {
@@ -325,4 +331,5 @@
         width: 25px;
         height: 25px;
     }
+}
 }

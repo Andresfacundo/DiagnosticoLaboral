@@ -47,8 +47,8 @@ const Login = () => {
 
       // Redirigir según rol
       switch (data.usuario.rol) {
-        case 'superadmin':
         case 'admin':
+        case 'asociado':
           navigate('/');
           break;
         case 'user':

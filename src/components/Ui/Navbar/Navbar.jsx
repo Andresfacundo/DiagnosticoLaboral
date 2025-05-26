@@ -47,9 +47,9 @@ const Navbar = ({id}) => {
                 if (typeof userData.rol === 'object') {
                     console.log('Objeto rol:', userData.rol);
                     // Si es un objeto, determinar qué tipo de rol tiene
-                    if (userData.rol.superadmin) setUserRole('superadmin');
-                    else if (userData.rol.admin) setUserRole('admin');
-                    else setUserRole('user');
+                    if (userData.rol.admin) setUserRole('admin');
+                    else if (userData.rol.asociado) setUserRole('asociado');
+                    else setUserRole('asociado');
                 } else {
                     // Si ya es un string, usarlo directamente
                     setUserRole(userData.rol);
@@ -63,8 +63,8 @@ const Navbar = ({id}) => {
     // Función para verificar si tiene acceso a cierta funcionalidad
     const hasAccess = (requiredRole) => {
         if (!isAuthenticated) return false;
-        if (requiredRole === 'admin') {
-            return userRole === 'admin' || userRole === 'superadmin';
+        if (requiredRole === 'asociado') {
+            return userRole === 'asociado' || userRole === 'admin';
         }
         return userRole === requiredRole;
     };
@@ -114,17 +114,17 @@ const Navbar = ({id}) => {
                 <div className='content-list-nav'>
                     <ul className={`nav-list ${menuOpen ? 'nav-active' : ''}`}>
                         <div className='content-nav-list'>       
-                            <li className='home'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Inicio</NavLink></li>
-                            <li className='diagnostico'><NavLink to='diagnostico' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico</NavLink></li>
+                            <li className='diagnostico'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico laboral</NavLink></li>
+                            <li className='home'><NavLink to='/areas-servicio' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Áreas de servicio</NavLink></li>
                             
-                            {/* Solo mostrar Gestión de preguntas para admin/superadmin */}
+                            {/* Solo mostrar Gestión de preguntas para asociado/admin */}
                             {hasAccess('admin') && (
                                 <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>                            
                             )}
                             {hasAccess('admin') && (
                                 <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
                             )}
-                            {/* Solo mostrar Calculadora para admin/superadmin */}
+                            {/* Solo mostrar Calculadora para asociado/admin */}
                             {hasAccess('admin') && (
                                 <li className='calculadora'><NavLink to="/form/calculadora" onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Calculadora</NavLink></li>
                             )}

@@ -25,9 +25,9 @@ const Footer = ({id}) => {
                 const userData = authService.getUser();
                 if (userData && userData.rol) {
                     if (typeof userData.rol === 'object') {
-                        if (userData.rol.superadmin) setUserRole('superadmin');
-                        else if (userData.rol.admin) setUserRole('admin');
-                        else setUserRole('user');
+                        if (userData.rol.admin) setUserRole('admin');
+                        else if (userData.rol.asociado) setUserRole('asociado');
+                        else setUserRole('asociado');
                     } else {
                         setUserRole(userData.rol);
                     }
@@ -46,8 +46,8 @@ const Footer = ({id}) => {
 
     const hasAccess = (requiredRole) => {
         if (!isAuthenticated) return false;
-        if (requiredRole === 'admin') {
-            return userRole === 'admin' || userRole === 'superadmin';
+        if (requiredRole === 'asociado') {
+            return userRole === 'asociado' || userRole === 'admin';
         }
         return userRole === requiredRole;
     };

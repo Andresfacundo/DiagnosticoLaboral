@@ -52,13 +52,13 @@ function App() {
     
     <Navbar id='navbar'/>
     <Routes>
-      <Route path='/' element={<Home/>}/>
+      <Route path='/areas-servicio' element={<Home/>}/>
       <Route path='questions' element={<Preguntas/>}/>
       <Route path='diagnostico/form' element={<Formulario />}/>
       <Route path='resultados' element={<Resultados/>}/>
       <Route path='cuestionario' element={<Cuestionario/>}/>
       <Route path='login' element={<Login/>}/>
-      <Route path='diagnostico' element={<InfoDiagnostico/>}/>
+      <Route path='/' element={<InfoDiagnostico/>}/>
       <Route path='nosotros' element={<AboutDiagnosis/>}/>
       <Route path='historial' element={<Registros/>}/>
       <Route path="/cerrando-sesion" element={<LoggingOut />} />
