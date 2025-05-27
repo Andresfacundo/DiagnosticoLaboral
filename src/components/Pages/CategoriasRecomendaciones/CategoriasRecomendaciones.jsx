@@ -130,7 +130,7 @@ const CategoriasRecomendaciones = () => {
 
     return (
         <div className="categorias-recomendaciones-container">
-            <h2>Gestión de Categorías y Recomendaciones</h2>
+            <h2>Gestión de Categorías</h2>
             {mensaje && <div className="mensaje">{mensaje}</div>}
             {error && <div className="error">{error}</div>}
 
