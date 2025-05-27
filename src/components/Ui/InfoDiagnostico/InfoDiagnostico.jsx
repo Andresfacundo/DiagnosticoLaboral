@@ -52,7 +52,7 @@ const InfoDiagnostico = () => {
               He leído y acepto los Términos, Condiciones y Políticas. Toda la información brindada es absolutamente confidencial y no será compartida con terceros. Puede revisar nuestra <Link to='/politica-datos'href="/politica-datos"  rel="noopener noreferrer">Política de tratamiento de datos personales.</Link></label>
           </div>        
           <NavLink
-            to={isChecked ? 'form' : '#'}
+            to={isChecked ? 'diagnostico/form' : '#'}
             className={`start-btn ${!isChecked ? 'disabled' : ''}`}
             onClick={(e) => {
               if (!isChecked) e.preventDefault();

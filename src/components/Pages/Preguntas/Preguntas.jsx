@@ -3,6 +3,9 @@ import axios from "axios";
 import './Preguntas.css'
 import authService from "../../../Services/authService";
 import flecha from '../../../../public/flecha.svg'
+import configuracion from '../../../assets/configuraciones.svg'
+import { Link, NavLink } from "react-router-dom";
+import flechaa from '../../../assets/arrow-left-right-line.png'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -292,9 +295,17 @@ const Preguntas = () => {
     const cambiarFiltro = (nuevoFiltro) => {
         setFiltroCategoria(nuevoFiltro);
     };
+    {/* <NavLink to='/form/configuracion'>
+      <img src={configuracion} alt="" />
+  </NavLink> */}
 
     return (
         <div id='navbar' className="preguntas-container">
+            <div className="settings">
+                <Link to='/questions/gestion-categorias'>
+                <img src={configuracion} alt="" />
+                </Link>
+            </div>
             
             <h2 className="preguntas-header">Gestión de Preguntas</h2>
 

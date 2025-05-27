@@ -18,6 +18,16 @@
     border-bottom: 2px solid #f0f0f0;
     padding-bottom: 0.75rem;
 }
+.settings{
+    display: flex;
+    justify-content: flex-end;
+    height: 100%;
+}
+.settings img{
+    max-height: 25px;
+    width: 25px;
+    
+}
 
 .preguntas-form {
     display: flex;
