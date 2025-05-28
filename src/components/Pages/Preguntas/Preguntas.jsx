@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import './Preguntas.css'
 import authService from "../../../Services/authService";
@@ -10,6 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const Preguntas = () => {
     const [preguntas, setPreguntas] = useState([]);
+    const [categorias, setCategorias] = useState([]);
     const [texto, setTexto] = useState("");
     const [peso, setPeso] = useState("");
     const [categoria, setCategoria] = useState("");
@@ -19,17 +20,6 @@ const Preguntas = () => {
     const [mostrarFlecha, setMostrarFlecha] = useState(false);
 
     const tiposRespuestas = ["Si", "Parcialmente", "No", "No aplica"];
-    
-    const categorias = [
-        "Compensación y prestaciones sociales",
-        "Litigios o reclamaciones",
-        "Normas laborales",
-        "Afiliaciones y seguridad social",
-        "Terceros",
-        "SGSST",
-        "Contratación",
-        "Colectivo",
-    ];
 
     const getAuthConfig = () => ({
         headers: { 'Authorization': `Bearer ${authService.getToken()}` }
@@ -41,7 +31,6 @@ const Preguntas = () => {
 
     const manejarError = (error, mensajeDefault) => {
         console.error(mensajeDefault, error);
-        
         if (error.response?.status === 401) {
             setError('Sesión expirada. Por favor, inicie sesión nuevamente.');
             authService.logout();
@@ -52,15 +41,26 @@ const Preguntas = () => {
         }
     };
 
+    // Cargar categorías al montar el componente
+    useEffect(() => {
+        const cargarCategorias = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/api/categorias`, getAuthConfig());
+                setCategorias(response.data);
+            } catch (error) {
+                manejarError(error, "No se pudieron cargar las categorías.");
+            }
+        };
+        cargarCategorias();
+    }, []);
+
     // Efecto para manejar scroll y mostrar flecha
     useEffect(() => {
         const handleScroll = () => {
             setMostrarFlecha(window.scrollY > 300 || preguntas.length > 5);
         };
-        
         window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Verificar inicialmente
-        
+        handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, [preguntas.length]);
 
@@ -71,14 +71,10 @@ const Preguntas = () => {
 
     const cargarPreguntas = async () => {
         try {
-            const endpoint = filtroCategoria === "Todas" 
+            const endpoint = filtroCategoria === "Todas"
                 ? `${API_URL}/api/preguntas`
                 : `${API_URL}/api/preguntas/categoria/${filtroCategoria}`;
-            
-            const response = await axios.get(endpoint, 
-                filtroCategoria === "Todas" ? {} : getAuthConfig()
-            );
-            
+            const response = await axios.get(endpoint, getAuthConfig());
             setPreguntas(response.data);
         } catch (error) {
             manejarError(error, "No se pudieron cargar las preguntas.");
@@ -88,8 +84,6 @@ const Preguntas = () => {
     const manejarEnvio = async (e) => {
         e.preventDefault();
         setError("");
-
-        // Validaciones
         if (!texto.trim()) {
             setError("El texto de la pregunta es obligatorio");
             return;
@@ -102,14 +96,12 @@ const Preguntas = () => {
             setError("Debe seleccionar una categoría");
             return;
         }
-
         try {
             await axios.post(`${API_URL}/api/preguntas`, {
                 texto: texto.trim(),
                 peso: Number(peso),
-                categoria: categoria
+                categoria: categoria // Usamos el id de la categoría
             }, getAuthConfig());
-            
             cargarPreguntas();
             setTexto("");
             setPeso("");
@@ -129,11 +121,13 @@ const Preguntas = () => {
     };
 
     const iniciarEdicionEnLinea = (pregunta) => {
+        const categoriaId = pregunta.categoria;
+        
         setEditandoEnLinea({
             id: pregunta.id,
             texto: pregunta.texto,
             peso: pregunta.peso.toString(),
-            categoria: pregunta.categoria,
+            categoriaId: categoriaId,
             respuestas: Object.fromEntries(
                 tiposRespuestas.map(tipo => [tipo, (pregunta.respuestas?.[tipo] ?? 0).toString()])
             )
@@ -152,7 +146,6 @@ const Preguntas = () => {
     };
 
     const guardarEdicionEnLinea = async (id) => {
-        // Validaciones
         if (!editandoEnLinea.texto.trim()) {
             setError("El texto de la pregunta es obligatorio");
             return;
@@ -161,12 +154,10 @@ const Preguntas = () => {
             setError("El peso debe ser un número positivo");
             return;
         }
-        if (!editandoEnLinea.categoria) {
+        if (!editandoEnLinea.categoriaId) {
             setError("Debe seleccionar una categoría");
             return;
         }
-
-        // Validar valores de respuesta
         for (const tipo of tiposRespuestas) {
             const valor = editandoEnLinea.respuestas[tipo];
             if (!valor.trim() || isNaN(Number(valor))) {
@@ -174,19 +165,16 @@ const Preguntas = () => {
                 return;
             }
         }
-
         try {
             const respuestasNumero = Object.fromEntries(
                 tiposRespuestas.map(tipo => [tipo, Number(editandoEnLinea.respuestas[tipo])])
             );
-
             const response = await axios.put(`${API_URL}/api/preguntas/${id}`, {
                 texto: editandoEnLinea.texto.trim(),
                 peso: Number(editandoEnLinea.peso),
-                categoria: editandoEnLinea.categoria,
+                categoriaId: editandoEnLinea.categoriaId,
                 respuestas: respuestasNumero
             }, getAuthConfig());
-
             setPreguntas(preguntas.map(p => p.id === id ? response.data : p));
             setEditandoEnLinea({});
             setError("");
@@ -198,6 +186,14 @@ const Preguntas = () => {
     const cancelarEdicionEnLinea = () => {
         setEditandoEnLinea({});
         setError("");
+    };
+
+    // Helper para obtener el nombre de la categoría por id
+    const obtenerNombreCategoria = (pregunta) => {
+        const categoriaId = pregunta.categoria
+
+        const cat = categorias.find(c => c.id == categoriaId);        
+        return cat ? cat.nombre : 'No disponible';
     };
 
     return (
@@ -240,7 +236,7 @@ const Preguntas = () => {
                 >
                     <option value="" disabled>Seleccione una categoría</option>
                     {categorias.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
+                        <option key={cat.id} value={cat.id}>{cat.nombre}</option>
                     ))}
                 </select>
                 <button type="submit">Agregar Nueva Pregunta</button>
@@ -257,7 +253,7 @@ const Preguntas = () => {
                 >
                     <option value="Todas">Todas las categorías</option>
                     {categorias.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
+                        <option key={cat.id} value={cat.id}>{cat.nombre}</option>
                     ))}
                 </select>
             </div>
@@ -269,7 +265,7 @@ const Preguntas = () => {
             {/* Lista de preguntas */}
             <div className="preguntas-list-container">
                 {preguntas.length === 0 ? (
-                    <p>No hay preguntas {filtroCategoria !== "Todas" ? `en la categoría ${filtroCategoria}` : ""}. Agregue una nueva.</p>
+                    <p>No hay preguntas {filtroCategoria !== "Todas" ? `en la categoría seleccionada` : ""}. Agregue una nueva.</p>
                 ) : (
                     <>
                         <div className="preguntas-list-header">
@@ -284,9 +280,7 @@ const Preguntas = () => {
                                 <li key={pregunta.id} className="preguntas-item">
                                     <div className="gestionar-preguntas">
                                         <div className="preguntas-item-number">{index + 1}</div>
-
                                         {editandoEnLinea.id === pregunta.id ? (
-                                            // Modo edición
                                             <>
                                                 <div className="preguntas-item-text">
                                                     <input
@@ -307,12 +301,12 @@ const Preguntas = () => {
                                                 </div>
                                                 <div className="preguntas-item-categoria">
                                                     <select
-                                                        value={editandoEnLinea.categoria}
-                                                        onChange={(e) => cambiarCampoEdicion('categoria', e.target.value)}
+                                                        value={editandoEnLinea.categoriaId}
+                                                        onChange={(e) => cambiarCampoEdicion('categoriaId', e.target.value)}
                                                         className="editar-en-linea-input"
                                                     >
                                                         {categorias.map((cat) => (
-                                                            <option key={cat} value={cat}>{cat}</option>
+                                                            <option key={cat.id} value={cat.id}>{cat.nombre}</option>
                                                         ))}
                                                     </select>
                                                 </div>
@@ -332,11 +326,11 @@ const Preguntas = () => {
                                                 </div>
                                             </>
                                         ) : (
-                                            // Modo visualización
+                                            // Modo visualización - CORREGIDO: cambié pregunta.nombre por pregunta.categoriaId
                                             <>
                                                 <div className="preguntas-item-text">{pregunta.texto}</div>
                                                 <div className="preguntas-item-peso">{pregunta.peso}</div>
-                                                <div className="preguntas-item-categoria">{pregunta.categoria}</div>
+                                                <div className="preguntas-item-categoria">{obtenerNombreCategoria(pregunta)}</div>
                                                 <div className="preguntas-item-actions">
                                                     <button
                                                         onClick={() => iniciarEdicionEnLinea(pregunta)}
@@ -354,13 +348,11 @@ const Preguntas = () => {
                                             </>
                                         )}
                                     </div>
-
                                     {/* Opciones de respuesta */}
                                     <div className="content-response">
                                         <p>Opciones de respuestas</p>
                                         <div className="content-response-items">
                                             {editandoEnLinea.id === pregunta.id ? (
-                                                // Modo edición respuestas
                                                 tiposRespuestas.map((tipo) => (
                                                     <div key={tipo} className={`respuesta ${tipo.toLowerCase().replace(" ", "-")}`}>
                                                         {tipo} <br />
@@ -373,12 +365,11 @@ const Preguntas = () => {
                                                     </div>
                                                 ))
                                             ) : (
-                                                // Modo visualización respuestas
                                                 <div className="respuesta-container">
-                                                    <div className="respuesta si">Si <br /> {pregunta.respuestas.Si}</div>
-                                                    <div className="respuesta si-parcialmente">Parcialmente <br /> {pregunta.respuestas["Parcialmente"]}</div>
-                                                    <div className="respuesta no">No <br /> {pregunta.respuestas.No}</div>
-                                                    <div className="respuesta na">No aplica <br /> {pregunta.respuestas["No aplica"]}</div>
+                                                    <div className="respuesta si">Si <br /> {pregunta.respuestas?.Si}</div>
+                                                    <div className="respuesta si-parcialmente">Parcialmente <br /> {pregunta.respuestas?.["Parcialmente"]}</div>
+                                                    <div className="respuesta no">No <br /> {pregunta.respuestas?.No}</div>
+                                                    <div className="respuesta na">No aplica <br /> {pregunta.respuestas?.["No aplica"]}</div>
                                                 </div>
                                             )}
                                         </div>
