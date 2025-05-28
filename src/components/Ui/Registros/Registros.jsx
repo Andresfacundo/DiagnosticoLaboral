@@ -223,9 +223,22 @@ const Registros = () => {
                   ))}
                 </tbody>
               </table>
+              
             </div>
+
+            
           );
         })}
+
+        <div className="diagnostico-acciones">
+        <button 
+          className="btn-imprimir"
+          onClick={() => window.print()}
+        >
+          Imprimir Resultados
+        </button>
+
+      </div>
       </div>
     );
   }
@@ -322,6 +335,7 @@ const Registros = () => {
             )}
           </tbody>
         </table>
+        
       </div>
     </div>
   );
