@@ -4,8 +4,8 @@ import axios from "axios";
 import "./Resultados.css";
 import RadarChartComponent from '../../Ui/RadarChart/RadarChartComponent';
 import GAP from '../../../../public/gap.png';
-import Recomendaciones from "../../Ui/Recomendaciones/Recomendaciones";
 import procesarDatos from "../../../utils/diagnosticoUtils";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Resultados = () => {
@@ -20,7 +20,8 @@ const Resultados = () => {
     fecha: new Date().toLocaleString()
   });
   const [categorias, setCategorias] = useState([]);
-  
+  const [recomendaciones, setRecomendaciones] = useState({}); 
+
   const obtenerNombreCategoria = (claveCategoria) => {
     const categoria = categorias.find(cat =>
       cat.id == claveCategoria || cat.nombre === claveCategoria
@@ -49,13 +50,26 @@ const Resultados = () => {
           return;
         }
 
-        const [empleadorResponse, categoriaRes] = await Promise.all([
+        const [empleadorResponse, categoriaRes, recomendacionesRes] = await Promise.all([
           axios.get(`${API_URL}/api/empleadores/${empleadorId}`),
           axios.get(`${API_URL}/api/categorias`),
+          axios.get(`${API_URL}/api/recomendaciones`), // Obtener todas las recomendaciones
         ]);
+
         const empleadorInfo = empleadorResponse.data;
         const responseCategoria = categoriaRes.data;
         setCategorias(responseCategoria);
+
+        // Almacenar recomendaciones en un objeto agrupado por categoría
+        const recomendacionesAgrupadas = {};
+        recomendacionesRes.data.forEach(recomendacion => {
+          const { categoriaId } = recomendacion;
+          if (!recomendacionesAgrupadas[categoriaId]) {
+            recomendacionesAgrupadas[categoriaId] = [];
+          }
+          recomendacionesAgrupadas[categoriaId].push(recomendacion);
+        });
+        setRecomendaciones(recomendacionesAgrupadas);
 
         let respuestas = JSON.parse(localStorage.getItem("respuestas"));
 
@@ -154,7 +168,7 @@ const Resultados = () => {
     .map(([categoria, datos]) => ({
       nombre: categorias.length > 0 ? obtenerNombreCategoria(categoria) : categoria,
       porcentaje: datos.porcentaje,
-      recomendacion: Recomendaciones(categoria, datos.porcentaje)
+      recomendacion: recomendaciones[categoria] || []
     }));
 
   return (
@@ -229,10 +243,11 @@ const Resultados = () => {
                     {Math.round(categoria.porcentaje)}%
                   </div>
                 </div>
-                <div
-                  className="recomendacion-contenido"
-                  dangerouslySetInnerHTML={{ __html: categoria.recomendacion }}
-                />
+                <div className="recomendacion-contenido">
+                  {categoria.recomendacion.map((recomendacion, idx) => (
+                    <p key={idx} dangerouslySetInnerHTML={{ __html: recomendacion.texto }} />
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -298,4 +313,3 @@ const Resultados = () => {
 };
 
 export default Resultados;
-
