@@ -3,7 +3,6 @@ import axios from "axios";
 import del from "../../../../public/delete.svg";
 import "./Registros.css";
 
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Registros = () => {
@@ -12,18 +11,21 @@ const Registros = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [diagnosticoSeleccionado, setDiagnosticoSeleccionado] = useState(null);
-  const [detallesDiagnostico, setDetallesDiagnostico] = useState(null);  
+  const [detallesDiagnostico, setDetallesDiagnostico] = useState(null);
+  const [categorias, setCategorias] = useState([]); // Nuevo estado para categorías
   
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
         setLoading(true);
-        const [empleadoresResponse, diagnosticosResponse ] = await Promise.all([
+        const [empleadoresResponse, diagnosticosResponse, categoriasResponse] = await Promise.all([
           axios.get(`${API_URL}/api/empleadores`),
-          axios.get(`${API_URL}/api/diagnostico`),            
+          axios.get(`${API_URL}/api/diagnostico`),
+          axios.get(`${API_URL}/api/categorias`) // Obtener categorías
         ]);
         
-        const empleador = empleadoresResponse.data;       
+        const empleador = empleadoresResponse.data;
+        setCategorias(categoriasResponse.data); // Guardar categorías
 
         const response = diagnosticosResponse.data.map((diagnostico) => {
           const empleadorEncontrado = empleador.find((e) => e.id === diagnostico.id);
@@ -62,7 +64,6 @@ const Registros = () => {
     try {
       setLoading(true);
       
-      // Obtener el diagnóstico específico por su ID
       const diagnosticoResponse = await axios.get(`${API_URL}/api/diagnostico/${diagnosticoId}`);
       const diagnosticoData = diagnosticoResponse.data;
       
@@ -80,13 +81,44 @@ const Registros = () => {
     }
   };
 
+  // Función para obtener el nombre de una categoría por su ID
+  const obtenerNombreCategoria = (categoriaId) => {
+    const categoria = categorias.find(cat => cat.id === categoriaId || cat.id === parseInt(categoriaId));
+    return categoria ? categoria.nombre : categoriaId; // Si no encuentra la categoría, devuelve el ID
+  };
+
+  // Función para procesar áreas de riesgo (convertir IDs a nombres)
+  const procesarAreasRiesgo = (areasRiesgo) => {
+    if (!areasRiesgo || !Array.isArray(areasRiesgo)) return [];
+    return areasRiesgo.map(area => {
+      // Si el área ya es un nombre (string sin números), devolverla tal como está
+      if (isNaN(area)) return area;
+      // Si es un ID numérico, convertirlo al nombre
+      return obtenerNombreCategoria(area);
+    });
+  };
+
+  // Función para procesar categorías analizadas (convertir keys de IDs a nombres)
+  const procesarCategoriasAnalizadas = (categoriasAnalizadas) => {
+    if (!categoriasAnalizadas) return {};
+    
+    const categoriasConNombres = {};
+    
+    Object.entries(categoriasAnalizadas).forEach(([key, datos]) => {
+      // Si la key ya es un nombre (no es numérico), mantenerla
+      const nombreCategoria = isNaN(key) ? key : obtenerNombreCategoria(key);
+      categoriasConNombres[nombreCategoria] = datos;
+    });
+    
+    return categoriasConNombres;
+  };
+
   const handleFiltroChange = (e) => {
     const { name, value } = e.target;
     setFiltro((prev) => ({ ...prev, [name]: value }));
   };
 
   const resultadosFiltrados = historial.filter((resultado) => {
-    // Validar que las propiedades existan antes de usarlas
     const identificacion = resultado.empleador?.identificacion || 
                           resultado.identificacion || 
                           "";
@@ -105,13 +137,11 @@ const Registros = () => {
     return coincideDocumento && coincideRazonSocial;
   });  
 
-  // Función para volver a la lista de diagnósticos
   const volverALista = () => {
     setDiagnosticoSeleccionado(null);
     setDetallesDiagnostico(null);
   };
 
-  // Función para formatear fecha
   const formatearFecha = (fechaStr) => {
     try {
       const fecha = new Date(fechaStr);
@@ -127,7 +157,6 @@ const Registros = () => {
     }
   };
 
-  // Función para determinar el nivel de cumplimiento
   const getNivelCumplimiento = (porcentaje) => {
     if (porcentaje >= 80) return "alto";
     if (porcentaje >= 60) return "medio";
@@ -151,13 +180,16 @@ const Registros = () => {
 
   // Si hay un diagnóstico seleccionado, mostrar sus detalles
   if (diagnosticoSeleccionado && detallesDiagnostico) {
-    // Encontrar el diagnóstico en el historial
     const diagnosticoActual = historial.find(diag => diag.id === diagnosticoSeleccionado);
     const nombreEmpleador = diagnosticoActual?.empleador?.nombres || 
                           diagnosticoActual?.nombres || 
                           "Empleador";
     const porcentajeGeneral = Math.round(detallesDiagnostico.porcentajeGeneral);
     const nivelCumplimiento = getNivelCumplimiento(porcentajeGeneral);
+    
+    // Procesar áreas de riesgo y categorías analizadas
+    const areasRiesgoConNombres = procesarAreasRiesgo(detallesDiagnostico.areasRiesgo);
+    const categoriasAnalizadasConNombres = procesarCategoriasAnalizadas(detallesDiagnostico.categoriasAnalizadas);
     
     return (
       <div className="detalles-diagnostico-container">
@@ -185,11 +217,11 @@ const Registros = () => {
             </div>
           </div>
                 
-          {detallesDiagnostico.areasRiesgo && detallesDiagnostico.areasRiesgo.length > 0 && (
+          {areasRiesgoConNombres && areasRiesgoConNombres.length > 0 && (
             <div className="areas-riesgo">
               <h3>Áreas de Riesgo</h3>
               <ul>
-                {detallesDiagnostico.areasRiesgo.map((area, idx) => (
+                {areasRiesgoConNombres.map((area, idx) => (
                   <li key={idx}>{area}</li>
                 ))}
               </ul>
@@ -198,7 +230,7 @@ const Registros = () => {
         </div>
         
         <h2>Detalle por Categorías</h2>
-        {detallesDiagnostico.categoriasAnalizadas && Object.entries(detallesDiagnostico.categoriasAnalizadas).map(([categoria, datos], idx) => {
+        {Object.entries(categoriasAnalizadasConNombres).map(([categoria, datos], idx) => {
           const porcentajeCategoria = Math.round(datos.porcentaje);
           const nivelCategoria = getNivelCumplimiento(porcentajeCategoria);
           
