@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Resultados.css";
-import RadarChartComponent from '../../Ui/RadarChart/RadarChartComponent'
-import GAP from '../../../../public/gap.png'
-import Recomendaciones from "../../Ui/Recomendaciones/Recomendaciones";
+import RadarChartComponent from '../../Ui/RadarChart/RadarChartComponent';
+import GAP from '../../../../public/gap.png';
 import procesarDatos from "../../../utils/diagnosticoUtils";
-const API_URL = import.meta.env.VITE_API_URL
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Resultados = () => {
   const navigate = useNavigate();
@@ -19,21 +19,28 @@ const Resultados = () => {
     error: null,
     fecha: new Date().toLocaleString()
   });
-  
+  const [categorias, setCategorias] = useState([]);
+  const [recomendaciones, setRecomendaciones] = useState({}); 
+
+  const obtenerNombreCategoria = (claveCategoria) => {
+    const categoria = categorias.find(cat =>
+      cat.id == claveCategoria || cat.nombre === claveCategoria
+    );
+    return categoria ? categoria.nombre : claveCategoria;
+  };
 
   const datosRadar = Object.entries(resultados.categorias).map(([categoria, datos]) => ({
-    subject: categoria,
+    subject: obtenerNombreCategoria(categoria),
     A: parseFloat(datos.porcentaje.toFixed(2)),
     preguntas: datos.preguntas.length,
-    fullMark: 100,    
+    fullMark: 100,
   }));
-  
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const empleadorId = JSON.parse(localStorage.getItem("empleadorId"));
-        
+
         if (!empleadorId) {
           setResultados(prev => ({
             ...prev,
@@ -43,11 +50,29 @@ const Resultados = () => {
           return;
         }
 
-        const empleadorResponse = await axios.get(`${API_URL}/api/empleadores/${empleadorId}`);
+        const [empleadorResponse, categoriaRes, recomendacionesRes] = await Promise.all([
+          axios.get(`${API_URL}/api/empleadores/${empleadorId}`),
+          axios.get(`${API_URL}/api/categorias`),
+          axios.get(`${API_URL}/api/recomendaciones`), // Obtener todas las recomendaciones
+        ]);
+
         const empleadorInfo = empleadorResponse.data;
+        const responseCategoria = categoriaRes.data;
+        setCategorias(responseCategoria);
+
+        // Almacenar recomendaciones en un objeto agrupado por categoría
+        const recomendacionesAgrupadas = {};
+        recomendacionesRes.data.forEach(recomendacion => {
+          const { categoriaId } = recomendacion;
+          if (!recomendacionesAgrupadas[categoriaId]) {
+            recomendacionesAgrupadas[categoriaId] = [];
+          }
+          recomendacionesAgrupadas[categoriaId].push(recomendacion);
+        });
+        setRecomendaciones(recomendacionesAgrupadas);
 
         let respuestas = JSON.parse(localStorage.getItem("respuestas"));
-        
+
         if (!respuestas) {
           const respuestasResponse = await axios.get(`${API_URL}/api/respuestas`);
           const respuestasEmpleador = respuestasResponse.data.find(r => r.empleadorId === empleadorId);
@@ -57,9 +82,8 @@ const Resultados = () => {
         const preguntasResponse = await axios.get(`${API_URL}/api/preguntas`);
         const preguntas = preguntasResponse.data;
 
-        const datosAnalizados = procesarDatos(respuestas, preguntas);        
-        
-        
+        const datosAnalizados = procesarDatos(respuestas, preguntas);
+
         setResultados({
           porcentajeCumplimiento: datosAnalizados.porcentajeGeneral,
           empleador: empleadorInfo,
@@ -132,21 +156,19 @@ const Resultados = () => {
     );
   };
 
-  
   const nombreEmpresa = resultados.empleador?.nombres || "No disponible";
   const identificacionEmpresa = resultados.empleador?.identificacion || "No disponible";
   const tipoIdentificacion = resultados.empleador?.tipoDocumento || "";
-  const diligenciador = resultados.empleador?.nombreDiligenciador || "No disponible"
-  const telefono = resultados.empleador?.telefono || "No disponible"
-  const email = resultados.empleador?.email || "No disponible"
+  const diligenciador = resultados.empleador?.nombreDiligenciador || "No disponible";
+  const telefono = resultados.empleador?.telefono || "No disponible";
+  const email = resultados.empleador?.email || "No disponible";
 
-  // Identificar categorías con bajo cumplimiento
   const categoriasConBajoCumplimiento = Object.entries(resultados.categorias)
     .filter(([_, datos]) => datos.porcentaje < 60)
     .map(([categoria, datos]) => ({
-      nombre: categoria,
+      nombre: categorias.length > 0 ? obtenerNombreCategoria(categoria) : categoria,
       porcentaje: datos.porcentaje,
-      recomendacion: Recomendaciones(categoria, datos.porcentaje)
+      recomendacion: recomendaciones[categoria] || []
     }));
 
   return (
@@ -154,43 +176,42 @@ const Resultados = () => {
       {/* Encabezado con información de la empresa y resumen */}
       <div className="diagnostico-header">
         <div className="empresa-info">
-            <div>                
-              <h1>Diagnóstico de Cumplimiento</h1>
-              <div className="empresa-datos">
-                <div className="dato-empresa">
-                  <span className="dato-label">Empleador: <span className="dato-valor">{nombreEmpresa}</span></span>   
-                </div>
-                <div className="dato-empresa">
-                  <span className="dato-label">Tipo de identificación: <span className="dato-valor">{tipoIdentificacion}</span></span>              
-                </div>
-                <div className="dato-empresa">
-                  <span className="dato-label">Número de identificación: <span className="dato-valor">{identificacionEmpresa}</span></span>              
-                </div>
-                <div className="dato-empresa">
-                  <span className="dato-label">Diligenciador: <span className="dato-valor">{diligenciador}</span></span>
-                </div>
-                <div className="dato-empresa">
-                  <span className="dato-label">Correo electrónico: <span className="dato-valor">{email}</span></span>
-                </div>
-                <div className="dato-empresa">
-                  <span className="dato-label">Telefono: <span className="dato-valor">{telefono}</span></span>
-                </div>
-                <div className="dato-empresa">
-                  <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span>
-                </div>            
+          <div>
+            <h1>Diagnóstico de Cumplimiento</h1>
+            <div className="empresa-datos">
+              <div className="dato-empresa">
+                <span className="dato-label">Empleador: <span className="dato-valor">{nombreEmpresa}</span></span>
+              </div>
+              <div className="dato-empresa">
+                <span className="dato-label">Tipo de identificación: <span className="dato-valor">{tipoIdentificacion}</span></span>
+              </div>
+              <div className="dato-empresa">
+                <span className="dato-label">Número de identificación: <span className="dato-valor">{identificacionEmpresa}</span></span>
+              </div>
+              <div className="dato-empresa">
+                <span className="dato-label">Diligenciador: <span className="dato-valor">{diligenciador}</span></span>
+              </div>
+              <div className="dato-empresa">
+                <span className="dato-label">Correo electrónico: <span className="dato-valor">{email}</span></span>
+              </div>
+              <div className="dato-empresa">
+                <span className="dato-label">Telefono: <span className="dato-valor">{telefono}</span></span>
+              </div>
+              <div className="dato-empresa">
+                <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span>
               </div>
             </div>
-            <img src={GAP}className='box-gap'/>
+          </div>
+          <img src={GAP} className='box-gap' alt="GAP" />
         </div>
-        
+
         <div className="resumen-cumplimiento">
-         
           <div className="resumen-texto">
-            <div>              
+            <div>
               {renderizarGraficoDona(resultados.porcentajeCumplimiento, 150)}
               <h2>Cumplimiento Global</h2>
               <div className="estado-cumplimiento">
-                <span 
+                <span
                   className="estado-indicador"
                   style={{ backgroundColor: obtenerColorPorcentaje(resultados.porcentajeCumplimiento) }}
                 ></span>
@@ -198,18 +219,19 @@ const Resultados = () => {
                   {resultados.porcentajeCumplimiento >= 80
                     ? "Cumplimiento Adecuado"
                     : resultados.porcentajeCumplimiento >= 60
-                    ? "Requiere Mejoras"
-                    : "Alto Riesgo de Incumplimiento"}
+                      ? "Requiere Mejoras"
+                      : "Alto Riesgo de Incumplimiento"}
                 </span>
               </div>
             </div>
           </div>
           <div className="grafico-principal">
-            <RadarChartComponent categorias={datosRadar}/>
+            <RadarChartComponent categorias={datosRadar} />
           </div>
         </div>
       </div>
-            {categoriasConBajoCumplimiento.length > 0 && (
+
+      {categoriasConBajoCumplimiento.length > 0 && (
         <div className="recomendaciones-seccion">
           <h2>Recomendaciones</h2>
           <div className="recomendaciones-lista">
@@ -221,10 +243,11 @@ const Resultados = () => {
                     {Math.round(categoria.porcentaje)}%
                   </div>
                 </div>
-                <div 
-                  className="recomendacion-contenido"
-                  dangerouslySetInnerHTML={{ __html: categoria.recomendacion }}
-                />
+                <div className="recomendacion-contenido">
+                  {categoria.recomendacion.map((recomendacion, idx) => (
+                    <p key={idx} dangerouslySetInnerHTML={{ __html: recomendacion.texto }} />
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -242,7 +265,6 @@ const Resultados = () => {
                 <li>Documentos de contratación</li>
                 <li>Registro de novedades y liquidación de nómina</li>
                 <li>Reporte de novedades y pre nómina</li>
-                
               </ul>
               <ul>
                 <li>Emisión nómina electrónica</li>
@@ -251,7 +273,6 @@ const Resultados = () => {
                 <li>Contabilización nómina</li>
                 <li>Liquidación de acreencias laborales</li>
                 <li>Certificado laboral</li>
-
               </ul>
               <ul>
                 <li>Certificado de ingresos y retenciones</li>
@@ -266,24 +287,21 @@ const Resultados = () => {
             <p>C. Acompañamiento y asesoría virtual en procesos disciplinarios. </p>
             <p>D. Elaboración de esquemas de contratación y compensación. </p>
             <p>E. Proyección y divulgación de reglamentos y/o políticas aplicables. </p>
-
-      </div>
-      <div className="aviso-legal recomendacion-item">
-        <p><strong>Aviso Legal:</strong> El diagnóstico ofrecido es de carácter orientativo e informativo. No constituye asesoría legal personalizada ni puede ser interpretado como una recomendación jurídica definitiva. Su contenido se genera únicamente a partir de la información suministrada por usted, sin verificación ni validación adicional. Para atender situaciones específicas, recomendamos siempre acudir a un abogado laboral con experiencia. Esta herramienta no crea una relación abogado-cliente ni garantiza la aplicabilidad de los resultados en casos particulares.</p>
-      </div>
+          </div>
+          <div className="aviso-legal recomendacion-item">
+            <p><strong>Aviso Legal:</strong> El diagnóstico ofrecido es de carácter orientativo e informativo. No constituye asesoría legal personalizada ni puede ser interpretado como una recomendación jurídica definitiva. Su contenido se genera únicamente a partir de la información suministrada por usted, sin verificación ni validación adicional. Para atender situaciones específicas, recomendamos siempre acudir a un abogado laboral con experiencia. Esta herramienta no crea una relación abogado-cliente ni garantiza la aplicabilidad de los resultados en casos particulares.</p>
+          </div>
         </div>
       )}
-      
 
-      {/* Botones de acción */}
       <div className="diagnostico-acciones">
-        <button 
+        <button
           className="btn-imprimir"
           onClick={() => window.print()}
         >
           Imprimir Resultados
         </button>
-        <button 
+        <button
           className="btn-nuevo-diagnostico"
           onClick={() => navigate("/")}
         >

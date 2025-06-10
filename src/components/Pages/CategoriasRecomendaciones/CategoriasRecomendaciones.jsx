@@ -203,7 +203,7 @@ const CategoriasRecomendaciones = () => {
                                 </>
                             ) : (
                                 <>
-                                    <span>{rec.texto} ({categorias.find(c => c.id === rec.id)?.nombre})</span>
+                                    <span>{rec.texto} ({categorias.find(c => c.id === rec.categoriaId)?.nombre})</span>
                                     <button onClick={() => {
                                         setEditandoRecomendacion(rec.id);
                                         setNuevoTextoRecomendacion(rec.texto);

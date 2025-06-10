@@ -15,6 +15,7 @@ const Cuestionario = () => {
     const [error, setError] = useState("");
     const [empleadorId, setEmpleadorId] = useState(null);
     const [diagnostico, setDiagnostico] = useState(null);
+    const [categorias, setCategorias] = useState([]);    
 
     useEffect(() => {
         const obtenerPreguntas = async () => {
@@ -29,11 +30,15 @@ const Cuestionario = () => {
                 setEmpleadorId(empleadorIdParsed);
 
                 // Obtenemos las preguntas de la API
-                const response = await axios.get(`${API_URL}/api/preguntas`);
+                const [preguntasRes, categoriasRes] = await Promise.all([
+                    axios.get(`${API_URL}/api/preguntas`),
+                    axios.get(`${API_URL}/api/categorias`),
+                    
+                ]) 
 
-                // Establecemos las preguntas y creamos el array de respuestas
-                setPreguntas(response.data);
-                setRespuestas(response.data.map(pregunta => ({
+                setPreguntas(preguntasRes.data);
+                setCategorias(categoriasRes.data);
+                setRespuestas(preguntasRes.data.map(pregunta => ({
                     id: pregunta.id,
                     respuesta: "",
                     comentario: "",
@@ -172,7 +177,7 @@ const Cuestionario = () => {
             )}
             <div>
                 <p className="question-category">
-                    {preguntas[preguntaActual].categoria}
+                    {categorias[preguntaActual].nombre}
                 </p>            
             </div>
 
