@@ -176,9 +176,12 @@ const Cuestionario = () => {
                 </div>
             )}
             <div>
-                <p className="question-category">
-                    {categorias[preguntaActual].nombre}
-                </p>            
+                    {categorias[preguntaActual] && (
+                        <p className="question-category">
+                            {categorias[preguntaActual].nombre}
+                        </p>
+                    )}
+
             </div>
 
             <h2 className="question-text">
