@@ -99,7 +99,7 @@ const Cuestionario = () => {
             const preguntasActualizadas = preguntasResponse.data;
 
             // Procesar el diagnóstico en el backend enviando respuestas y preguntas
-            const diagnosticoResponse = await axios.post(`${API_URL}/api/diagnostico`, {
+            const diagnosticoResponse = await axios.post(`${API_URL}/api/diagnostico/${empleadorId}`, {
                 respuestas: respuestas,
                 preguntas: preguntasActualizadas
             });

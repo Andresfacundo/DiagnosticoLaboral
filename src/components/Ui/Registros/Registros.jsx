@@ -28,7 +28,9 @@ const Registros = () => {
         setCategorias(categoriasResponse.data); // Guardar categorías
 
         const response = diagnosticosResponse.data.map((diagnostico) => {
-          const empleadorEncontrado = empleador.find((e) => e.id === diagnostico.id);
+          const empleadorEncontrado = diagnostico.empleadorId
+          ? empleador.find((e) => e.id === diagnostico.empleadorId)
+          : null;
           return {
             ...diagnostico,
             empleador: empleadorEncontrado || {},
