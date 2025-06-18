@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import del from "../../../../public/delete.svg";
+import contactarEmpleador from "../ContactarEmpleador/ContactarEmpleador";
 import "./Registros.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -199,6 +200,7 @@ const Registros = () => {
     const diligenciador = diagnosticoActual?.empleador?.nombreDiligenciador || "No disponible";
     const telefono = diagnosticoActual?.empleador?.telefono || "No disponible";
     const email = diagnosticoActual?.empleador?.email || "No disponible";
+    const trabajadores = diagnosticoActual?.empleador?.trabajadores || "No disponible";
 
     return (
       <div className="detalles-diagnostico-container">
@@ -226,6 +228,7 @@ const Registros = () => {
                 <span className="dato-label">Telefono: <span className="dato-valor">{telefono}</span></span>
               </div>
               <div className="dato-empresa">
+                <span className="dato-label">Número de trabajadores: <span className="dato-valor">{trabajadores}</span></span>
                 {/* <span className="dato-label">Fecha: <span className="dato-valor">{resultados.fecha}</span></span> */}
               </div>
             </div>
@@ -388,6 +391,10 @@ const Registros = () => {
                       >
                         Ver detalles
                       </button>
+                      <button onClick={() => contactarEmpleador(diagnostico)}>
+                        Contactar
+                      </button>
+
                    
                     </td>
                   </tr>
