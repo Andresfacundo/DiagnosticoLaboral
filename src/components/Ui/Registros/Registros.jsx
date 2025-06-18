@@ -391,7 +391,7 @@ const Registros = () => {
                       >
                         Ver detalles
                       </button>
-                      <button onClick={() => contactarEmpleador(diagnostico)}>
+                      <button onClick={() => contactarEmpleador(diagnostico)} className="btn-ver-detalles">
                         Contactar
                       </button>
 
