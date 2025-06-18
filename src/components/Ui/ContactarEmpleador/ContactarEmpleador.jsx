@@ -35,8 +35,9 @@ Revisamos tus respuestas y encontramos oportunidades importantes para mejorar. P
 
 
   const telefonoLimpio = telefono.replace(/\D/g, "");
-  const whatsappURL = `https://wa.me/57${telefonoLimpio}?text=${encodeURIComponent(mensajeWa)}`;
+  const whatsappURL = `https://api.whatsapp.com/send?phone=57${telefonoLimpio}&text=${encodeURIComponent(mensajeWa)}`;
   window.open(whatsappURL, "_blank");
+
 };
 
 export default contactarEmpleador;
