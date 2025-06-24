@@ -47,7 +47,7 @@ function ResumenNomina({ actualizar }) {
               <th>Horas trabajadas</th>
               {/* <th>Horas regulares</th> */}
               <th>Horas extra</th>
-              <th>Pago regular</th>
+              {/* <th>Pago regular</th> */}
               <th>Pago extra</th>
               <th>Total a pagar</th>
               <th>Turnos</th>
@@ -59,12 +59,12 @@ function ResumenNomina({ actualizar }) {
                 <td data-label="Empleado">{emp.nombre} {emp.apellido}</td>
                 <td data-label="N° Documento">{emp.cc}</td>
                 <td data-label="Área">{emp.area}</td>
-                <td data-label="Salario base">${emp.salarioBase}</td>
+                <td data-label="Salario base">${emp.salarioBase.toLocaleString('es-CO')}</td>
                 <td data-label="Horas trabajadas">{emp.totalHoras}</td>
                 <td data-label="Horas extra">{emp.horasExtra}</td>
-                <td data-label="Pago regular">${emp.pagoRegular}</td>
-                <td data-label="Pago extra">${emp.pagoExtra}</td>
-                <td data-label="Total a pagar"><b>${emp.totalPagar}</b></td>
+                {/* <td data-label="Pago regular">${emp.pagoRegular}</td> */}
+                <td data-label="Pago extra">${emp.pagoExtra.toLocaleString('es-CO')}</td>
+                <td data-label="Total a pagar"><b>${emp.totalPagar.toLocaleString('es-CO')}</b></td>
                 <td data-label="Turnos">{emp.cantidadTurnos}</td>
               </tr>
             ))}
