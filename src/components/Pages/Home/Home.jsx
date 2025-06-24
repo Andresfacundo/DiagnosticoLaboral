@@ -306,22 +306,6 @@ const Home = () => {
                     ))}
                 </div>
 
-                {/* Control Info */}
-                <div className="control-info">
-                    <p>
-                        {isPaused ? (
-                            <span className="status-indicator">
-                                <div className="status-dot status-paused"></div>
-                                
-                            </span>
-                        ) : (
-                            <span className="status-indicator">
-                                <div className="status-dot status-playing"></div>
-                                
-                            </span>
-                        )}
-                    </p>
-                </div>
 
                 {/* Service Area Thumbnails */}
                 <div className="thumbnails-grid">

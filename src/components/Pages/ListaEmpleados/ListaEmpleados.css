@@ -1,0 +1,105 @@
+.lista-empleados-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.lista-empleados-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Tabla */
+.empleados-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.empleados-tabla th,
+.empleados-tabla td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.empleados-tabla th {
+  background-color: #DFBD7C; /* amarillo suave */
+  color: #222;
+  font-weight: 600;
+}
+.delete-button{
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+}
+
+/* Mensaje cuando no hay empleados */
+.no-empleados {
+  text-align: center;
+  margin-top: 50px;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.no-empleados p {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.no-empleados span {
+  font-size: 16px;
+  color: #888;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .empleados-tabla thead {
+    display: none;
+  }
+
+  .empleados-tabla, 
+  .empleados-tabla tbody, 
+  .empleados-tabla tr, 
+  .empleados-tabla td {
+    display: block;
+    width: 100%;
+  }
+
+  .empleados-tabla tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fff;
+  }
+
+  .empleados-tabla td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .empleados-tabla td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    padding-left: 10px;
+    font-weight: bold;
+    color: #444;
+    text-align: left;
+  }
+
+  .delete-button {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+}

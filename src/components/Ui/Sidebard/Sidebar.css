@@ -1,0 +1,304 @@
+/* ===== SIDEBAR RESPONSIVO E INTUITIVO ===== */
+
+/* Layout principal */
+.gestion-horarios-layout {
+  display: flex;
+  min-height: calc(100vh - 140px); /* Ajustado para navbar y footer */
+  background: #f8fafc;
+  position: relative;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar-horarios {
+  width: 280px;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+  /* position: sticky; */
+  top: 0;
+  height: fit-content;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+
+}
+
+/* Título del sidebar */
+.sidebar-horarios h2 {
+  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-clip: text;
+  text-align: center;
+  position: relative;
+}
+
+/* Lista de navegación */
+.sidebar-horarios ul {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.sidebar-horarios li {
+  margin: 4px 12px;
+}
+
+/* Enlaces de navegación */
+.sidebar-horarios a {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  /* color: #cbd5e1; */
+  text-decoration: none;
+  border-radius:8px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-horarios a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  /* background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); */
+  transition: width 0.3s ease;
+  z-index: -1;
+}
+
+/* Estado activo */
+.sidebar-horarios a.active {
+  background-color: #DFBD7C ;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-horarios-content {
+  flex: 1;
+  padding: 24px;
+  background: #ffffff;
+  margin: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  min-height: calc(100vh - 200px);
+}
+
+/* ===== BOTÓN MÓVIL PARA TOGGLE ===== */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 15   0px; /* Ajustado para navbar */
+  left: 16px;
+  z-index: 1000;
+  background-color: #DFBD7C;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.sidebar-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: white;
+  margin: 4px 0;
+  transition: 0.3s;
+  border-radius: 1px;
+}
+
+/* ===== OVERLAY PARA MÓVIL ===== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .sidebar-horarios {
+    width: 240px;
+  }
+  
+  .main-horarios-content {
+    padding: 20px;
+    margin: 12px;
+  }
+  
+  .sidebar-horarios h2 {
+    font-size: 18px;
+    padding: 20px 16px 14px;
+  }
+}
+
+/* Móviles grandes */
+@media (max-width: 768px) {
+  .gestion-horarios-layout {
+    flex-direction: column;
+    min-height: calc(100vh - 120px);
+  }
+  
+  .sidebar-toggle {
+    display: block;
+  }
+  
+  .sidebar-horarios {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    z-index: 100;
+    max-height: none;
+    padding-top: 80px; /* Espacio para navbar */
+  }
+  
+  .sidebar-horarios.mobile-open {
+    left: 0;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.15);
+  }
+  
+  .sidebar-overlay.active {
+    display: block;
+  }
+  
+  .main-horarios-content {
+    margin: 8px;
+    padding: 16px;
+    border-radius: 12px;
+    min-height: calc(100vh - 160px);
+  }
+  
+  .sidebar-horarios h2 {
+    margin-top: 0;
+    padding-top: 16px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .sidebar-horarios {
+    width: 260px;
+    left: -260px;
+  }
+  
+  .main-horarios-content {
+    margin: 4px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  .sidebar-horarios h2 {
+    font-size: 16px;
+    padding: 16px 12px 12px;
+  }
+  
+  .sidebar-horarios a {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  
+  .sidebar-toggle {
+    top: 70px;
+    left: 12px;
+    padding: 10px;
+  }
+}
+
+/* ===== ANIMACIONES Y MICROINTERACCIONES ===== */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sidebar-horarios {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.main-horarios-content {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* ===== SCROLLBAR PERSONALIZADO ===== */
+.sidebar-horarios::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-horarios::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.sidebar-horarios::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.sidebar-horarios::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== ESTADOS DE FOCUS PARA ACCESIBILIDAD ===== */
+
+
+.sidebar-toggle:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* ===== MODO OSCURO (OPCIONAL) ===== */
+@media (prefers-color-scheme: dark) {
+  .main-horarios-content {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+  
+  .gestion-horarios-layout {
+    background: #111827;
+  }
+}

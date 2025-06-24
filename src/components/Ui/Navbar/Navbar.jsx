@@ -131,6 +131,12 @@ const Navbar = ({id}) => {
                                                     
                             {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
                             <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros' className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Nosotros</NavLink></li>
+                            <li className='horarios'>
+                                <NavLink to='/horarios' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>
+                                    Gestión de horarios
+                                </NavLink>
+                            </li>
+
                         </div>
                         
                         {isAuthenticated ? (

@@ -20,19 +20,19 @@ const ContactoForm = () => {
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   }
-  useEffect(() => {
-    // Obtener intereses desde el backend
-    const fetchIntereses = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/api/intereses`);
-        setInteresesDisponibles(res.data);
-      } catch (error) {
-        console.error('Error al obtener intereses:', error);
-      }
-    };
+  // useEffect(() => {
+  //   // Obtener intereses desde el backend
+  //   const fetchIntereses = async () => {
+  //     try {
+  //       const res = await axios.get(`${API_URL}/api/intereses`);
+  //       setInteresesDisponibles(res.data);
+  //     } catch (error) {
+  //       console.error('Error al obtener intereses:', error);
+  //     }
+  //   };
 
-    fetchIntereses();
-  }, []);
+  //   fetchIntereses();
+  // }, []);
 
 
   const handleChange = (e) => {

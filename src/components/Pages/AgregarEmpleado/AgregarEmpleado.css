@@ -1,0 +1,192 @@
+/* Estilos para el formulario Agregar Empleado - Versión Compacta */
+.agregar-empleado-form {
+  max-width: 600px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.agregar-empleado-form:hover {
+  /* transform: translateY(-2px); */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Título del formulario */
+.agregar-empleado-form h2 {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-size: 1.4rem;
+  font-weight: 600;
+  position: relative;
+}
+
+/* Estilos para los inputs */
+.agregar-empleado-form input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: #fafbfc;
+  box-sizing: border-box;
+}
+
+.agregar-empleado-form input:focus {
+  outline: none;
+  border-color: #3498db;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  transform: translateY(-1px);
+}
+
+.agregar-empleado-form input:valid {
+  border-color: #2ecc71;
+}
+
+.agregar-empleado-form input:invalid:not(:placeholder-shown) {
+  border-color: #e74c3c;
+}
+
+/* Placeholder personalizado */
+.agregar-empleado-form input::placeholder {
+  color: #95a5a6;
+  font-weight: 400;
+}
+
+/* Botón de envío */
+.agregar-empleado-form button {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, #DFBD7C 0%, #DFBD7C 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 00;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  /* margin-top: 0.5rem; */
+}
+
+.agregar-empleado-form button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.agregar-empleado-form button:hover {
+  /* transform: translateY(-2px); */
+  /* box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3); */
+}
+
+.agregar-empleado-form button:hover::before {
+  /* left: 100%; */
+}
+
+.agregar-empleado-form button:active {
+  /* transform: translateY(0); */
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+}
+
+/* Animación de carga para el botón */
+.agregar-empleado-form button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Efectos responsive */
+@media (max-width: 768px) {
+  .agregar-empleado-form {
+    margin: 0.5rem;
+    padding: 1rem;
+    max-width: none;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  
+  .agregar-empleado-form h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .agregar-empleado-form input {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+  }
+  
+  .agregar-empleado-form button {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Animaciones sutiles */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.agregar-empleado-form {
+  /* animation: slideInUp 0.6s ease-out; */
+}
+
+.agregar-empleado-form input {
+  /* animation: slideInUp 0.6s ease-out; */
+  /* animation-fill-mode: both; */
+}
+
+.agregar-empleado-form input:nth-child(3) { animation-delay: 0.1s; }
+.agregar-empleado-form input:nth-child(4) { animation-delay: 0.2s; }
+.agregar-empleado-form input:nth-child(5) { animation-delay: 0.3s; }
+.agregar-empleado-form input:nth-child(6) { animation-delay: 0.4s; }
+.agregar-empleado-form input:nth-child(7) { animation-delay: 0.5s; }
+.agregar-empleado-form input:nth-child(8) { animation-delay: 0.6s; }
+.agregar-empleado-form button { animation-delay: 0.7s; }
+
+/* Estados de validación visual */
+.agregar-empleado-form input:valid:not(:placeholder-shown) {
+  /* background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2327ae60' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 9 2 2 4-4'/%3e%3c/svg%3e"); */
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 0.9rem;
+  padding-right: 2.5rem;
+}
+
+.agregar-empleado-form input:invalid:not(:placeholder-shown):not(:focus) {
+  /* background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e74c3c' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m4 4 8 8m0-8-8 8'/%3e%3c/svg%3e"); */
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 0.9rem;
+  padding-right: 2.5rem;
+}
+
+/* Efecto de focus mejorado */
+.agregar-empleado-form input:focus {
+  position: relative;
+  z-index: 10;
+}

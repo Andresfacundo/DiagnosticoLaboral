@@ -1,0 +1,135 @@
+.turnos-section-card input[type="text"],
+.turnos-section-card input[type="date"] {
+  padding: 8px 12px;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #f8fafc;
+  margin-bottom: 4px;
+}
+
+.turnos-section-card input[type="text"]:focus,
+.turnos-section-card input[type="date"]:focus {
+  border-color: #4a90e2;
+  background: #fff;
+}
+
+.turnos-section-card input[type="date"]::-webkit-input-placeholder,
+.turnos-section-card input[type="text"]::-webkit-input-placeholder {
+  color: #b0b8c1;
+}
+
+.turnos-section-card input[type="date"]::placeholder,
+.turnos-section-card input[type="text"]::placeholder {
+  color: #b0b8c1;
+}
+
+.turnos-section-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  padding: 24px 16px;
+  margin: 24px auto;
+  max-width: 900px;
+  width: 95%;
+}
+
+.turnos-section-card h2 {
+  margin-bottom: 18px;
+  font-size: 1.5rem;
+  color: #2d3a4b;
+  text-align: center;
+}
+
+.lista-turnos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background: #fafbfc;
+  overflow-x: auto;
+}
+
+.lista-turnos-table th,
+.lista-turnos-table td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e3e6ea;
+}
+
+.lista-turnos-table th {
+  background: #f0f4f8;
+  color: #2d3a4b;
+  font-weight: 600;
+}
+
+.lista-turnos-table tr:hover {
+  background: #f5faff;
+  transition: background 0.2s;
+}
+
+.empleado-icon {
+  color: #4a90e2;
+  margin-right: 6px;
+  vertical-align: middle;
+  font-size: 1.2em;
+}
+
+@media (max-width: 700px) {
+
+  .turnos-section-card input[type="text"],
+  .turnos-section-card input[type="date"] {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .turnos-section-card>div[style*="display: flex"] {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .turnos-section-card {
+    padding: 10px 2px;
+  }
+
+  .lista-turnos-table,
+  .lista-turnos-table thead,
+  .lista-turnos-table tbody,
+  .lista-turnos-table th,
+  .lista-turnos-table td,
+  .lista-turnos-table tr {
+    display: block;
+  }
+
+  .lista-turnos-table thead tr {
+    display: none;
+  }
+
+  .lista-turnos-table tr {
+    margin-bottom: 18px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    background: #fff;
+    padding: 8px 0;
+  }
+
+  .lista-turnos-table td {
+    position: relative;
+    padding-left: 50%;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    min-height: 36px;
+  }
+
+  .lista-turnos-table td:before {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #4a90e2;
+    content: attr(data-label);
+  }
+}
