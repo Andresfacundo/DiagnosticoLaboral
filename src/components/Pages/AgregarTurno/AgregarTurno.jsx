@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './AgregarTurno.css';
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 function AgregarTurno({ onTurnoAgregado }) {
   const [empleados, setEmpleados] = useState([]);
@@ -11,7 +13,7 @@ function AgregarTurno({ onTurnoAgregado }) {
   });
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/empleados")
+    fetch(`${API_URL}/api/empleados`)
       .then(res => res.json())
       .then(setEmpleados);
   }, []);
@@ -22,7 +24,7 @@ function AgregarTurno({ onTurnoAgregado }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await fetch("http://localhost:3000/api/turnos", {
+    await fetch(`${API_URL}/api/turnos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)

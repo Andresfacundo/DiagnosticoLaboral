@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import './AgregarEmpleado.css';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const formatNumber = (value) => {
   if (!value) return "";
@@ -37,7 +38,7 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/empleados", {
+    const response = await fetch(`${API_URL}/api/empleados`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)

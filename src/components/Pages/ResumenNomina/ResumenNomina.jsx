@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './ResumenNomina.css';
+const API_URL = import.meta.env.VITE_API_URL;
 
 function ResumenNomina({ actualizar }) {
   const [resumen, setResumen] = useState(null);
@@ -9,7 +10,7 @@ function ResumenNomina({ actualizar }) {
     const empleadosGuardados = localStorage.getItem("empleados");
     const turnosGuardados = localStorage.getItem("turnos");
 
-    fetch("http://localhost:3000/api/resumen", {
+    fetch(`${API_URL}/api/resumen`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
