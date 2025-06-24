@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Configuracion = () => {
     const [form, setForm] = useState(0)
@@ -11,7 +12,7 @@ const Configuracion = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        await fetch("http://localhost:3000/api/empleados", {
+        await fetch(`${API_URL}/api/empleados`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form)
