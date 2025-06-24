@@ -152,7 +152,7 @@ function Sidebar() {
                 className={({ isActive }) => isActive ? "active" : ""}
                 onClick={handleLinkClick}
               >
-                Resumen Nómina
+                Resumen nómina
               </NavLink>
             </li>
             {/* {hasAccess('admin') && (

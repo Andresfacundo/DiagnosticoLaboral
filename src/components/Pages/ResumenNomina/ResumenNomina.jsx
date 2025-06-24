@@ -29,6 +29,7 @@ function ResumenNomina({ actualizar }) {
         console.error("Error al cargar resumen:", error);
       });
   }, [actualizar]);
+  console.log('resumen', resumen);
 
 
   if (!resumen) return <p>Cargando resumen...</p>;
@@ -39,18 +40,21 @@ function ResumenNomina({ actualizar }) {
         <table border={1} cellPadding={4} className="resumen-nomina-table">
           <thead>
             <tr>
-              <th>Empleado</th>
-              <th>N° Documento</th>
-              <th>Área</th>
-              <th>Salario base</th>
-              {/* <th>Salario hora</th> */}
-              <th>Horas trabajadas</th>
-              {/* <th>Horas regulares</th> */}
-              <th>Horas extra</th>
-              {/* <th>Pago regular</th> */}
-              <th>Pago extra</th>
-              <th>Total a pagar</th>
+              <th rowSpan={2}>Trabajadores</th>
+              <th rowSpan={2}>N° Documento</th>
+              <th rowSpan={2}>Área</th>
+              <th colSpan={4}>Cantidades</th>
+              <th colSpan={5}>Valores</th>
+            </tr>
+            <tr>
               <th>Turnos</th>
+              <th>Horas trabajadas</th>
+              <th>Horas extra</th>
+              <th>Horas recargo nocturno</th>
+              <th>Salario base</th>
+              <th>Pago extra</th>
+              <th>Valor recargo nocturno</th>
+              <th>Total a pagar</th>
             </tr>
           </thead>
           <tbody>
@@ -59,13 +63,24 @@ function ResumenNomina({ actualizar }) {
                 <td data-label="Empleado">{emp.nombre} {emp.apellido}</td>
                 <td data-label="N° Documento">{emp.cc}</td>
                 <td data-label="Área">{emp.area}</td>
-                <td data-label="Salario base">${emp.salarioBase.toLocaleString('es-CO')}</td>
+                <td data-label="Turnos">{emp.cantidadTurnos}</td>
+                {/* Cantidades */}
                 <td data-label="Horas trabajadas">{emp.totalHoras}</td>
                 <td data-label="Horas extra">{emp.horasExtra}</td>
-                {/* <td data-label="Pago regular">${emp.pagoRegular}</td> */}
+                <td data-label="Horas recargo nocturno">
+                  {emp.horas && emp.horas.recargoNocturno
+                    ? Number(emp.horas.recargoNocturno).toLocaleString('es-CO')
+                    : 0}
+                </td>
+                {/* Valores */}
+                <td data-label="Salario base">${emp.salarioBase.toLocaleString('es-CO')}</td>
                 <td data-label="Pago extra">${emp.pagoExtra.toLocaleString('es-CO')}</td>
+                <td data-label="Valor recargo nocturno">
+                  ${emp.valores && emp.valores.recargoNocturno
+                    ? Number(emp.valores.recargoNocturno).toLocaleString('es-CO')
+                    : 0}
+                </td>
                 <td data-label="Total a pagar"><b>${emp.totalPagar.toLocaleString('es-CO')}</b></td>
-                <td data-label="Turnos">{emp.cantidadTurnos}</td>
               </tr>
             ))}
           </tbody>
@@ -76,14 +91,6 @@ function ResumenNomina({ actualizar }) {
           <span>Agrega empleados y turnos para visualizar el resumen de nómina aquí.</span>
         </div>
       )}
-
-      {/* <h3>Totales</h3>
-      <ul className="resumen-nomina-totales">
-        <li><b>Total horas trabajadas:</b> {resumen.totales.totalHoras}</li>
-        <li><b>Total horas extra:</b> {resumen.totales.totalExtras}</li>
-        <li><b>Total turnos:</b> {resumen.totales.totalTurnos}</li>
-        <li><b>Total nómina:</b> ${resumen.totales.totalNomina}</li>
-      </ul> */}
     </div>
   );
 }

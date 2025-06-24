@@ -21,7 +21,7 @@
 
 /* Calendario principal */
 .calendario-turnos {
-  height: 700px;
+  /* height: 700px; */
   border-radius: 8px;
   overflow: hidden;
 }
