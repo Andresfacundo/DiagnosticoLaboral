@@ -1,5 +1,5 @@
-.select-employee{
-    cursor: pointer;
+.select-employee {
+  cursor: pointer;
 }
 
 /* Contenedor principal del calendario */
@@ -28,7 +28,7 @@
 
 /* Estilos para los eventos del calendario */
 .calendario-event {
-  background-color:#dfbc7c6e !important;
+  background-color: #dfbc7c6e !important;
   color: #000000 !important;
   border-radius: 8px !important;
   border: none !important;
@@ -262,36 +262,36 @@
   .calendario-turnos-container {
     padding: 12px;
   }
-  
+
   .calendario-turnos {
     height: 600px;
   }
-  
+
   .turno-modal {
     width: 95%;
     max-width: none;
     margin: 10px;
   }
-  
+
   .modal-header {
     padding: 16px 20px;
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
   }
-  
+
   .btn-eliminar {
     align-self: flex-end;
   }
-  
+
   .turno-form {
     padding: 20px;
   }
-  
+
   .form-buttons {
     flex-direction: column;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     width: 100%;

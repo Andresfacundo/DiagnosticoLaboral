@@ -68,7 +68,16 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} required />
       <input name="apellido" placeholder="Apellido" value={form.apellido} onChange={handleChange} required />
       <input name="cc" placeholder="Cédula" value={form.cc} onChange={handleChange} required />
-      <input name="clasificacionPersonal" placeholder="Clasificación del personal" value={form.clasificacionPersonal} onChange={handleChange} required />
+      <select
+        name="clasificacionPersonal"
+        value={form.clasificacionPersonal}
+        onChange={handleChange}
+        required
+      >
+        <option value="" disabled>Clasificación del personal</option>
+        <option value="Ordinario">Ordinario</option>
+        <option value="Direccion, confianza o manejo">Dirección, confianza o manejo</option>
+      </select>
       <input name="area" placeholder="Área" value={form.area} onChange={handleChange} required />
       <input
         name="salarioBase"
