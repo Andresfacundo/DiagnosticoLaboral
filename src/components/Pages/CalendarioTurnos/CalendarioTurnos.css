@@ -97,24 +97,11 @@
 }
 
 /* Botón eliminar */
-.modal-header .btn-eliminar {
-  background: #d32f2f;
-  color: #fff;
+.bttn-eliminar{
+  background-color: transparent;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
 
-.btn-eliminar:hover {
-  background: #b71c1c;
-  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
 }
 
 /* Formulario del modal */

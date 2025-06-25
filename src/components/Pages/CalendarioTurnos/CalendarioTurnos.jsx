@@ -9,6 +9,7 @@ import "./CalendarioTurnos.css";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import CustomEvent from "../../Ui/CustomEvent/CustomEvent";
+import del from "../../../assets/delete.png"
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -18,6 +19,14 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
+const formats = {
+  timeGutterFormat: 'hh:mm a',
+  eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
+    localizer.format(start, 'hh:mm a', culture) +
+    ' - ' +
+    localizer.format(end, 'hh:mm a', culture),
+  agendaTimeFormat: 'hh:mm a',
+};
 
 const DnDCalendar = withDragAndDrop(Calendar);
 Modal.setAppElement("#root");
@@ -190,6 +199,7 @@ function CalendarioTurnos() {
         events={eventos}
         startAccessor="start"
         endAccessor="end"
+        formats={formats}
         selectable
         resizable
         className="calendario-turnos"
@@ -228,8 +238,8 @@ function CalendarioTurnos() {
         <div className="modal-header">
           <h3>{modalType === "create" ? "Crear Turno" : "Editar Turno"}</h3>
           {modalType === "edit" && (
-            <button type="button" onClick={handleEliminarTurno} className="btn-eliminar">
-              🗑️ Eliminar
+            <button type="button" onClick={handleEliminarTurno} className="bttn-eliminar">
+              <img src={del} alt="" />
             </button>
           )}
         </div>
@@ -261,13 +271,21 @@ function CalendarioTurnos() {
 
           <div className="form-group">
             <label className="form-label">
-              Hora inicio: <span className="form-value">{nuevoTurno.horaInicio}</span>
+              Hora inicio: <span className="form-value">
+                {nuevoTurno.horaInicio
+                  ? format(new Date(`2020-01-01T${nuevoTurno.horaInicio}`), "hh:mm a")
+                  : ""}
+              </span>
             </label>
           </div>
 
           <div className="form-group">
             <label className="form-label">
-              Hora fin: <span className="form-value">{nuevoTurno.horaFin}</span>
+              Hora fin: <span className="form-value">
+                {nuevoTurno.horaFin
+                  ? format(new Date(`2020-01-01T${nuevoTurno.horaFin}`), "hh:mm a")
+                  : ""}
+              </span>
             </label>
           </div>
 

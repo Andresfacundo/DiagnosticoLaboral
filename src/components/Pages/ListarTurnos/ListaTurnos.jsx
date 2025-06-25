@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import './ListaTurnos.css';
 import { FaUserCircle, FaSearch, FaEraser } from "react-icons/fa";
+import { format } from "date-fns";
+import del from "../../../assets/delete.png"
 
 function ListaTurnos({ actualizar }) {
   const [turnos, setTurnos] = useState([]);
@@ -12,6 +14,13 @@ function ListaTurnos({ actualizar }) {
   const [turnosFiltrados, setTurnosFiltrados] = useState([]);
 
   const getEmpleado = id => empleados.find(e => e.id === id);
+
+  const eliminarTurno = (id) => {
+    const nuevosTurnos = turnos.filter(t => t.id !== id);
+    setTurnos(nuevosTurnos);
+    setTurnosFiltrados(nuevosTurnos);
+    localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
+  };
 
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -115,6 +124,7 @@ function ListaTurnos({ actualizar }) {
             <th>Hora Inicio</th>
             <th>Hora Fin</th>
             <th>Minutos Descanso</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -129,9 +139,28 @@ function ListaTurnos({ actualizar }) {
                 <td data-label="CC">{emp.cc}</td>
                 <td data-label="Área">{emp.area}</td>
                 <td data-label="Fecha">{turno.dia}</td>
-                <td data-label="Hora Inicio">{turno.horaInicio}</td>
-                <td data-label="Hora Fin">{turno.horaFin}</td>
+                <td data-label="Hora Inicio">
+                  {turno.horaInicio
+                    ? format(new Date(`2020-01-01T${turno.horaInicio}`), "hh:mm a")
+                    : ""}
+                </td>
+                <td data-label="Hora Fin">
+                  {turno.horaFin
+                    ? format(new Date(`2020-01-01T${turno.horaFin}`), "hh:mm a")
+                    : ""}
+                </td>
                 <td data-label="Minutos Descanso">{turno.minutosDescanso}</td>
+                <td data-label="Acciones">
+                  <button
+                    className="btn-eliminar-turno"
+                    onClick={() => eliminarTurno(turno.id)}
+                    title="Eliminar turno"
+                 
+                  >
+                    <img src={del} alt="btn-eliminar" />
+                    
+                  </button>
+                </td>
               </tr>
             );
           })}

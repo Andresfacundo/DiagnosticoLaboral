@@ -47,6 +47,12 @@
   background-color: #f5f6fa;
   color: #333;
 }
+.lista-turnos-table .btn-eliminar-turno{
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+
+}
 
 /* Responsive para tabla de turnos */
 @media (max-width: 700px) {
