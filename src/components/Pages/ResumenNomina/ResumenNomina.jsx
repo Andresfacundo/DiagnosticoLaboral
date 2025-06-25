@@ -167,7 +167,7 @@ function ResumenNomina({ actualizar }) {
           <FaSearch style={{ marginRight: 5 }} />
           Buscar
         </button>
-        <button onClick={limpiarFiltros} style={{ backgroundColor: "#6c757d" }}>
+        <button onClick={limpiarFiltros} >
           <FaEraser style={{ marginRight: 5 }} />
           Limpiar
         </button>

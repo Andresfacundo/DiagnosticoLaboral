@@ -29,7 +29,7 @@
 }
 
 /* Estilos para los inputs */
-.agregar-empleado-form input {
+.agregar-empleado-form input, select {
   width: 100%;
   padding: 0.8rem 1rem;
   margin-bottom: 0;
@@ -37,7 +37,7 @@
   border-radius: 8px;
   font-size: 0.9rem;
   transition: all 0.3s ease;
-  background: #fafbfc;
+  /* background: #fafbfc; */
   box-sizing: border-box;
 }
 
@@ -58,7 +58,7 @@
 }
 
 /* Placeholder personalizado */
-.agregar-empleado-form input::placeholder {
+.agregar-empleado-form select,input::placeholder {
   color: #95a5a6;
   font-weight: 400;
 }
@@ -92,14 +92,7 @@
   transition: left 0.5s;
 }
 
-.agregar-empleado-form button:hover {
-  /* transform: translateY(-2px); */
-  /* box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3); */
-}
 
-.agregar-empleado-form button:hover::before {
-  /* left: 100%; */
-}
 
 .agregar-empleado-form button:active {
   /* transform: translateY(0); */
@@ -151,14 +144,6 @@
   }
 }
 
-.agregar-empleado-form {
-  /* animation: slideInUp 0.6s ease-out; */
-}
-
-.agregar-empleado-form input {
-  /* animation: slideInUp 0.6s ease-out; */
-  /* animation-fill-mode: both; */
-}
 
 .agregar-empleado-form input:nth-child(3) { animation-delay: 0.1s; }
 .agregar-empleado-form input:nth-child(4) { animation-delay: 0.2s; }

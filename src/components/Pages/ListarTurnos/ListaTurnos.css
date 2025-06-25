@@ -1,98 +1,55 @@
-.turnos-section-card input[type="text"],
-.turnos-section-card input[type="date"] {
+/* Filtros modernos y responsivos */
+.turnos-section-card .filtros-turnos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  background: #f5f7fa;
+  padding: 18px 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.turnos-section-card .filtros-turnos input[type="text"],
+.turnos-section-card .filtros-turnos input[type="date"] {
   padding: 8px 12px;
-  border: 1px solid #cfd8dc;
+  border: 1.5px solid #d0d7de;
   border-radius: 6px;
   font-size: 1rem;
+  background: #fff;
+  transition: border 0.2s;
+  min-width: 160px;
+}
+
+.turnos-section-card .filtros-turnos input[type="text"]:focus,
+.turnos-section-card .filtros-turnos input[type="date"]:focus {
+  border-color: #1976d21e;
   outline: none;
-  transition: border-color 0.2s;
-  background: #f8fafc;
-  margin-bottom: 4px;
 }
 
-.turnos-section-card input[type="text"]:focus,
-.turnos-section-card input[type="date"]:focus {
-  border-color: #4a90e2;
-  background: #fff;
-}
-
-.turnos-section-card input[type="date"]::-webkit-input-placeholder,
-.turnos-section-card input[type="text"]::-webkit-input-placeholder {
-  color: #b0b8c1;
-}
-
-.turnos-section-card input[type="date"]::placeholder,
-.turnos-section-card input[type="text"]::placeholder {
-  color: #b0b8c1;
-}
-
-.turnos-section-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-  padding: 24px 16px;
-  margin: 24px auto;
-  max-width: 900px;
-  width: 95%;
-}
-
-.turnos-section-card h2 {
-  margin-bottom: 18px;
-  font-size: 1.5rem;
-  color: #2d3a4b;
-  text-align: center;
-}
-
-.lista-turnos-table {
-  width: 100%;
-  border-collapse: collapse;
+.turnos-section-card .filtros-turnos button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #DFBD7C;
+  color: #fff;
   font-size: 1rem;
-  background: #fafbfc;
-  overflow-x: auto;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
+}
+.lista-turnos-table th{
+  background-color: #f5f6fa;
+  color: #333;
 }
 
-.lista-turnos-table th,
-.lista-turnos-table td {
-  padding: 10px 8px;
-  text-align: left;
-  border-bottom: 1px solid #e3e6ea;
-}
-
-.lista-turnos-table th {
-  background: #f0f4f8;
-  color: #2d3a4b;
-  font-weight: 600;
-}
-
-.lista-turnos-table tr:hover {
-  background: #f5faff;
-  transition: background 0.2s;
-}
-
-.empleado-icon {
-  /* color: #4a90e2; */
-  margin-right: 6px;
-  vertical-align: middle;
-  font-size: 1.2em;
-}
-
+/* Responsive para tabla de turnos */
 @media (max-width: 700px) {
-
-  .turnos-section-card input[type="text"],
-  .turnos-section-card input[type="date"] {
-    width: 100%;
-    margin-bottom: 8px;
-  }
-
-  .turnos-section-card>div[style*="display: flex"] {
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .turnos-section-card {
-    padding: 10px 2px;
-  }
-
   .lista-turnos-table,
   .lista-turnos-table thead,
   .lista-turnos-table tbody,
@@ -100,36 +57,57 @@
   .lista-turnos-table td,
   .lista-turnos-table tr {
     display: block;
+    width: 100%;
   }
-
-  .lista-turnos-table thead tr {
+  .lista-turnos-table thead {
     display: none;
   }
-
   .lista-turnos-table tr {
     margin-bottom: 18px;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border: 1px solid #e0e0e0;
     padding: 8px 0;
   }
-
   .lista-turnos-table td {
+    border: none;
+    border-bottom: 1px solid #eee;
     position: relative;
     padding-left: 50%;
-    border: none;
-    border-bottom: 1px solid #f0f0f0;
-    min-height: 36px;
+    text-align: left;
+    min-height: 44px;
+    white-space: pre-line;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 1rem;
   }
-
   .lista-turnos-table td:before {
     position: absolute;
     left: 12px;
-    top: 10px;
+    top: 12px;
     width: 45%;
-    white-space: nowrap;
+    white-space: normal;
     font-weight: bold;
-    color: #4a90e2;
     content: attr(data-label);
+    padding-bottom: 4px;
+    display: block;
+  }
+}
+
+/* Responsive para filtros */
+@media (max-width: 700px) {
+  .filtros-turnos {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 6px;
+  }
+  .filtros-turnos input,
+  .filtros-turnos button {
+    min-width: 100%;
+  }
+  .turnos-section-card {
+    padding: 8px 2px;
   }
 }

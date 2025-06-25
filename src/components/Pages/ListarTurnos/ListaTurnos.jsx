@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import './ListaTurnos.css';
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaSearch, FaEraser } from "react-icons/fa";
 
 function ListaTurnos({ actualizar }) {
   const [turnos, setTurnos] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroArea, setFiltroArea] = useState("");
-  const [filtroFecha, setFiltroFecha] = useState("");
+  const [fechaDesde, setFechaDesde] = useState("");
+  const [fechaHasta, setFechaHasta] = useState("");
+  const [turnosFiltrados, setTurnosFiltrados] = useState([]);
 
   const getEmpleado = id => empleados.find(e => e.id === id);
 
@@ -28,26 +30,47 @@ function ListaTurnos({ actualizar }) {
     }
   }, [actualizar]);
 
-  // Filtrado de turnos según los filtros
-  const turnosFiltrados = turnos.filter(turno => {
-    const emp = getEmpleado(turno.empleadoId) || {};
-    const nombreCompleto = `${emp.nombre || ""} ${emp.apellido || ""}`.toLowerCase();
-    const area = (emp.area || "").toLowerCase();
-    const fecha = (turno.dia || "").toLowerCase();
+  // Filtrar turnos solo al hacer clic en "Buscar"
+  const filtrarTurnos = () => {
+    const filtrados = turnos.filter(turno => {
+      const emp = getEmpleado(turno.empleadoId) || {};
+      const nombreCompleto = `${emp.nombre || ""} ${emp.apellido || ""}`.toLowerCase();
+      const area = (emp.area || "").toLowerCase();
+      const fecha = turno.dia || "";
 
-    return (
-      nombreCompleto.includes(filtroNombre.toLowerCase()) &&
-      area.includes(filtroArea.toLowerCase()) &&
-      fecha.includes(filtroFecha.toLowerCase())
-    );
-  });
+      let cumpleFecha = true;
+      if (fechaDesde && fecha < fechaDesde) cumpleFecha = false;
+      if (fechaHasta && fecha > fechaHasta) cumpleFecha = false;
+
+      return (
+        nombreCompleto.includes(filtroNombre.toLowerCase()) &&
+        area.includes(filtroArea.toLowerCase()) &&
+        cumpleFecha
+      );
+    });
+    setTurnosFiltrados(filtrados);
+  };
+
+  // Limpiar filtros y mostrar todos los turnos
+  const limpiarFiltros = () => {
+    setFiltroNombre("");
+    setFiltroArea("");
+    setFechaDesde("");
+    setFechaHasta("");
+    setTurnosFiltrados(turnos);
+  };
+
+  // Mostrar todos los turnos al cargar por primera vez o cuando cambian los turnos
+  useEffect(() => {
+    setTurnosFiltrados(turnos);
+  }, [turnos]);
 
   return (
     <div className="turnos-section-card">
       <h2>Lista de Turnos</h2>
 
       {/* Filtros */}
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+      <div className="filtros-turnos">
         <input
           type="text"
           placeholder="Filtrar por nombre"
@@ -62,10 +85,24 @@ function ListaTurnos({ actualizar }) {
         />
         <input
           type="date"
-          placeholder="Filtrar por fecha"
-          value={filtroFecha}
-          onChange={e => setFiltroFecha(e.target.value)}
+          value={fechaDesde}
+          onChange={e => setFechaDesde(e.target.value)}
+          placeholder="Desde"
         />
+        <input
+          type="date"
+          value={fechaHasta}
+          onChange={e => setFechaHasta(e.target.value)}
+          placeholder="Hasta"
+        />
+        <button onClick={filtrarTurnos}>
+          <FaSearch style={{ marginRight: 5 }} />
+          Buscar
+        </button>
+        <button onClick={limpiarFiltros}>
+          <FaEraser style={{ marginRight: 5 }} />
+          Limpiar
+        </button>
       </div>
 
       <table className="lista-turnos-table">

@@ -155,7 +155,7 @@ function Sidebar() {
                 Resumen nómina
               </NavLink>
             </li>
-            {/* {hasAccess('admin') && (
+            {hasAccess('admin') && (
             <li>
               <NavLink
                 to="configuracion"
@@ -165,7 +165,7 @@ function Sidebar() {
                 Configuracion
               </NavLink>
             </li>
-            )} */}
+            )}
           </ul>
         </nav>
       </aside>

@@ -74,7 +74,7 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
         onChange={handleChange}
         required
       >
-        <option value="" disabled>Clasificación del personal</option>
+        <option value="" disabled className="personal">Clasificación del personal</option>
         <option value="Ordinario">Ordinario</option>
         <option value="Direccion, confianza o manejo">Dirección, confianza o manejo</option>
       </select>
