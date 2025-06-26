@@ -1,5 +1,5 @@
 .lista-empleados-container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -58,6 +58,44 @@
   color: #888;
 }
 
+/* Modal de confirmación */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+  text-align: center;
+  min-width: 280px;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+.save-button{
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  background-color: #DFBD7C;
+  cursor: pointer;
+}
+.cancel-button{
+  cursor: pointer;
+  background-color: #DFBD7C;
+  
+}
 /* Responsivo */
 @media (max-width: 768px) {
   .empleados-tabla thead {

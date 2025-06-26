@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import './ListaEmpleados.css';
-import deleteIcon from '../../../assets/delete.png'; // Asegúrate de tener un ícono de eliminar
+import deleteIcon from '../../../assets/delete.png';
 
 function ListaEmpleados() {
   const [empleados, setEmpleados] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState(null);
 
   const cargarEmpleados = () => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -22,31 +24,33 @@ function ListaEmpleados() {
     };
   }, []);
 
-  // const handleDelete = (index) => {
-  //   const actualizados = empleados.filter((_, i) => i !== index);
-  //   setEmpleados(actualizados);
-  //   localStorage.setItem("empleados", JSON.stringify(actualizados));
-  //   window.dispatchEvent(new Event("localStorageUpdated"));
-  // };
+  const handleDeleteClick = (index) => {
+    setDeleteIndex(index);
+    setShowModal(true);
+  };
 
-  const handleDelete = (index) => {
+  const handleDeleteConfirm = () => {
     const empleadosGuardados = JSON.parse(localStorage.getItem("empleados")) || [];
-    const empleadoEliminado = empleadosGuardados[index];
+    const empleadoEliminado = empleadosGuardados[deleteIndex];
 
-    // Elimina el empleado de la lista
-    const actualizados = empleados.filter((_, i) => i !== index);
+    const actualizados = empleados.filter((_, i) => i !== deleteIndex);
     setEmpleados(actualizados);
     localStorage.setItem("empleados", JSON.stringify(actualizados));
 
-    // Elimina los turnos asociados a ese empleado
     const turnosGuardados = JSON.parse(localStorage.getItem("turnos")) || [];
     const turnosActualizados = turnosGuardados.filter(
       (turno) => String(turno.empleadoId) !== String(empleadoEliminado.id)
     );
     localStorage.setItem("turnos", JSON.stringify(turnosActualizados));
 
-    // Notifica a otros componentes
     window.dispatchEvent(new Event("localStorageUpdated"));
+    setShowModal(false);
+    setDeleteIndex(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowModal(false);
+    setDeleteIndex(null);
   };
 
   return (
@@ -74,17 +78,31 @@ function ListaEmpleados() {
                 <td data-label="Área">{emp.area}</td>
                 <td data-label="Salario Base">${parseFloat(emp.salarioBase).toLocaleString('es-CO')}</td>
                 <td data-label="Acciones">
-                  <button onClick={() => handleDelete(index)} className="delete-button"><img src={deleteIcon} alt="" /></button>
+                  <button onClick={() => handleDeleteClick(index)} className="delete-button">
+                    <img src={deleteIcon} alt="" />
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
-
         </table>
       ) : (
         <div className="no-empleados">
           <p>No hay empleados registrados aún.</p>
           <span>Utiliza el formulario para agregar nuevos empleados.</span>
+        </div>
+      )}
+
+      {/* Modal de confirmación */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>¿Estás seguro que deseas borrar este trabajador?</p>
+            <div className="modal-actions">
+              <button onClick={handleDeleteConfirm} className="save-button">Sí, borrar</button>
+              <button onClick={handleDeleteCancel} className="cancel-button">Cancelar</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

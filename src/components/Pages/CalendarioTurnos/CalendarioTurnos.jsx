@@ -10,6 +10,7 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import CustomEvent from "../../Ui/CustomEvent/CustomEvent";
 import del from "../../../assets/delete.png"
+import getColombianHolidays from "colombian-holidays";
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -45,6 +46,9 @@ function CalendarioTurnos() {
     minutosDescanso: 0,
   });
 
+
+
+
   const guardarTurnosEnLocalStorage = (turnos) => {
     localStorage.setItem("turnos", JSON.stringify(turnos));
   };
@@ -61,6 +65,25 @@ function CalendarioTurnos() {
     } else {
       setEmpleados([]);
     }
+  };
+  const esFestivo = (date) => {
+  const año = date.getFullYear();console.log
+  const festivos = getColombianHolidays(año); // devuelve 
+  
+  const fechaStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+  return festivos.includes(fechaStr);
+};
+
+  const dayPropGetter = (date) => {
+    if (esFestivo(date)) {
+      return {
+        style: {
+          backgroundColor: "#ff0000", // Fondo rojo claro para festivos
+        },
+        className: "dia-festivo"
+      };
+    }
+    return {};
   };
 
   useEffect(() => {
@@ -195,6 +218,7 @@ function CalendarioTurnos() {
       <h2 className="calendario-title">Calendario de Turnos</h2>
 
       <DnDCalendar
+        dayPropGetter={dayPropGetter}
         localizer={localizer}
         events={eventos}
         startAccessor="start"
@@ -222,7 +246,7 @@ function CalendarioTurnos() {
           showMore: (total) => `+ Ver más (${total})`,
         }}
         culture="es"
-        components={{ event: CustomEvent }}
+        // components={{ event: CustomEvent }}
         eventPropGetter={() => ({ className: "calendario-event" })}
         draggableAccessor={() => true}
         resizableAccessor={() => true}
