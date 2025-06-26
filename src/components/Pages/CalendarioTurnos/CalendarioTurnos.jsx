@@ -264,29 +264,39 @@ function CalendarioTurnos() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">
-              Día: <span className="form-value">{nuevoTurno.dia}</span>
-            </label>
+            <label className="form-label">Día:</label>
+            <input
+              type="date"
+              className="form-input"
+              name="dia"
+              value={nuevoTurno.dia}
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, dia: e.target.value })}
+              required
+            />
           </div>
 
           <div className="form-group">
-            <label className="form-label">
-              Hora inicio: <span className="form-value">
-                {nuevoTurno.horaInicio
-                  ? format(new Date(`2020-01-01T${nuevoTurno.horaInicio}`), "hh:mm a")
-                  : ""}
-              </span>
-            </label>
+            <label className="form-label">Hora inicio:</label>
+            <input
+              type="time"
+              className="form-input"
+              name="horaInicio"
+              value={nuevoTurno.horaInicio}
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })}
+              required
+            />
           </div>
 
           <div className="form-group">
-            <label className="form-label">
-              Hora fin: <span className="form-value">
-                {nuevoTurno.horaFin
-                  ? format(new Date(`2020-01-01T${nuevoTurno.horaFin}`), "hh:mm a")
-                  : ""}
-              </span>
-            </label>
+            <label className="form-label">Hora fin:</label>
+            <input
+              type="time"
+              className="form-input"
+              name="horaFin"
+              value={nuevoTurno.horaFin}
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })}
+              required
+            />
           </div>
 
           <div className="form-group">

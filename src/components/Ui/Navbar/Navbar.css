@@ -92,7 +92,7 @@
 
 .nav-list a:hover {
     /* background-color: #DFBD7C; */
-    background: linear-gradient(120deg, #b48a3c 20%, #dfbd7c 80%);
+    background: #dfbd7c;
     transition: 0.4s;
 }
 .content-nav-list{
@@ -103,7 +103,7 @@
 
 .botonActivo {
     /* background-color: #DFBD7C; */
-    background: linear-gradient(120deg, #b48a3c 20%, #dfbd7c 80%);
+    background: #dfbd7c;
 }
 
 .login {
