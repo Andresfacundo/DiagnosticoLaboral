@@ -24,7 +24,7 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
   const totalHorasFestivas = turnosFiltrados.reduce((sum, turno) => sum + parseFloat(turno.horasFestivas || 0), 0);
 
   const valores = {
-    horasExtra: horasExtra * salarioHora * 1.25,
+    horasExtra: empleado.esTrabajadorDireccion ? 0 : horasExtra * salarioHora * 1.25,
     recargoNocturno: totalHorasNocturnas * salarioHora * 0.35,
     recargoFestivo: totalHorasFestivas * salarioHora * 0.75 // 75% recargo festivo
   };

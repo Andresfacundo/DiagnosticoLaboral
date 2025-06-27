@@ -67,7 +67,7 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       <h2>Agregar Empleado</h2>
       <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} required />
       <input name="apellido" placeholder="Apellido" value={form.apellido} onChange={handleChange} required />
-      <input name="cc" placeholder="Cédula" value={form.cc} onChange={handleChange} required />
+      <input type="number"name="cc" placeholder="Cédula" value={form.cc} onChange={handleChange} required onWheel={e => e.target.blur()}/>
       <select
         name="clasificacionPersonal"
         value={form.clasificacionPersonal}
