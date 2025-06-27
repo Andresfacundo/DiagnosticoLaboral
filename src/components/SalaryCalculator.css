@@ -328,3 +328,25 @@
     }
   }
 
+.content-ibc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  border-bottom: 1px solid #889AA4;
+  font-weight: 600;
+  min-height: 3.4rem;
+  /* outline: 2px solid red; */
+}
+.content-ibc p {
+  margin: 0;
+}
+
+.ibc-line {
+  /* line-height: 1.6; */
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}

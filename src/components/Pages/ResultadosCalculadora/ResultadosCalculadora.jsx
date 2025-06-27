@@ -226,12 +226,18 @@ const Resultados = () => {
                   <div className="box-parafiscales">
                     <div className="result-ibc">
                       <div className="content-ibc">
-                        <Parrafos content="IBC =" results={result} content1="seguridadSocial" content2="ibc"/>
+                        <span></span>
+                        <div className="ibc-line">
+                          <Parrafos content="IBCGeneral =" results={result} content1="seguridadSocial" content2="ibcGeneral"/>
+                        </div>
+                        <div className="ibc-line">
+                          <Parrafos content="IBCPfiscales =" results={result} content1="seguridadSocial" content2="ibcParafiscales"/>
+                        </div>
                       </div>
                       <div className="box-ibc">
                         <div className="salary">
                           <p>Salario</p>
-                          <Parrafos results={result} content1="calculations" content2="salario"/>
+                          <Parrafos results={result} content1="calculations" content2="salarioIntegral"/>
                         </div>
                         <span className="operator">+ <span >+</span></span>
                         <div className="salary">
