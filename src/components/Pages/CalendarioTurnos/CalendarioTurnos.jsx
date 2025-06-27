@@ -59,7 +59,7 @@ function CalendarioTurnos() {
       const empleadosParseados = JSON.parse(empleadosGuardados);
       const empleadosConId = empleadosParseados.map((emp, index) => ({
         ...emp,
-        id: emp.id
+        id: String(emp.id)
       }));
       setEmpleados(empleadosConId);
     } else {
@@ -274,7 +274,7 @@ function CalendarioTurnos() {
             <select
               className="form-select"
               name="empleadoId"
-              value={nuevoTurno.empleadoId}
+              value={String(nuevoTurno.empleadoId)}
               onChange={(e) => setNuevoTurno({ ...nuevoTurno, empleadoId: e.target.value })}
               required
             >
