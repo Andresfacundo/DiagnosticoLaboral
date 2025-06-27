@@ -59,7 +59,7 @@ function CalendarioTurnos() {
       const empleadosParseados = JSON.parse(empleadosGuardados);
       const empleadosConId = empleadosParseados.map((emp, index) => ({
         ...emp,
-        id: emp.id || `emp_${index}_${emp.cc}`
+        id: emp.id
       }));
       setEmpleados(empleadosConId);
     } else {
