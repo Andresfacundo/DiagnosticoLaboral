@@ -3,6 +3,7 @@ import './ListaTurnos.css';
 import { FaUserCircle, FaSearch, FaEraser } from "react-icons/fa";
 import { format } from "date-fns";
 import del from "../../../assets/delete.png"
+import editar from '../../../assets/editar.svg'
 
 function ListaTurnos({ actualizar }) {
   const [turnos, setTurnos] = useState([]);
@@ -12,6 +13,7 @@ function ListaTurnos({ actualizar }) {
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
   const [turnosFiltrados, setTurnosFiltrados] = useState([]);
+  const [turnoEditando, setTurnoEditando] = useState()
 
   const getEmpleado = id => empleados.find(e => e.id === id);
 
@@ -21,6 +23,17 @@ function ListaTurnos({ actualizar }) {
     setTurnosFiltrados(nuevosTurnos);
     localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
   };
+
+  const guardarEdicionTurno = () => {
+    const nuevosTurnos = turnos.map(t =>
+      t.id === turnoEditando.id ? turnoEditando : t
+    );
+    setTurnos(nuevosTurnos);
+    setTurnosFiltrados(nuevosTurnos);
+    localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
+    setTurnoEditando(null); // Cierra el modal
+  };
+
 
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -155,17 +168,58 @@ function ListaTurnos({ actualizar }) {
                     className="btn-eliminar-turno"
                     onClick={() => eliminarTurno(turno.id)}
                     title="Eliminar turno"
-                 
+
                   >
                     <img src={del} alt="btn-eliminar" />
-                    
+
                   </button>
+                  <button
+                    className="btn-editar-turno"
+                    onClick={() => setTurnoEditando(turno)}
+                    title="Editar turno"
+                  >
+                    <img src={editar} alt="" />
+                  </button>
+
                 </td>
               </tr>
             );
           })}
         </tbody>
       </table>
+      {turnoEditando && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Editar Turno</h3>
+            <label>Hora Inicio:
+              <input
+                type="time"
+                value={turnoEditando.horaInicio}
+                onChange={e => setTurnoEditando({ ...turnoEditando, horaInicio: e.target.value })}
+              />
+            </label>
+            <label>Hora Fin:
+              <input
+                type="time"
+                value={turnoEditando.horaFin}
+                onChange={e => setTurnoEditando({ ...turnoEditando, horaFin: e.target.value })}
+              />
+            </label>
+            <label>Minutos de descanso:
+              <input
+                type="number"
+                value={turnoEditando.minutosDescanso}
+                onChange={e => setTurnoEditando({ ...turnoEditando, minutosDescanso: e.target.value })}
+              />
+            </label>
+            <div className="modal-actions">
+              <button onClick={guardarEdicionTurno}>Guardar</button>
+              <button onClick={() => setTurnoEditando(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
