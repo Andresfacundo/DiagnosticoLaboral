@@ -175,3 +175,33 @@
   position: relative;
   z-index: 10;
 }
+
+.drop-zone {
+  border: 2px dashed #888;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+  border-radius: 8px;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+}
+
+.drop-zone.drag-over {
+  border-color: #007bff;
+  background-color: #e9f5ff;
+}
+.drop-zone .btn-select{
+  background-color: #DFBD7C;
+  border: none;
+  padding: .5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px;
+}
+.drop-zone .btn-downloaad{
+  margin-top: 10px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-decoration: underline;
+}
