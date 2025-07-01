@@ -229,6 +229,15 @@
   }
 }
 
+@media print{
+  .sidebar-horarios{
+    display: none;
+  }
+}
+
+.turnos-section-card .btn-imprimir{
+  margin-bottom: 20px;
+}
 
 
 

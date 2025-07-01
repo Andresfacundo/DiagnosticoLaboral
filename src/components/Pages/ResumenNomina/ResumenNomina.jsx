@@ -26,7 +26,7 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
   const valores = {
     horasExtra: empleado.esTrabajadorDireccion ? 0 : horasExtra * salarioHora * 1.25,
     recargoNocturno: totalHorasNocturnas * salarioHora * 0.35,
-    recargoFestivo: totalHorasFestivas * salarioHora * 0.80 
+    recargoFestivo: totalHorasFestivas * salarioHora * 0.80
   };
 
   const totalValores = Object.values(valores).reduce((sum, val) => sum + val, 0);
@@ -138,6 +138,13 @@ function ResumenNomina({ actualizar }) {
   return (
     <div className="resumen-nomina-container">
       {/* Filtros agrupados */}
+
+      <button
+        className="btn-imprimir"
+        onClick={() => window.print()}
+      >
+        Generar PDF
+      </button>
       <fieldset className="filtros">
         <legend><strong>Filtros</strong></legend>
         <input
@@ -194,10 +201,10 @@ function ResumenNomina({ actualizar }) {
               <th>Horas trabajadas</th>
               <th>Horas extra</th>
               <th>Horas recargo nocturno</th>
-              <th>Horas recargo festivo</th> 
+              <th>Horas recargo festivo</th>
               <th>Valor horas extras</th>
               <th>Valor recargo nocturno</th>
-              <th>Valor recargo festivo</th> 
+              <th>Valor recargo festivo</th>
               <th>Neto a pagar</th>
               <th>Costo total</th>
             </tr>

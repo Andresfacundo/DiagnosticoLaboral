@@ -90,6 +90,12 @@ function ListaTurnos({ actualizar }) {
   return (
     <div className="turnos-section-card">
       <h2>Lista de Turnos</h2>
+      <button
+        className="btn-imprimir"
+        onClick={() => window.print()}
+      >
+        Generar PDF
+      </button>
 
       {/* Filtros */}
       <div className="filtros-turnos">

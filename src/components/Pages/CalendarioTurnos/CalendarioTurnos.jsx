@@ -67,12 +67,12 @@ function CalendarioTurnos() {
     }
   };
   const esFestivo = (date) => {
-  const año = date.getFullYear();console.log
-  const festivos = getColombianHolidays(año); // devuelve 
-  
-  const fechaStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
-  return festivos.includes(fechaStr);
-};
+    const año = date.getFullYear(); console.log
+    const festivos = getColombianHolidays(año); // devuelve 
+
+    const fechaStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+    return festivos.includes(fechaStr);
+  };
 
   const dayPropGetter = (date) => {
     if (esFestivo(date)) {
@@ -216,6 +216,12 @@ function CalendarioTurnos() {
   return (
     <div className="calendario-turnos-container">
       <h2 className="calendario-title">Calendario de Turnos</h2>
+      <button
+        className="btn-imprimir"
+        onClick={() => window.print()}
+      >
+        Generar PDF
+      </button>
 
       <DnDCalendar
         dayPropGetter={dayPropGetter}
