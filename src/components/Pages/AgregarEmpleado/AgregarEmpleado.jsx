@@ -17,73 +17,81 @@ const parseNumber = (formattedValue) => {
 
 const validarEmpleado = (empleado) => {
   const errores = [];
-  
+
   if (!empleado.nombre || empleado.nombre.trim() === '') {
     errores.push('Nombre es requerido');
   }
-  
+
   if (!empleado.apellido || empleado.apellido.trim() === '') {
     errores.push('Apellido es requerido');
   }
-  
+
   if (!empleado.cc || empleado.cc.toString().trim() === '') {
     errores.push('Cédula es requerida');
   }
-  
+
   if (!empleado.clasificacionPersonal || empleado.clasificacionPersonal.trim() === '') {
     errores.push('Clasificación del personal es requerida');
   } else if (!['Ordinario', 'Direccion, confianza o manejo'].includes(empleado.clasificacionPersonal)) {
     errores.push('Clasificación del personal debe ser "Ordinario" o "Direccion, confianza o manejo"');
   }
-  
+
   if (!empleado.area || empleado.area.trim() === '') {
     errores.push('Área es requerida');
   }
-  
+
   if (!empleado.salarioBase || empleado.salarioBase.toString().trim() === '') {
     errores.push('Salario base es requerido');
   }
-  
+
   return errores;
 };
 
-// Función para limpiar y normalizar datos del Excel
 const limpiarDatosEmpleado = (empleado) => {
   return {
-    nombre: empleado.nombre ? empleado.nombre.toString().trim() : '',
-    apellido: empleado.apellido ? empleado.apellido.toString().trim() : '',
-    cc: empleado.cc ? empleado.cc.toString().trim() : '',
-    clasificacionPersonal: empleado.clasificacionPersonal ? empleado.clasificacionPersonal.toString().trim() : '',
-    area: empleado.area ? empleado.area.toString().trim() : '',
-    salarioBase: empleado.salarioBase ? empleado.salarioBase.toString().trim() : ''
+    nombre: empleado[NOMBRES_COLUMNAS.nombre] ? empleado[NOMBRES_COLUMNAS.nombre].toString().trim() : '',
+    apellido: empleado[NOMBRES_COLUMNAS.apellido] ? empleado[NOMBRES_COLUMNAS.apellido].toString().trim() : '',
+    cc: empleado[NOMBRES_COLUMNAS.cc] ? empleado[NOMBRES_COLUMNAS.cc].toString().trim() : '',
+    clasificacionPersonal: empleado[NOMBRES_COLUMNAS.clasificacionPersonal] ? empleado[NOMBRES_COLUMNAS.clasificacionPersonal].toString().trim() : '',
+    area: empleado[NOMBRES_COLUMNAS.area] ? empleado[NOMBRES_COLUMNAS.area].toString().trim() : '',
+    salarioBase: empleado[NOMBRES_COLUMNAS.salarioBase] ? empleado[NOMBRES_COLUMNAS.salarioBase].toString().trim() : ''
   };
+};
+
+const NOMBRES_COLUMNAS = {
+  nombre: "Nombre",
+  apellido: "Apellido",
+  cc: "Número de documento",
+  clasificacionPersonal: "Clasificación del Personal",
+  area: "Área de Trabajo",
+  salarioBase: "Salario Base Mensual"
 };
 
 const generarPlantillaExcel = () => {
   const encabezados = [
     {
-      nombre: "",
-      apellido: "",
-      cc: "",
-      clasificacionPersonal: "",
-      area: "",
-      salarioBase: ""
+      [NOMBRES_COLUMNAS.nombre]: "",
+      [NOMBRES_COLUMNAS.apellido]: "",
+      [NOMBRES_COLUMNAS.cc]: "",
+      [NOMBRES_COLUMNAS.clasificacionPersonal]: "",
+      [NOMBRES_COLUMNAS.area]: "",
+      [NOMBRES_COLUMNAS.salarioBase]: ""
     }
   ];
 
   const workbook = XLSX.utils.book_new();
   const worksheet = XLSX.utils.json_to_sheet(encabezados);
-  
+
   const colWidths = [
-    { wch: 10 }, // nombre
-    { wch: 10 }, // apellido
-    { wch: 5 }, // cc
-    { wch: 20 }, // clasificacionPersonal
-    { wch: 5 }, // area
-    { wch: 10 }  // salarioBase
+    { wch: 12 }, // Nombre del Empleado
+    { wch: 12 }, // Apellido del Empleado
+    { wch: 20 }, // Cédula de Identidad
+    { wch: 22 }, // Clasificación del Personal
+    { wch: 15 }, // Área de Trabajo
+    { wch: 20 }  // Salario Base Mensual
   ];
   worksheet['!cols'] = colWidths;
-  
+
   XLSX.utils.book_append_sheet(workbook, worksheet, "Empleados");
   XLSX.writeFile(workbook, "Plantilla_Empleados_Carga_Masiva.xlsx");
 };
