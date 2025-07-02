@@ -73,7 +73,7 @@ function ListaEmpleados() {
               <tr key={index}>
                 <td data-label="Nombre">{emp.nombre}</td>
                 <td data-label="Apellido">{emp.apellido}</td>
-                <td data-label="Cédula">{emp.cc}</td>
+                <td data-label="Cédula">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
                 <td data-label="Clasificación">{emp.clasificacionPersonal}</td>
                 <td data-label="Área">{emp.area}</td>
                 <td data-label="Salario Base">${parseFloat(emp.salarioBase).toLocaleString('es-CO')}</td>

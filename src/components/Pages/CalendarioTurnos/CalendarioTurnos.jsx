@@ -1,4 +1,3 @@
-// CalendarioTurnos.js
 import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
@@ -8,8 +7,7 @@ import Modal from "react-modal";
 import "./CalendarioTurnos.css";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import CustomEvent from "../../Ui/CustomEvent/CustomEvent";
-import del from "../../../assets/delete.png"
+import del from "../../../assets/delete.png";
 import getColombianHolidays from "colombian-holidays";
 
 const locales = { es };
@@ -21,12 +19,12 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 const formats = {
-  timeGutterFormat: 'hh:mm a',
+  timeGutterFormat: "hh:mm a",
   eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
-    localizer.format(start, 'hh:mm a', culture) +
-    ' - ' +
-    localizer.format(end, 'hh:mm a', culture),
-  agendaTimeFormat: 'hh:mm a',
+    localizer.format(start, "hh:mm a", culture) +
+    " - " +
+    localizer.format(end, "hh:mm a", culture),
+  agendaTimeFormat: "hh:mm a",
 };
 
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -40,14 +38,12 @@ function CalendarioTurnos() {
   const [modalType, setModalType] = useState("create");
   const [nuevoTurno, setNuevoTurno] = useState({
     empleadoId: "",
-    dia: "",
+    diaInicio: "",
+    diaFin: "",
     horaInicio: "",
     horaFin: "",
     minutosDescanso: 0,
   });
-
-
-
 
   const guardarTurnosEnLocalStorage = (turnos) => {
     localStorage.setItem("turnos", JSON.stringify(turnos));
@@ -57,30 +53,31 @@ function CalendarioTurnos() {
     const empleadosGuardados = localStorage.getItem("empleados");
     if (empleadosGuardados) {
       const empleadosParseados = JSON.parse(empleadosGuardados);
-      const empleadosConId = empleadosParseados.map((emp, index) => ({
+      const empleadosConId = empleadosParseados.map((emp) => ({
         ...emp,
-        id: String(emp.id)
+        id: String(emp.id),
       }));
       setEmpleados(empleadosConId);
     } else {
       setEmpleados([]);
     }
   };
-  const esFestivo = (date) => {
-    const año = date.getFullYear(); console.log
-    const festivos = getColombianHolidays(año); // devuelve 
 
-    const fechaStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+  const esFestivo = (date) => {
+    const año = date.getFullYear();
+    const festivos = getColombianHolidays(año);
+    const fechaStr = date.toISOString().split("T")[0];
     return festivos.includes(fechaStr);
   };
+
 
   const dayPropGetter = (date) => {
     if (esFestivo(date)) {
       return {
         style: {
-          backgroundColor: "#ff0000", // Fondo rojo claro para festivos
+          backgroundColor: "#ff0000",
         },
-        className: "dia-festivo"
+        className: "dia-festivo",
       };
     }
     return {};
@@ -99,20 +96,46 @@ function CalendarioTurnos() {
     return emp ? `${emp.nombre} ${emp.apellido}` : "Desconocido";
   };
 
+  const recargarEventosDesdeLS = () => {
+    const turnos = JSON.parse(localStorage.getItem("turnos")) || [];
+    const eventosFormateados = [];
+
+    turnos.forEach((turno) => {
+      const startDate = new Date(`${turno.diaInicio}T${turno.horaInicio}`);
+      const endDate = new Date(`${turno.diaFin}T${turno.horaFin}`);
+
+      const current = new Date(startDate);
+
+      while (current <= endDate) {
+        const dia = format(current, "yyyy-MM-dd");
+
+        const isFirstDay = dia === turno.diaInicio;
+        const isLastDay = dia === turno.diaFin;
+
+        const horaInicio = isFirstDay ? turno.horaInicio : "00:00";
+        const horaFin = isLastDay ? turno.horaFin : "23:59";
+
+        eventosFormateados.push({
+          id: turno.id,
+          title: getEmpleadoNombre(turno.empleadoId),
+          start: new Date(`${dia}T${horaInicio}`),
+          end: new Date(`${dia}T${horaFin}`),
+          empleadoId: turno.empleadoId,
+          minutosDescanso: turno.minutosDescanso,
+          resource: turno,
+        });
+
+        current.setDate(current.getDate() + 1);
+      }
+    });
+
+    setEventos(eventosFormateados);
+  };
+
   useEffect(() => {
     const turnosLS = localStorage.getItem("turnos");
     if (turnosLS && empleados.length > 0) {
-      const turnos = JSON.parse(turnosLS);
-      const eventosFormateados = turnos.map((turno) => ({
-        id: turno.id,
-        title: getEmpleadoNombre(turno.empleadoId),
-        start: new Date(`${turno.dia}T${turno.horaInicio}`),
-        end: new Date(`${turno.dia}T${turno.horaFin}`),
-        empleadoId: turno.empleadoId,
-        minutosDescanso: turno.minutosDescanso,
-        resource: turno,
-      }));
-      setEventos(eventosFormateados);
+      recargarEventosDesdeLS();
     }
   }, [empleados]);
 
@@ -122,11 +145,19 @@ function CalendarioTurnos() {
       return;
     }
 
-    const dia = format(slotInfo.start, "yyyy-MM-dd");
+    const diaInicio = format(slotInfo.start, "yyyy-MM-dd");
+    const diaFin = format(slotInfo.end, "yyyy-MM-dd");
     const horaInicio = format(slotInfo.start, "HH:mm");
     const horaFin = format(slotInfo.end, "HH:mm");
 
-    setNuevoTurno({ empleadoId: "", dia, horaInicio, horaFin, minutosDescanso: 0 });
+    setNuevoTurno({
+      empleadoId: "",
+      diaInicio,
+      diaFin,
+      horaInicio,
+      horaFin,
+      minutosDescanso: 0,
+    });
     setTurnoSeleccionado(null);
     setModalType("create");
     setModalOpen(true);
@@ -136,7 +167,8 @@ function CalendarioTurnos() {
     setTurnoSeleccionado(event);
     setNuevoTurno({
       empleadoId: event.empleadoId,
-      dia: format(event.start, "yyyy-MM-dd"),
+      diaInicio: format(event.start, "yyyy-MM-dd"),
+      diaFin: format(event.end, "yyyy-MM-dd"),
       horaInicio: format(event.start, "HH:mm"),
       horaFin: format(event.end, "HH:mm"),
       minutosDescanso: event.minutosDescanso,
@@ -149,25 +181,51 @@ function CalendarioTurnos() {
     e.preventDefault();
     let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
 
-    if (modalType === "edit" && turnoSeleccionado) {
-      turnosActuales = turnosActuales.map((t) =>
-        t.id === turnoSeleccionado.id ? { ...t, ...nuevoTurno } : t
-      );
-    } else {
-      const nuevoId = `turno_${Date.now()}`;
-      turnosActuales.push({ ...nuevoTurno, id: nuevoId });
+    const start = new Date(`${nuevoTurno.diaInicio}T${nuevoTurno.horaInicio}`);
+    const end = new Date(`${nuevoTurno.diaFin}T${nuevoTurno.horaFin}`);
+
+    const nuevosTurnos = [];
+    const current = new Date(start);
+
+    while (current <= end) {
+      const dia = format(current, "yyyy-MM-dd");
+
+      const isFirstDay = dia === nuevoTurno.diaInicio;
+      const isLastDay = dia === nuevoTurno.diaFin;
+
+      const horaInicio = isFirstDay ? nuevoTurno.horaInicio : "00:00";
+      const horaFin = isLastDay ? nuevoTurno.horaFin : "23:59";
+
+      nuevosTurnos.push({
+        ...nuevoTurno,
+        diaInicio: dia,
+        diaFin: dia,
+        horaInicio,
+        horaFin,
+        id: `turno_${Date.now()}_${dia}`,
+      });
+
+      current.setDate(current.getDate() + 1);
     }
 
-    guardarTurnosEnLocalStorage(turnosActuales);
+    // Si es edición, eliminar el bloque anterior antes de guardar los nuevos
+    if (modalType === "edit" && turnoSeleccionado) {
+      turnosActuales = turnosActuales.filter(
+        (t) => t.id !== turnoSeleccionado.id
+      );
+    }
+
+    const turnosFinales = [...turnosActuales, ...nuevosTurnos];
+    guardarTurnosEnLocalStorage(turnosFinales);
     setModalOpen(false);
-    setTurnoSeleccionado(null);
-    setNuevoTurno({ empleadoId: "", dia: "", horaInicio: "", horaFin: "", minutosDescanso: 0 });
     recargarEventosDesdeLS();
   };
 
   const handleEliminarTurno = () => {
     const turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
-    const turnosActualizados = turnosActuales.filter((t) => t.id !== turnoSeleccionado.id);
+    const turnosActualizados = turnosActuales.filter(
+      (t) => t.id !== turnoSeleccionado.id
+    );
     guardarTurnosEnLocalStorage(turnosActualizados);
     setModalOpen(false);
     setTurnoSeleccionado(null);
@@ -185,7 +243,8 @@ function CalendarioTurnos() {
 
   const handleEventDrop = ({ event, start, end }) => {
     actualizarTurno(event.id, {
-      dia: format(start, "yyyy-MM-dd"),
+      diaInicio: format(start, "yyyy-MM-dd"),
+      diaFin: format(end, "yyyy-MM-dd"),
       horaInicio: format(start, "HH:mm"),
       horaFin: format(end, "HH:mm"),
     });
@@ -193,33 +252,17 @@ function CalendarioTurnos() {
 
   const handleEventResize = ({ event, start, end }) => {
     actualizarTurno(event.id, {
-      dia: format(start, "yyyy-MM-dd"),
+      diaInicio: format(start, "yyyy-MM-dd"),
+      diaFin: format(end, "yyyy-MM-dd"),
       horaInicio: format(start, "HH:mm"),
       horaFin: format(end, "HH:mm"),
     });
   };
 
-  const recargarEventosDesdeLS = () => {
-    const turnos = JSON.parse(localStorage.getItem("turnos")) || [];
-    const eventosFormateados = turnos.map((turno) => ({
-      id: turno.id,
-      title: getEmpleadoNombre(turno.empleadoId),
-      start: new Date(`${turno.dia}T${turno.horaInicio}`),
-      end: new Date(`${turno.dia}T${turno.horaFin}`),
-      empleadoId: turno.empleadoId,
-      minutosDescanso: turno.minutosDescanso,
-      resource: turno,
-    }));
-    setEventos(eventosFormateados);
-  };
-
   return (
     <div className="calendario-turnos-container">
       <h2 className="calendario-title">Calendario de Turnos</h2>
-      <button
-        className="btn-imprimir"
-        onClick={() => window.print()}
-      >
+      <button className="btn-imprimir" onClick={() => window.print()}>
         Generar PDF
       </button>
 
@@ -252,7 +295,6 @@ function CalendarioTurnos() {
           showMore: (total) => `+ Ver más (${total})`,
         }}
         culture="es"
-        // components={{ event: CustomEvent }}
         eventPropGetter={() => ({ className: "calendario-event" })}
         draggableAccessor={() => true}
         resizableAccessor={() => true}
@@ -261,14 +303,20 @@ function CalendarioTurnos() {
       <Modal
         isOpen={modalOpen}
         onRequestClose={() => setModalOpen(false)}
-        contentLabel={modalType === "create" ? "Crear Turno" : "Editar Turno"}
+        contentLabel={
+          modalType === "create" ? "Crear Turno" : "Editar Turno"
+        }
         className="turno-modal"
         overlayClassName="turno-modal-overlay"
       >
         <div className="modal-header">
           <h3>{modalType === "create" ? "Crear Turno" : "Editar Turno"}</h3>
           {modalType === "edit" && (
-            <button type="button" onClick={handleEliminarTurno} className="bttn-eliminar">
+            <button
+              type="button"
+              onClick={handleEliminarTurno}
+              className="bttn-eliminar"
+            >
               <img src={del} alt="" />
             </button>
           )}
@@ -281,7 +329,9 @@ function CalendarioTurnos() {
               className="form-select"
               name="empleadoId"
               value={String(nuevoTurno.empleadoId)}
-              onChange={(e) => setNuevoTurno({ ...nuevoTurno, empleadoId: e.target.value })}
+              onChange={(e) =>
+                setNuevoTurno({ ...nuevoTurno, empleadoId: e.target.value })
+              }
               required
             >
               <option value="">Seleccione un empleado</option>
@@ -294,13 +344,29 @@ function CalendarioTurnos() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Día:</label>
+            <label className="form-label">Día Inicio:</label>
             <input
               type="date"
               className="form-input"
-              name="dia"
-              value={nuevoTurno.dia}
-              onChange={(e) => setNuevoTurno({ ...nuevoTurno, dia: e.target.value })}
+              name="diaInicio"
+              value={nuevoTurno.diaInicio}
+              onChange={(e) =>
+                setNuevoTurno({ ...nuevoTurno, diaInicio: e.target.value })
+              }
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Día Fin:</label>
+            <input
+              type="date"
+              className="form-input"
+              name="diaFin"
+              value={nuevoTurno.diaFin}
+              onChange={(e) =>
+                setNuevoTurno({ ...nuevoTurno, diaFin: e.target.value })
+              }
               required
             />
           </div>
@@ -312,7 +378,9 @@ function CalendarioTurnos() {
               className="form-input"
               name="horaInicio"
               value={nuevoTurno.horaInicio}
-              onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })}
+              onChange={(e) =>
+                setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })
+              }
               required
             />
           </div>
@@ -324,7 +392,9 @@ function CalendarioTurnos() {
               className="form-input"
               name="horaFin"
               value={nuevoTurno.horaFin}
-              onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })}
+              onChange={(e) =>
+                setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })
+              }
               required
             />
           </div>
@@ -342,17 +412,25 @@ function CalendarioTurnos() {
                   minutosDescanso: e.target.value,
                 })
               }
-              onWheel={e => e.target.blur()}
+              onWheel={(e) => e.target.blur()}
               className="form-input"
               required
             />
           </div>
 
           <div className="form-buttons">
-            <button type="button" onClick={() => setModalOpen(false)} className="btn-secondary">
+            <button
+              type="button"
+              onClick={() => setModalOpen(false)}
+              className="btn-secondary"
+            >
               Cancelar
             </button>
-            <button type="submit" className="btn-primary" disabled={empleados.length === 0}>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={empleados.length === 0}
+            >
               {modalType === "create" ? "Crear turno" : "Guardar cambios"}
             </button>
           </div>

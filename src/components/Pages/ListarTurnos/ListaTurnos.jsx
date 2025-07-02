@@ -34,6 +34,30 @@ function ListaTurnos({ actualizar }) {
     setTurnoEditando(null); // Cierra el modal
   };
 
+  function calcularHorasTrabajadas(turno) {
+    if (!turno.horaInicio || !turno.horaFin) return "";
+
+    const [hIni, mIni] = turno.horaInicio.split(":").map(Number);
+    const [hFin, mFin] = turno.horaFin.split(":").map(Number);
+
+    const inicio = new Date(0, 0, 0, hIni, mIni);
+    const fin = new Date(0, 0, 0, hFin, mFin);
+
+    let diffMs = fin - inicio;
+
+    // Si la hora de fin es menor que la de inicio, asumimos que cruza medianoche
+    if (diffMs < 0) {
+      diffMs += 24 * 60 * 60 * 1000;
+    }
+
+    const minutosTrabajados = diffMs / 60000 - parseInt(turno.minutosDescanso || 0);
+    const horas = Math.floor(minutosTrabajados / 60);
+    const minutos = minutosTrabajados % 60;
+
+    return `${horas}h ${minutos}min`;
+  }
+
+
 
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -58,7 +82,7 @@ function ListaTurnos({ actualizar }) {
       const emp = getEmpleado(turno.empleadoId) || {};
       const nombreCompleto = `${emp.nombre || ""} ${emp.apellido || ""}`.toLowerCase();
       const area = (emp.area || "").toLowerCase();
-      const fecha = turno.dia || "";
+      const fecha = turno.diaInicio || "";
 
       let cumpleFecha = true;
       if (fechaDesde && fecha < fechaDesde) cumpleFecha = false;
@@ -139,25 +163,29 @@ function ListaTurnos({ actualizar }) {
             <th>Empleado</th>
             <th>CC</th>
             <th>Área</th>
-            <th>Fecha</th>
+            <th>Fecha inicio</th>
+            <th>Fecha fin</th>
             <th>Hora Inicio</th>
             <th>Hora Fin</th>
             <th>Minutos Descanso</th>
+            <th>Horas Trabajadas</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {turnosFiltrados.map(turno => {
             const emp = getEmpleado(turno.empleadoId) || {};
+            const horasTrabajadas = calcularHorasTrabajadas(turno);
             return (
               <tr key={turno.id}>
                 <td data-label="Empleado">
                   <span className="empleado-icon"><FaUserCircle /></span>
                   {emp.nombre} {emp.apellido}
                 </td>
-                <td data-label="CC">{emp.cc}</td>
+                <td data-label="CC">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
                 <td data-label="Área">{emp.area}</td>
-                <td data-label="Fecha">{turno.dia}</td>
+                <td data-label="Fecha">{turno.diaInicio}</td>
+                <td data-label="Fecha">{turno.diaFin}</td>
                 <td data-label="Hora Inicio">
                   {turno.horaInicio
                     ? format(new Date(`2020-01-01T${turno.horaInicio}`), "hh:mm a")
@@ -169,6 +197,7 @@ function ListaTurnos({ actualizar }) {
                     : ""}
                 </td>
                 <td data-label="Minutos Descanso">{turno.minutosDescanso}</td>
+                <td data-label="Horas Trabajadas">{horasTrabajadas}</td>
                 <td data-label="Acciones">
                   <button
                     className="btn-eliminar-turno"

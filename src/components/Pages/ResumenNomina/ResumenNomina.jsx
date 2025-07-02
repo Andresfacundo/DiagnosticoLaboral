@@ -213,16 +213,16 @@ function ResumenNomina({ actualizar }) {
             {empleadosFiltrados.map(emp => (
               <tr key={emp.id}>
                 <td data-label="Trabajador">{emp.nombre} {emp.apellido}</td>
-                <td data-label="N° Documento">{emp.cc}</td>
+                <td data-label="N° Documento">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
                 <td data-label="Área">{emp.area}</td>
                 <td data-label="Turnos">{emp.cantidadTurnos}</td>
                 <td data-label="Horas trabajadas">{emp.totalHoras}</td>
                 <td data-label="Horas extra">{emp.horasExtra}</td>
                 <td data-label="Horas recargo nocturno">{emp.horas?.recargoNocturno ?? 0}</td>
-                <td data-label="Horas festivas">{emp.horas?.horasFestivas ?? 0}</td> {/* NUEVO */}
+                <td data-label="Horas festivas">{emp.horas?.horasFestivas ?? 0}</td> 
                 <td data-label="Pago extra">${emp.pagoExtra.toLocaleString('es-CO')}</td>
                 <td data-label="Valor recargo nocturno">${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? 0}</td>
-                <td data-label="Valor festivo">${emp.pagoFestivo?.toLocaleString('es-CO') ?? 0}</td> {/* NUEVO */}
+                <td data-label="Valor festivo">${emp.pagoFestivo?.toLocaleString('es-CO') ?? 0}</td> 
                 <td data-label="Neto a pagar"><b>${emp.totalPagar.toLocaleString('es-CO')}</b></td>
                 <td data-label="Costo total"><b>${emp.costoTotal.toLocaleString('es-CO')}</b></td>
               </tr>
