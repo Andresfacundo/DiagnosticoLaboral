@@ -9,6 +9,7 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import del from "../../../assets/delete.png";
 import getColombianHolidays from "colombian-holidays";
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -70,7 +71,6 @@ function CalendarioTurnos() {
     return festivos.includes(fechaStr);
   };
 
-
   const dayPropGetter = (date) => {
     if (esFestivo(date)) {
       return {
@@ -104,28 +104,46 @@ function CalendarioTurnos() {
       const startDate = new Date(`${turno.diaInicio}T${turno.horaInicio}`);
       const endDate = new Date(`${turno.diaFin}T${turno.horaFin}`);
 
-      const current = new Date(startDate);
 
-      while (current <= endDate) {
-        const dia = format(current, "yyyy-MM-dd");
+      // Verificar si el turno cruza la medianoche (hora fin menor que hora inicio)
+      const [horaInicioHoras, horaInicioMinutos] = turno.horaInicio.split(':').map(Number);
+      const [horaFinHoras, horaFinMinutos] = turno.horaFin.split(':').map(Number);
+      const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
+        (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
+      console.log(cruzaMedianoche)
 
-        const isFirstDay = dia === turno.diaInicio;
-        const isLastDay = dia === turno.diaFin;
+      if (cruzaMedianoche) {
 
-        const horaInicio = isFirstDay ? turno.horaInicio : "00:00";
-        const horaFin = isLastDay ? turno.horaFin : "23:59";
-
+        // Turno nocturno que cruza medianoche
         eventosFormateados.push({
           id: turno.id,
           title: getEmpleadoNombre(turno.empleadoId),
-          start: new Date(`${dia}T${horaInicio}`),
-          end: new Date(`${dia}T${horaFin}`),
+          start: startDate,
+          end: endDate,
           empleadoId: turno.empleadoId,
           minutosDescanso: turno.minutosDescanso,
           resource: turno,
+          // allDay: false,
         });
+      } else {
+        // Turno normal o que abarca múltiples días
+        const current = new Date(startDate);
 
-        current.setDate(current.getDate() + 1);
+        while (current <= endDate) {
+          const dia = format(current, "yyyy-MM-dd");
+
+          eventosFormateados.push({
+            id: turno.id,
+            title: getEmpleadoNombre(turno.empleadoId),
+            start: new Date(`${dia}T${turno.horaInicio}`),
+            end: new Date(`${dia}T${turno.horaFin}`),
+            empleadoId: turno.empleadoId,
+            minutosDescanso: turno.minutosDescanso,
+            resource: turno,
+          });
+
+          current.setDate(current.getDate() + 1);
+        }
       }
     });
 
@@ -177,49 +195,63 @@ function CalendarioTurnos() {
     setModalOpen(true);
   };
 
-  const handleGuardarTurno = (e) => {
-    e.preventDefault();
-    let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
+const handleGuardarTurno = (e) => {
+  e.preventDefault();
+  let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
 
-    const start = new Date(`${nuevoTurno.diaInicio}T${nuevoTurno.horaInicio}`);
-    const end = new Date(`${nuevoTurno.diaFin}T${nuevoTurno.horaFin}`);
+  const [horaInicioHoras, horaInicioMinutos] = nuevoTurno.horaInicio.split(':').map(Number);
+  const [horaFinHoras, horaFinMinutos] = nuevoTurno.horaFin.split(':').map(Number);
+  const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
+    (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
 
-    const nuevosTurnos = [];
+  const nuevosTurnos = [];
+
+  // Si cruza medianoche y día fin es igual a día inicio, sumamos 1 día automáticamente
+  let diaFinReal = nuevoTurno.diaFin;
+  if (cruzaMedianoche && nuevoTurno.diaFin === nuevoTurno.diaInicio) {
+    const fecha = new Date(nuevoTurno.diaInicio + "T00:00");
+    fecha.setDate(fecha.getDate() + 1);
+    diaFinReal = format(fecha, "yyyy-MM-dd");
+  }
+
+  const start = new Date(`${nuevoTurno.diaInicio}T${nuevoTurno.horaInicio}`);
+  const end = new Date(`${diaFinReal}T${nuevoTurno.horaFin}`);
+
+  if (cruzaMedianoche) {
+    nuevosTurnos.push({
+      ...nuevoTurno,
+      diaFin: diaFinReal,
+      id: `turno_${Date.now()}`,
+    });
+  } else {
     const current = new Date(start);
-
     while (current <= end) {
       const dia = format(current, "yyyy-MM-dd");
-
-      const isFirstDay = dia === nuevoTurno.diaInicio;
-      const isLastDay = dia === nuevoTurno.diaFin;
-
-      const horaInicio = isFirstDay ? nuevoTurno.horaInicio : "00:00";
-      const horaFin = isLastDay ? nuevoTurno.horaFin : "23:59";
-
       nuevosTurnos.push({
         ...nuevoTurno,
         diaInicio: dia,
         diaFin: dia,
-        horaInicio,
-        horaFin,
+        horaInicio: nuevoTurno.horaInicio,
+        horaFin: nuevoTurno.horaFin,
         id: `turno_${Date.now()}_${dia}`,
       });
-
       current.setDate(current.getDate() + 1);
     }
+  }
 
-    // Si es edición, eliminar el bloque anterior antes de guardar los nuevos
-    if (modalType === "edit" && turnoSeleccionado) {
-      turnosActuales = turnosActuales.filter(
-        (t) => t.id !== turnoSeleccionado.id
-      );
-    }
+  // Si es edición, eliminar el anterior antes de guardar
+  if (modalType === "edit" && turnoSeleccionado) {
+    turnosActuales = turnosActuales.filter(
+      (t) => t.id !== turnoSeleccionado.id
+    );
+  }
 
-    const turnosFinales = [...turnosActuales, ...nuevosTurnos];
-    guardarTurnosEnLocalStorage(turnosFinales);
-    setModalOpen(false);
-    recargarEventosDesdeLS();
-  };
+  const turnosFinales = [...turnosActuales, ...nuevosTurnos];
+  guardarTurnosEnLocalStorage(turnosFinales);
+  setModalOpen(false);
+  recargarEventosDesdeLS();
+};
+
 
   const handleEliminarTurno = () => {
     const turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
@@ -283,6 +315,7 @@ function CalendarioTurnos() {
         views={["month", "week", "day"]}
         defaultView="week"
         popup
+        // allDayAccessor={() => false}
         messages={{
           week: "Semana",
           work_week: "Semana laboral",
