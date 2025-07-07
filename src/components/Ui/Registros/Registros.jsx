@@ -42,12 +42,12 @@ const Registros = () => {
         });
     
         setHistorial(response);                      
-        const timer = setTimeout(() => setMostrarSpinner(false), 2000);
-        return () => clearTimeout(timer);
+
       } catch (err) {
         console.error("Error al cargar el historial:", err);
-        setError("Error al cargar el historial. Por favor intente nuevamente.");
-        
+        setError("Error al cargar el historial. Por favor intente nuevamente.");        
+      }finally{
+        setMostrarSpinner(false);
       }
     };
 
