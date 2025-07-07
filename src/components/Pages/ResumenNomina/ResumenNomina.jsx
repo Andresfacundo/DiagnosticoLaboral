@@ -114,11 +114,9 @@ const filtrarEmpleados = () => {
       let cumpleFecha = true;
       if (fechaDesde || fechaHasta) {
         cumpleFecha = emp.detalleTurnos.some(turno => {
-          const inicio = turno.diaInicio; // soporte para ambos
+          const inicio = turno.diaInicio; 
           const fin = turno.diaFin;
-          // Si hay fechaDesde y el fin del turno es antes, descartar
           if (fechaDesde && fin < fechaDesde) return false;
-          // Si hay fechaHasta y el inicio del turno es después, descartar
           if (fechaHasta && inicio > fechaHasta) return false;
           return true;
         });

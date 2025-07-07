@@ -3,6 +3,7 @@ import axios from "axios";
 import del from "../../../../public/delete.svg";
 import contactarEmpleador from "../ContactarEmpleador/ContactarEmpleador";
 import "./Registros.css";
+import SpinnerTimed from "../SpinnerTimed/SpinnerTimed";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,11 +14,13 @@ const Registros = () => {
   const [error, setError] = useState(null);
   const [diagnosticoSeleccionado, setDiagnosticoSeleccionado] = useState(null);
   const [detallesDiagnostico, setDetallesDiagnostico] = useState(null);
-  const [categorias, setCategorias] = useState([]); // Nuevo estado para categorías
+  const [categorias, setCategorias] = useState([]);
+  const [mostrarSpinner, setMostrarSpinner] = useState(true);
   
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
+        setMostrarSpinner(true);
         setLoading(true);
         const [empleadoresResponse, diagnosticosResponse, categoriasResponse] = await Promise.all([
           axios.get(`${API_URL}/api/empleadores`),
@@ -41,6 +44,8 @@ const Registros = () => {
     
         setHistorial(response);              
         setLoading(false);
+        const timer = setTimeout(() => setMostrarSpinner(false), 1000);
+        return () => clearTimeout(timer);
       } catch (err) {
         console.error("Error al cargar el historial:", err);
         setError("Error al cargar el historial. Por favor intente nuevamente.");
@@ -166,11 +171,7 @@ const Registros = () => {
     return "bajo";
   };
 
-  if (loading) return (
-    <div className="loading-container">
-      <p>Cargando información...</p>
-    </div>
-  );
+  if (loading || mostrarSpinner) return  <SpinnerTimed/>  
   
   if (error) return (
     <div className="error-container">
