@@ -20,8 +20,7 @@ const Registros = () => {
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
-        setMostrarSpinner(true);
-        setLoading(true);
+        setMostrarSpinner(true);        
         const [empleadoresResponse, diagnosticosResponse, categoriasResponse] = await Promise.all([
           axios.get(`${API_URL}/api/empleadores`),
           axios.get(`${API_URL}/api/diagnostico`),
@@ -42,14 +41,13 @@ const Registros = () => {
           };
         });
     
-        setHistorial(response);              
-        setLoading(false);
+        setHistorial(response);                      
         const timer = setTimeout(() => setMostrarSpinner(false), 1000);
         return () => clearTimeout(timer);
       } catch (err) {
         console.error("Error al cargar el historial:", err);
         setError("Error al cargar el historial. Por favor intente nuevamente.");
-        setLoading(false);
+        
       }
     };
 
@@ -70,7 +68,7 @@ const Registros = () => {
 
   const cargarDetallesDiagnostico = async (diagnosticoId) => {
     try {
-      setLoading(true);
+      setMostrarSpinner(true);
       
       const diagnosticoResponse = await axios.get(`${API_URL}/api/diagnostico/${diagnosticoId}`);
       const diagnosticoData = diagnosticoResponse.data;
@@ -81,11 +79,11 @@ const Registros = () => {
       
       setDiagnosticoSeleccionado(diagnosticoId);
       setDetallesDiagnostico(diagnosticoData.resultado);
-      setLoading(false);
+      setMostrarSpinner(false);
     } catch (err) {
       console.error("Error al cargar detalles del diagnóstico:", err);
       setError("Error al cargar los detalles. Por favor intente nuevamente.");
-      setLoading(false);
+      setMostrarSpinner(false);
     }
   };
 
@@ -171,7 +169,7 @@ const Registros = () => {
     return "bajo";
   };
 
- if (loading || mostrarSpinner) {
+ if ( mostrarSpinner) {
   return (
     <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <SpinnerTimed />
