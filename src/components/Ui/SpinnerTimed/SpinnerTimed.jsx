@@ -8,7 +8,7 @@ const SpinnerTimed = ({ mensaje = "Cargando...", onFinish }) => {
     const timeout = setTimeout(() => {
       setVisible(false);
       if (onFinish) onFinish();
-    }, 1000);
+    }, 2000);
     return () => clearTimeout(timeout);
   }, [onFinish]);
 
