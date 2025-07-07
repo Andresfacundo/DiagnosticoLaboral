@@ -171,8 +171,13 @@ const Registros = () => {
     return "bajo";
   };
 
-  if (loading || mostrarSpinner) return  <SpinnerTimed/>  
-  
+ if (loading || mostrarSpinner) {
+  return (
+    <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <SpinnerTimed />
+    </div>
+  );
+}
   if (error) return (
     <div className="error-container">
       <p>{error}</p>
