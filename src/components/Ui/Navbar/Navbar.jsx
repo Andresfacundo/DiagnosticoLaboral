@@ -138,7 +138,7 @@ const Navbar = ({id}) => {
                         
                         {isAuthenticated ? (
                             <li className='login'>
-                                <NavLink to='/login' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
+                                <NavLink to='/cerrando-sesion' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
                                     <img src={logout} alt='icon-logout' className='logo-user' />
                                     <span className="menu-text">Cerrar sesión</span>
                                 </NavLink>
