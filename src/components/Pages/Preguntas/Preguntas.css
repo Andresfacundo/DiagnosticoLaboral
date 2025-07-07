@@ -59,27 +59,42 @@
     font-size: 1rem;
     transition: background-color 0.3s ease;
 }
-.peso-total {
-    margin-bottom: 15px;
-    padding: 5px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-  }
+/* Estilos para la sección de totales */
+.preguntas-totales {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+  margin: 24px 0 18px 0;
+  border: 1px solid #00000038;
+  border-radius: 5px;
+}
+
+.total-box {
+  border-radius: 10px;
+  padding: 18px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+}
+
+.total-label {
+  font-size: 16px;
+  color: #DFBD7C;
+  font-weight: 500;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  /* border: 2px solid red; */
+}
+
+.total-value {
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
   
-  .peso-total h3 {
-    margin: 0;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .peso-total p {
-    margin: 5px 0 0;
-    font-size: 16px;
-    font-weight: bold;
-    color: #555;
-  }
 
 .preguntas-list-header {
     display: grid;

@@ -122,7 +122,7 @@ const Preguntas = () => {
 
     const iniciarEdicionEnLinea = (pregunta) => {
         const categoriaId = pregunta.categoria;
-        
+
         setEditandoEnLinea({
             id: pregunta.id,
             texto: pregunta.texto,
@@ -192,7 +192,7 @@ const Preguntas = () => {
     const obtenerNombreCategoria = (pregunta) => {
         const categoriaId = pregunta.categoria
 
-        const cat = categorias.find(c => c.id == categoriaId);        
+        const cat = categorias.find(c => c.id == categoriaId);
         return cat ? cat.nombre : 'No disponible';
     };
 
@@ -203,32 +203,32 @@ const Preguntas = () => {
                     <img src={configuracion} alt="Configuración" />
                 </Link>
             </div>
-            
+
             <h2 className="preguntas-header">Gestión de Preguntas</h2>
 
             {/* Formulario para agregar preguntas */}
             <form onSubmit={manejarEnvio} className="preguntas-form">
                 {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
 
-                <input 
-                    type="text" 
-                    placeholder="Nueva Pregunta" 
-                    value={texto} 
-                    onChange={(e) => setTexto(e.target.value)} 
-                    required 
+                <input
+                    type="text"
+                    placeholder="Nueva Pregunta"
+                    value={texto}
+                    onChange={(e) => setTexto(e.target.value)}
+                    required
                 />
-                <input 
-                    type="number" 
-                    placeholder="Peso (0-3)" 
-                    value={peso} 
+                <input
+                    type="number"
+                    placeholder="Peso (0-3)"
+                    value={peso}
                     onWheel={(e) => e.target.blur()}
-                    onChange={(e) => setPeso(e.target.value)} 
-                    min="0" 
-                    max='3' 
-                    step='any' 
-                    required 
+                    onChange={(e) => setPeso(e.target.value)}
+                    min="0"
+                    max='3'
+                    step='any'
+                    required
                 />
-                <select 
+                <select
                     className="select-categoria"
                     value={categoria}
                     onChange={(e) => setCategoria(e.target.value)}
@@ -245,7 +245,7 @@ const Preguntas = () => {
             {/* Filtro de categorías */}
             <div className="categoria-filter">
                 <label htmlFor="filtro-categoria">Filtrar por categoría:</label>
-                <select 
+                <select
                     id="filtro-categoria"
                     className="select-filtro-categoria"
                     value={filtroCategoria}
@@ -258,8 +258,15 @@ const Preguntas = () => {
                 </select>
             </div>
 
-            <div className="peso-total">
-                <h3>Peso Total: {calcularPesoTotal()}</h3>
+            <div className="preguntas-totales">
+                <div className="total-box">
+                    <span className="total-label">Preguntas</span>
+                    <span className="total-value">{preguntas.length}</span>
+                </div>
+                <div className="total-box">
+                    <span className="total-label">Peso total</span>
+                    <span className="total-value">{calcularPesoTotal()}</span>
+                </div>
             </div>
 
             {/* Lista de preguntas */}
@@ -380,7 +387,7 @@ const Preguntas = () => {
                     </>
                 )}
             </div>
-            
+
             {/* Botón volver arriba */}
             {mostrarFlecha && (
                 <a className='volver-home' href="#navbar">
