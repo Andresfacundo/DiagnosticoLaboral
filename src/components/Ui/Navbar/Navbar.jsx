@@ -68,9 +68,7 @@ const Navbar = ({id}) => {
         }
         return userRole === requiredRole;
     };
-
     const handleLogout = async () => {
-        setIsLoggingOut(true); // Mostrar el spinner
         const token = authService.getToken();
         try {
             if (token) {
@@ -84,7 +82,6 @@ const Navbar = ({id}) => {
             authService.logout();
             setIsAuthenticated(false);
             setUserRole('invitado');
-            setIsLoggingOut(false);
             navigate('/cerrando-sesion');
         }
     };

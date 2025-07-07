@@ -9,7 +9,7 @@ const LoggingOut = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       navigate('/login');
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timeout);
   }, [navigate]);

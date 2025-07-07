@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react"
-import { FaSearch, FaEraser } from "react-icons/fa";;
+import React, { useEffect, useState } from "react";
+import { FaSearch, FaEraser } from "react-icons/fa";
 import './ResumenNomina.css';
 import SpinnerTimed from "../../Ui/SpinnerTimed/SpinnerTimed";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFiltro = "") {
@@ -11,7 +12,7 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
 
   const turnosFiltrados = empleado.detalleTurnos.filter(turno => {
     const inicio = turno.diaInicio;
-    const fin = turno.diaFin ;
+    const fin = turno.diaFin;
     if (fechaDesdeFiltro && fin < fechaDesdeFiltro) return false;
     if (fechaHastaFiltro && inicio > fechaHastaFiltro) return false;
     return true;
@@ -73,65 +74,65 @@ function ResumenNomina({ actualizar }) {
   const [empleadosFiltrados, setEmpleadosFiltrados] = useState([]);
   const [mostrarSpinner, setMostrarSpinner] = useState(true);
 
-
   useEffect(() => {
-    setMostrarSpinner(true);
     const empleadosGuardados = localStorage.getItem("empleados");
     const turnosGuardados = localStorage.getItem("turnos");
 
-    fetch(`${API_URL}/api/resumen`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        empleados: JSON.parse(empleadosGuardados || "[]"),
-        turnos: JSON.parse(turnosGuardados || "[]")
-      })
-    })
-      .then(res => {
+    const cargarResumen = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/resumen`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            empleados: JSON.parse(empleadosGuardados || "[]"),
+            turnos: JSON.parse(turnosGuardados || "[]")
+          })
+        });
+
         if (!res.ok) throw new Error("Error al obtener resumen");
-        return res.json();
-      })
-      .then(data => {
+        const data = await res.json();
+
         setResumen(data);
         setEmpleadosFiltrados(data.resumenEmpleados.map(emp => recalcularValoresPorFecha(emp)));
-      })
-      .catch(error => {
+      } catch (error) {
         console.error("Error al cargar resumen:", error);
-      });
+      } finally {
+        setMostrarSpinner(false); 
+      }
+    };
 
-    const timer = setTimeout(() => setMostrarSpinner(false), 1000);
-    return () => clearTimeout(timer);
+    cargarResumen();
   }, [actualizar]);
 
-  if (!resumen || mostrarSpinner) return <SpinnerTimed  />;
+  if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
-const filtrarEmpleados = () => {
-  if (!resumen) return;
-  const filtrados = resumen.resumenEmpleados
-    .filter(emp => {
-      const nombreCompleto = `${emp.nombre} ${emp.apellido}`.toLowerCase();
+  const filtrarEmpleados = () => {
+    if (!resumen) return;
+    const filtrados = resumen.resumenEmpleados
+      .filter(emp => {
+        const nombreCompleto = `${emp.nombre} ${emp.apellido}`.toLowerCase();
 
-      let cumpleFecha = true;
-      if (fechaDesde || fechaHasta) {
-        cumpleFecha = emp.detalleTurnos.some(turno => {
-          const inicio = turno.diaInicio; 
-          const fin = turno.diaFin;
-          if (fechaDesde && fin < fechaDesde) return false;
-          if (fechaHasta && inicio > fechaHasta) return false;
-          return true;
-        });
-      }
+        let cumpleFecha = true;
+        if (fechaDesde || fechaHasta) {
+          cumpleFecha = emp.detalleTurnos.some(turno => {
+            const inicio = turno.diaInicio;
+            const fin = turno.diaFin;
+            if (fechaDesde && fin < fechaDesde) return false;
+            if (fechaHasta && inicio > fechaHasta) return false;
+            return true;
+          });
+        }
 
-      return (
-        nombreCompleto.includes(filtroNombre.toLowerCase()) &&
-        emp.cc.toString().includes(filtroDocumento) &&
-        emp.area.toLowerCase().includes(filtroArea.toLowerCase()) &&
-        cumpleFecha
-      );
-    })
-    .map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta));
-  setEmpleadosFiltrados(filtrados);
-};
+        return (
+          nombreCompleto.includes(filtroNombre.toLowerCase()) &&
+          emp.cc.toString().includes(filtroDocumento) &&
+          emp.area.toLowerCase().includes(filtroArea.toLowerCase()) &&
+          cumpleFecha
+        );
+      })
+      .map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta));
+    setEmpleadosFiltrados(filtrados);
+  };
 
   const limpiarFiltros = () => {
     setFiltroNombre("");
@@ -146,14 +147,10 @@ const filtrarEmpleados = () => {
 
   return (
     <div className="resumen-nomina-container">
-      {/* Filtros agrupados */}
-
-      <button
-        className="btn-imprimir"
-        onClick={() => window.print()}
-      >
+      <button className="btn-imprimir" onClick={() => window.print()}>
         Generar PDF
       </button>
+
       <fieldset className="filtros">
         <legend><strong>Filtros</strong></legend>
         <input
@@ -188,13 +185,12 @@ const filtrarEmpleados = () => {
           <FaSearch style={{ marginRight: 5 }} />
           Buscar
         </button>
-        <button onClick={limpiarFiltros} >
+        <button onClick={limpiarFiltros}>
           <FaEraser style={{ marginRight: 5 }} />
           Limpiar
         </button>
       </fieldset>
 
-      {/* Tabla */}
       {empleadosFiltrados.length > 0 ? (
         <table border={1} cellPadding={4} className="resumen-nomina-table">
           <thead>
@@ -221,19 +217,19 @@ const filtrarEmpleados = () => {
           <tbody>
             {empleadosFiltrados.map(emp => (
               <tr key={emp.id}>
-                <td data-label="Trabajador">{emp.nombre} {emp.apellido}</td>
-                <td data-label="N° Documento">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
-                <td data-label="Área">{emp.area}</td>
-                <td data-label="Turnos">{emp.cantidadTurnos}</td>
-                <td data-label="Horas trabajadas">{emp.totalHoras}</td>
-                <td data-label="Horas extra">{emp.horasExtra}</td>
-                <td data-label="Horas recargo nocturno">{emp.horas?.recargoNocturno ?? 0}</td>
-                <td data-label="Horas festivas">{emp.horas?.horasFestivas ?? 0}</td> 
-                <td data-label="Pago extra">${emp.pagoExtra.toLocaleString('es-CO')}</td>
-                <td data-label="Valor recargo nocturno">${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? 0}</td>
-                <td data-label="Valor festivo">${emp.pagoFestivo?.toLocaleString('es-CO') ?? 0}</td> 
-                <td data-label="Neto a pagar"><b>${emp.totalPagar.toLocaleString('es-CO')}</b></td>
-                <td data-label="Costo total"><b>${emp.costoTotal.toLocaleString('es-CO')}</b></td>
+                <td>{emp.nombre} {emp.apellido}</td>
+                <td>{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
+                <td>{emp.area}</td>
+                <td>{emp.cantidadTurnos}</td>
+                <td>{emp.totalHoras}</td>
+                <td>{emp.horasExtra}</td>
+                <td>{emp.horas?.recargoNocturno ?? 0}</td>
+                <td>{emp.horas?.horasFestivas ?? 0}</td>
+                <td>${emp.pagoExtra.toLocaleString('es-CO')}</td>
+                <td>${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? 0}</td>
+                <td>${emp.pagoFestivo?.toLocaleString('es-CO') ?? 0}</td>
+                <td><b>${emp.totalPagar.toLocaleString('es-CO')}</b></td>
+                <td><b>${emp.costoTotal.toLocaleString('es-CO')}</b></td>
               </tr>
             ))}
           </tbody>
@@ -247,4 +243,5 @@ const filtrarEmpleados = () => {
     </div>
   );
 }
+
 export default ResumenNomina;
