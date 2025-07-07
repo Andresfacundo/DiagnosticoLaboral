@@ -102,8 +102,7 @@ function ResumenNomina({ actualizar }) {
     return () => clearTimeout(timer);
   }, [actualizar]);
 
-  if ( mostrarSpinner) return <SpinnerTimed  />;
-  if (!resumen) return <p>Cargando resumen...</p>;
+  if (!resumen || mostrarSpinner) return <SpinnerTimed  />;
 
   const filtrarEmpleados = () => {
     if (!resumen) return;
