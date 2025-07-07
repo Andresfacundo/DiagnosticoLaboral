@@ -24,32 +24,83 @@
   overflow: hidden;
 }
 
-/* Estilos para los eventos del calendario */
 .calendario-event {
-  background-color: #dfbc7c !important;
+  background-color: #79797960 !important;
   color: #000000 !important;
   border-radius: 2px !important;
-  border-left: 1px solid #3333338a !important;
+  border-left: 2px solid #3333338a !important;
   border-right: none !important;
   border-top: none !important;
   border-bottom: none !important;
-
   padding: 2px 4px !important;
   font-weight: 500 !important;
-  font-size: 0.95em !important;
+  font-size: 0.85em !important;
   cursor: move !important;
-  letter-spacing: 2PX;
-  writing-mode: vertical-rl;
-}
-.rbc-event-label{
-  display: none;
+  letter-spacing: 1px !important; 
+  text-orientation: mixed !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: linear-gradient(135deg, #7979796b, #6666661a) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
+.rbc-event-label {
+  display: none !important;
+}
+
+.rbc-event-content {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: inherit !important;
+  writing-mode: vertical-rl !important;
+  text-orientation: mixed !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Estilos específicos para diferentes anchos de evento */
+.rbc-event[style*="width: 100%"] .calendario-event {
+  font-size: 0.85em !important;
+  letter-spacing: 1px !important;
+}
+
+.rbc-event[style*="width: 50%"] .calendario-event,
+.rbc-event[style*="width: 49%"] .calendario-event {
+  font-size: 0.75em !important;
+  letter-spacing: 0.5px !important;
+  padding: 1px 2px !important;
+}
+
+.rbc-event[style*="width: 33%"] .calendario-event,
+.rbc-event[style*="width: 32%"] .calendario-event {
+  font-size: 0.65em !important;
+  letter-spacing: 0px !important;
+  padding: 1px 1px !important;
+}
+
+/* Para eventos muy pequeños (4 o más en la misma franja) */
+.rbc-event[style*="width: 25%"] .calendario-event,
+.rbc-event[style*="width: 24%"] .calendario-event,
+.rbc-event[style*="width: 20%"] .calendario-event {
+  font-size: 0.55em !important;
+  letter-spacing: 0px !important;
+  padding: 1px !important;
+  /* Cambiar a horizontal para mejor legibilidad en espacios muy pequeños */
+  writing-mode: horizontal-tb !important;
+  text-orientation: initial !important;
+}
 
 /* Estilos para eventos siendo arrastrados */
 .rbc-addons-dnd-drag-preview {
-  opacity: 0.8;
-  /* transform: scale(1.05); */
+  opacity: 0.8 !important;
+  z-index: 1000 !important;
 }
 
 .rbc-addons-dnd-over {
@@ -102,11 +153,10 @@
 }
 
 /* Botón eliminar */
-.bttn-eliminar{
+.bttn-eliminar {
   background-color: transparent;
   border: none;
   cursor: pointer;
-
 }
 
 /* Formulario del modal */
@@ -196,7 +246,6 @@
   color: #fff;
 }
 
-
 .btn-secondary {
   background: #f5f5f5;
   color: #666;
@@ -242,12 +291,8 @@
 /* Estilos para mejor accesibilidad en drag and drop */
 .rbc-addons-dnd-drag-preview .calendario-event {
   opacity: 0.8;
-  /* transform: scale(1.05); */
   z-index: 1000;
 }
-
-/* Estilos para el área de drop */
-
 
 /* Mejoras para la responsividad */
 @media (max-width: 768px) {
@@ -287,6 +332,16 @@
   .btn-primary,
   .btn-secondary {
     width: 100%;
+  }
+
+  /* Ajustes para móviles en eventos pequeños */
+  .rbc-event[style*="width: 50%"] .calendario-event,
+  .rbc-event[style*="width: 49%"] .calendario-event,
+  .rbc-event[style*="width: 33%"] .calendario-event,
+  .rbc-event[style*="width: 32%"] .calendario-event {
+    writing-mode: horizontal-tb !important;
+    text-orientation: initial !important;
+    font-size: 0.6em !important;
   }
 }
 
@@ -331,7 +386,27 @@
 }
 
 /* Estilos para el time slot */
-
-.calendario-turnos-container .btn-imprimir{
+.calendario-turnos-container .btn-imprimir {
   margin-bottom: 20px;
+}
+
+/* Estilos adicionales para mejor distribución de eventos */
+.rbc-time-slot {
+  border-top: 1px solid #ddd;
+}
+
+.rbc-time-content {
+  position: relative;
+}
+
+/* Asegurar que los eventos se distribuyan correctamente en la vista semanal */
+.rbc-time-view .rbc-event {
+  border-radius: 2px;
+  padding: 0 !important;
+}
+
+.rbc-time-view .rbc-event .calendario-event {
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 2px !important;
 }

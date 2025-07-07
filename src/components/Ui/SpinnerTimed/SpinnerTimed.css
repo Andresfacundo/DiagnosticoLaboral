@@ -1,15 +1,15 @@
-
-.logging-out-container {
+.spinner-timed-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 60vh;
+  min-height: 120px;
   font-weight: 500;
   font-size: 20px;
 }
 
-.spinner {
+.spinner-timed-container .spinner {
   width: 80px;
   height: 80px;
   border: 8px solid #ccc;
@@ -20,6 +20,6 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
 }

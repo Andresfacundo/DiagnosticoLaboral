@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { FaSearch, FaEraser } from "react-icons/fa";;
 import './ResumenNomina.css';
+import SpinnerTimed from "../../Ui/SpinnerTimed/SpinnerTimed";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFiltro = "") {
@@ -69,8 +70,11 @@ function ResumenNomina({ actualizar }) {
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
   const [empleadosFiltrados, setEmpleadosFiltrados] = useState([]);
+  const [mostrarSpinner, setMostrarSpinner] = useState(true);
+
 
   useEffect(() => {
+    setMostrarSpinner(true);
     const empleadosGuardados = localStorage.getItem("empleados");
     const turnosGuardados = localStorage.getItem("turnos");
 
@@ -93,8 +97,12 @@ function ResumenNomina({ actualizar }) {
       .catch(error => {
         console.error("Error al cargar resumen:", error);
       });
+
+    const timer = setTimeout(() => setMostrarSpinner(false), 1000);
+    return () => clearTimeout(timer);
   }, [actualizar]);
 
+  if ( mostrarSpinner) return <SpinnerTimed  />;
   if (!resumen) return <p>Cargando resumen...</p>;
 
   const filtrarEmpleados = () => {
