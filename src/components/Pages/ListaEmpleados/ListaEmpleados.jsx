@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import './ListaEmpleados.css';
 import deleteIcon from '../../../assets/delete.png';
+import editar from '../../../assets/editar.svg'
 
 function ListaEmpleados() {
   const [empleados, setEmpleados] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [empleadoEdit, setEmpleadoEdit] = useState(null);
 
   const cargarEmpleados = () => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -27,6 +30,26 @@ function ListaEmpleados() {
   const handleDeleteClick = (index) => {
     setDeleteIndex(index);
     setShowModal(true);
+  };
+  const handleEditClick = (empleado) => {
+    setEmpleadoEdit({ ...empleado });
+    setShowEditModal(true);
+  };
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/[^0-9]/g, '');
+    setEmpleadoEdit((prev) => ({ ...prev, [name]: numericValue }));
+  };
+
+  const handleEditSave = () => {
+    const actualizados = empleados.map(emp =>
+      emp.id === empleadoEdit.id ? empleadoEdit : emp
+    );
+    setEmpleados(actualizados);
+    localStorage.setItem("empleados", JSON.stringify(actualizados));
+    window.dispatchEvent(new Event("localStorageUpdated"));
+    setShowEditModal(false);
+    setEmpleadoEdit(null);
   };
 
   const handleDeleteConfirm = () => {
@@ -77,11 +100,15 @@ function ListaEmpleados() {
                 <td data-label="Clasificación">{emp.clasificacionPersonal}</td>
                 <td data-label="Área">{emp.area}</td>
                 <td data-label="Salario Base">${parseFloat(emp.salarioBase).toLocaleString('es-CO')}</td>
-                <td data-label="Acciones">
+                <td data-label="Acciones" className="acciones">
+                  <button onClick={() => handleEditClick(emp)} className="edit-button">
+                    <img className='editar-btn' src={editar} alt="" />
+                  </button>
                   <button onClick={() => handleDeleteClick(index)} className="delete-button">
                     <img src={deleteIcon} alt="" />
                   </button>
                 </td>
+
               </tr>
             ))}
           </tbody>
@@ -94,13 +121,56 @@ function ListaEmpleados() {
       )}
 
       {/* Modal de confirmación */}
-      {showModal && (
+      {showEditModal && empleadoEdit && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <p>¿Estás seguro que deseas borrar este trabajador?</p>
+            <h3>Editar Empleado</h3>
+            <form className="edit-form-emp">
+              <input
+                type="text"
+                name="nombre"
+                value={empleadoEdit.nombre}
+                onChange={handleEditChange}
+                placeholder="Nombre"
+              />
+              <input
+                type="text"
+                name="apellido"
+                value={empleadoEdit.apellido}
+                onChange={handleEditChange}
+                placeholder="Apellido"
+              />
+              <input
+                type="text"
+                name="cc"
+                value={parseFloat(empleadoEdit.cc).toLocaleString('es-CO')}
+                onChange={handleEditChange}
+                placeholder="Cédula"
+              />
+              <select name="clasificacionPersonal" value={empleadoEdit.clasificacionPersonal} onChange={handleEditChange}>
+                <option value="" disabled>Clasificación del personal</option>
+                <option value="Ordinario">Ordinario</option>
+                <option value="Direccion, confianza o manejo">Dirección, confianza o manejo</option>
+              </select>
+              <input
+                type="text"
+                name="area"
+                value={empleadoEdit.area}
+                onChange={handleEditChange}
+                placeholder="Área"
+              />
+              <input
+                type="text"
+                name="salarioBase"
+                value={parseFloat(empleadoEdit.salarioBase).toLocaleString('es-CO')}
+                onChange={handleEditChange}
+                placeholder="Salario Base"
+                onWheel={e => e.target.blur()}
+              />
+            </form>
             <div className="modal-actions">
-              <button onClick={handleDeleteConfirm} className="save-button">Sí, borrar</button>
-              <button onClick={handleDeleteCancel} className="cancel-button">Cancelar</button>
+              <button onClick={handleEditSave} className="save-button">Guardar</button>
+              <button onClick={() => setShowEditModal(false)} className="cancel-button">Cancelar</button>
             </div>
           </div>
         </div>

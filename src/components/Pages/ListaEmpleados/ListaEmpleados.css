@@ -141,3 +141,37 @@
     width: 100%;
   }
 }
+.edit-button {
+  border: none;
+  background-color: transparent;
+  
+}
+.editar-btn{
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  
+}
+
+.modal-content .edit-form-emp {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-content .edit-form-emp input,
+.modal-content .edit-form-emp select {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.modal-content .edit-form-emp input:focus,
+.modal-content .edit-form-emp select:focus {
+
+  outline: none;
+}
+

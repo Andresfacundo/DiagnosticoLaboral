@@ -163,7 +163,6 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       return;
     }
 
-    console.log("Procesando archivo:", file.name);
 
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data);
@@ -201,7 +200,6 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       body: JSON.stringify(empleadosLimpios)
     });
 
-    console.log("Respuesta del servidor:", res.status, res.statusText);
 
     if (!res.ok) {
       const errorText = await res.text();

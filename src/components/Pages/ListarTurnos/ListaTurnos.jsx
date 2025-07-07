@@ -200,6 +200,13 @@ function ListaTurnos({ actualizar }) {
                 <td data-label="Horas Trabajadas">{horasTrabajadas}</td>
                 <td data-label="Acciones">
                   <button
+                    className="btn-editar-turno"
+                    onClick={() => setTurnoEditando(turno)}
+                    title="Editar turno"
+                  >
+                    <img src={editar} alt="" />
+                  </button>
+                  <button
                     className="btn-eliminar-turno"
                     onClick={() => eliminarTurno(turno.id)}
                     title="Eliminar turno"
@@ -208,14 +215,6 @@ function ListaTurnos({ actualizar }) {
                     <img src={del} alt="btn-eliminar" />
 
                   </button>
-                  <button
-                    className="btn-editar-turno"
-                    onClick={() => setTurnoEditando(turno)}
-                    title="Editar turno"
-                  >
-                    <img src={editar} alt="" />
-                  </button>
-
                 </td>
               </tr>
             );
