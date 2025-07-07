@@ -262,7 +262,7 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
   return (
     <div className="agregar-empleado-wrapper">
       <form onSubmit={handleSubmit} className="agregar-empleado-form">
-        <h2>Agregar Empleado</h2>
+        <h2>Agregar trabajador</h2>
         <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} required />
         <input name="apellido" placeholder="Apellido" value={form.apellido} onChange={handleChange} required />
         <input type="text" name="cc" placeholder="Cédula" value={form.cc} onChange={handleChange} required onWheel={e => e.target.blur()} />
@@ -297,7 +297,7 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
           <p><strong>Procesando archivo...</strong></p>
         ) : (
           <>
-            <p><strong>Arrastra aquí un archivo Excel (.xlsx) para carga masiva de empleados</strong> </p>
+            <p><strong>Arrastra aquí un archivo Excel (.xlsx) para carga masiva de trabajadores</strong> </p>
             <p>o</p>
             <input
               ref={fileInputRef}

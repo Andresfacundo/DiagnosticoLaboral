@@ -37,8 +37,12 @@ function ListaEmpleados() {
   };
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    const numericValue = value.replace(/[^0-9]/g, '');
-    setEmpleadoEdit((prev) => ({ ...prev, [name]: numericValue }));
+    if (name === "cc" || name === "salarioBase") {
+      const numericValue = value.replace(/[^0-9]/g, '');
+      setEmpleadoEdit((prev) => ({ ...prev, [name]: numericValue }));
+    } else {
+      setEmpleadoEdit((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleEditSave = () => {
@@ -162,7 +166,7 @@ function ListaEmpleados() {
               <input
                 type="text"
                 name="salarioBase"
-                value={parseFloat(empleadoEdit.salarioBase).toLocaleString('es-CO')}
+                value={'$'+ parseFloat(empleadoEdit.salarioBase).toLocaleString('es-CO')}
                 onChange={handleEditChange}
                 placeholder="Salario Base"
                 onWheel={e => e.target.blur()}
@@ -171,6 +175,17 @@ function ListaEmpleados() {
             <div className="modal-actions">
               <button onClick={handleEditSave} className="save-button">Guardar</button>
               <button onClick={() => setShowEditModal(false)} className="cancel-button">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>¿Estás seguro que deseas borrar este trabajador?</p>
+            <div className="modal-actions">
+              <button onClick={handleDeleteConfirm} className="save-button">Sí, borrar</button>
+              <button onClick={handleDeleteCancel} className="cancel-button">Cancelar</button>
             </div>
           </div>
         </div>

@@ -10,9 +10,10 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
   }
 
   const turnosFiltrados = empleado.detalleTurnos.filter(turno => {
-    const dia = turno.dia;
-    if (fechaDesdeFiltro && dia < fechaDesdeFiltro) return false;
-    if (fechaHastaFiltro && dia > fechaHastaFiltro) return false;
+    const inicio = turno.diaInicio;
+    const fin = turno.diaFin ;
+    if (fechaDesdeFiltro && fin < fechaDesdeFiltro) return false;
+    if (fechaHastaFiltro && inicio > fechaHastaFiltro) return false;
     return true;
   });
 
@@ -104,32 +105,35 @@ function ResumenNomina({ actualizar }) {
 
   if (!resumen || mostrarSpinner) return <SpinnerTimed  />;
 
-  const filtrarEmpleados = () => {
-    if (!resumen) return;
-    const filtrados = resumen.resumenEmpleados
-      .filter(emp => {
-        const nombreCompleto = `${emp.nombre} ${emp.apellido}`.toLowerCase();
+const filtrarEmpleados = () => {
+  if (!resumen) return;
+  const filtrados = resumen.resumenEmpleados
+    .filter(emp => {
+      const nombreCompleto = `${emp.nombre} ${emp.apellido}`.toLowerCase();
 
-        let cumpleFecha = true;
-        if (fechaDesde || fechaHasta) {
-          cumpleFecha = emp.detalleTurnos.some(turno => {
-            const dia = turno.dia;
-            if (fechaDesde && dia < fechaDesde) return false;
-            if (fechaHasta && dia > fechaHasta) return false;
-            return true;
-          });
-        }
+      let cumpleFecha = true;
+      if (fechaDesde || fechaHasta) {
+        cumpleFecha = emp.detalleTurnos.some(turno => {
+          const inicio = turno.diaInicio; // soporte para ambos
+          const fin = turno.diaFin;
+          // Si hay fechaDesde y el fin del turno es antes, descartar
+          if (fechaDesde && fin < fechaDesde) return false;
+          // Si hay fechaHasta y el inicio del turno es después, descartar
+          if (fechaHasta && inicio > fechaHasta) return false;
+          return true;
+        });
+      }
 
-        return (
-          nombreCompleto.includes(filtroNombre.toLowerCase()) &&
-          emp.cc.toString().includes(filtroDocumento) &&
-          emp.area.toLowerCase().includes(filtroArea.toLowerCase()) &&
-          cumpleFecha
-        );
-      })
-      .map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta));
-    setEmpleadosFiltrados(filtrados);
-  };
+      return (
+        nombreCompleto.includes(filtroNombre.toLowerCase()) &&
+        emp.cc.toString().includes(filtroDocumento) &&
+        emp.area.toLowerCase().includes(filtroArea.toLowerCase()) &&
+        cumpleFecha
+      );
+    })
+    .map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta));
+  setEmpleadosFiltrados(filtrados);
+};
 
   const limpiarFiltros = () => {
     setFiltroNombre("");

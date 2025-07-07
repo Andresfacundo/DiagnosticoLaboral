@@ -125,7 +125,7 @@ function Sidebar() {
                 className={({ isActive }) => isActive ? "active" : ""}
                 onClick={handleLinkClick}
               >
-                Empleados
+                Trabajadores
               </NavLink>
             </li>
             <li>
