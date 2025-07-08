@@ -118,11 +118,11 @@ const Navbar = ({id}) => {
                             {hasAccess('admin') && (
                                 <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>                            
                             )}
-                            {hasAccess('admin') && (
+                            {hasAccess('asociado') && (
                                 <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
                             )}
                             {/* Solo mostrar Calculadora para asociado/admin */}
-                            {hasAccess('admin') && (
+                            {hasAccess('asociado') && (
                                 <li className='calculadora'><NavLink to="/form/calculadora" onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Calculadora</NavLink></li>
                             )}
                                                     
