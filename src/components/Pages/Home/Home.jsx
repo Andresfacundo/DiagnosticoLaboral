@@ -123,7 +123,7 @@ const Home = () => {
             icon: <Briefcase className="service-icon" />,
             services: [
                 "Derecho contractual.",
-                "Derecho coporativo.",
+                "Derecho corporativo.",
                 "Derecho de la propiedad intelectual.",
                 "Derecho de la competencia.",
                 "Derecho del consumidor.",
