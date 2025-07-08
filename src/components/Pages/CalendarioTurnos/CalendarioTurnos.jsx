@@ -45,6 +45,32 @@ function CalendarioTurnos() {
     horaFin: "",
     minutosDescanso: 0,
   });
+  const [filtroNombre, setFiltroNombre] = useState("");
+  const [filtroDocumento, setFiltroDocumento] = useState("");
+  const [filtroArea, setFiltroArea] = useState("");
+  const [filtroFechaDesde, setFiltroFechaDesde] = useState("");
+  const [filtroFechaHasta, setFiltroFechaHasta] = useState("");
+
+
+  const eventosFiltrados = eventos.filter(ev => {
+    const empleado = empleados.find(e => e.id === ev.empleadoId);
+    if (!empleado) return false;
+
+    const nombreCompleto = `${empleado.nombre} ${empleado.apellido}`.toLowerCase();
+    const documento = empleado.cc ? empleado.cc.toString() : "";
+    const area = empleado.area ? empleado.area.toLowerCase() : "";
+
+    // Filtros de texto
+    if (filtroNombre && !nombreCompleto.includes(filtroNombre.toLowerCase())) return false;
+    if (filtroDocumento && !documento.includes(filtroDocumento)) return false;
+    if (filtroArea && !area.includes(filtroArea.toLowerCase())) return false;
+
+    // Filtro de fechas
+    if (filtroFechaDesde && ev.start < new Date(filtroFechaDesde)) return false;
+    if (filtroFechaHasta && ev.end > new Date(filtroFechaHasta + "T23:59:59")) return false;
+
+    return true;
+  });
 
   const guardarTurnosEnLocalStorage = (turnos) => {
     localStorage.setItem("turnos", JSON.stringify(turnos));
@@ -109,8 +135,7 @@ function CalendarioTurnos() {
       const [horaInicioHoras, horaInicioMinutos] = turno.horaInicio.split(':').map(Number);
       const [horaFinHoras, horaFinMinutos] = turno.horaFin.split(':').map(Number);
       const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
-        (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
-      console.log(cruzaMedianoche)
+        (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);      
 
       if (cruzaMedianoche) {
 
@@ -195,62 +220,62 @@ function CalendarioTurnos() {
     setModalOpen(true);
   };
 
-const handleGuardarTurno = (e) => {
-  e.preventDefault();
-  let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
+  const handleGuardarTurno = (e) => {
+    e.preventDefault();
+    let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
 
-  const [horaInicioHoras, horaInicioMinutos] = nuevoTurno.horaInicio.split(':').map(Number);
-  const [horaFinHoras, horaFinMinutos] = nuevoTurno.horaFin.split(':').map(Number);
-  const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
-    (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
+    const [horaInicioHoras, horaInicioMinutos] = nuevoTurno.horaInicio.split(':').map(Number);
+    const [horaFinHoras, horaFinMinutos] = nuevoTurno.horaFin.split(':').map(Number);
+    const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
+      (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
 
-  const nuevosTurnos = [];
+    const nuevosTurnos = [];
 
-  // Si cruza medianoche y día fin es igual a día inicio, sumamos 1 día automáticamente
-  let diaFinReal = nuevoTurno.diaFin;
-  if (cruzaMedianoche && nuevoTurno.diaFin === nuevoTurno.diaInicio) {
-    const fecha = new Date(nuevoTurno.diaInicio + "T00:00");
-    fecha.setDate(fecha.getDate() + 1);
-    diaFinReal = format(fecha, "yyyy-MM-dd");
-  }
+    // Si cruza medianoche y día fin es igual a día inicio, sumamos 1 día automáticamente
+    let diaFinReal = nuevoTurno.diaFin;
+    if (cruzaMedianoche && nuevoTurno.diaFin === nuevoTurno.diaInicio) {
+      const fecha = new Date(nuevoTurno.diaInicio + "T00:00");
+      fecha.setDate(fecha.getDate() + 1);
+      diaFinReal = format(fecha, "yyyy-MM-dd");
+    }
 
-  const start = new Date(`${nuevoTurno.diaInicio}T${nuevoTurno.horaInicio}`);
-  const end = new Date(`${diaFinReal}T${nuevoTurno.horaFin}`);
+    const start = new Date(`${nuevoTurno.diaInicio}T${nuevoTurno.horaInicio}`);
+    const end = new Date(`${diaFinReal}T${nuevoTurno.horaFin}`);
 
-  if (cruzaMedianoche) {
-    nuevosTurnos.push({
-      ...nuevoTurno,
-      diaFin: diaFinReal,
-      id: `turno_${Date.now()}`,
-    });
-  } else {
-    const current = new Date(start);
-    while (current <= end) {
-      const dia = format(current, "yyyy-MM-dd");
+    if (cruzaMedianoche) {
       nuevosTurnos.push({
         ...nuevoTurno,
-        diaInicio: dia,
-        diaFin: dia,
-        horaInicio: nuevoTurno.horaInicio,
-        horaFin: nuevoTurno.horaFin,
-        id: `turno_${Date.now()}_${dia}`,
+        diaFin: diaFinReal,
+        id: `turno_${Date.now()}`,
       });
-      current.setDate(current.getDate() + 1);
+    } else {
+      const current = new Date(start);
+      while (current <= end) {
+        const dia = format(current, "yyyy-MM-dd");
+        nuevosTurnos.push({
+          ...nuevoTurno,
+          diaInicio: dia,
+          diaFin: dia,
+          horaInicio: nuevoTurno.horaInicio,
+          horaFin: nuevoTurno.horaFin,
+          id: `turno_${Date.now()}_${dia}`,
+        });
+        current.setDate(current.getDate() + 1);
+      }
     }
-  }
 
-  // Si es edición, eliminar el anterior antes de guardar
-  if (modalType === "edit" && turnoSeleccionado) {
-    turnosActuales = turnosActuales.filter(
-      (t) => t.id !== turnoSeleccionado.id
-    );
-  }
+    // Si es edición, eliminar el anterior antes de guardar
+    if (modalType === "edit" && turnoSeleccionado) {
+      turnosActuales = turnosActuales.filter(
+        (t) => t.id !== turnoSeleccionado.id
+      );
+    }
 
-  const turnosFinales = [...turnosActuales, ...nuevosTurnos];
-  guardarTurnosEnLocalStorage(turnosFinales);
-  setModalOpen(false);
-  recargarEventosDesdeLS();
-};
+    const turnosFinales = [...turnosActuales, ...nuevosTurnos];
+    guardarTurnosEnLocalStorage(turnosFinales);
+    setModalOpen(false);
+    recargarEventosDesdeLS();
+  };
 
 
   const handleEliminarTurno = () => {
@@ -292,16 +317,53 @@ const handleGuardarTurno = (e) => {
   };
 
   return (
+
     <div className="calendario-turnos-container">
-      <h2 className="calendario-title">Calendario de Turnos</h2>
       <button className="btn-imprimir" onClick={() => window.print()}>
         Generar PDF
       </button>
+      <div className="filtros-turnos-agrupados">
+        <span className="filtros-titulo">Filtros</span>
+        <div className="filtros-row">
+          <input
+            type="text"
+            placeholder="Nombre"
+            value={filtroNombre}
+            onChange={e => setFiltroNombre(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Documento"
+            value={filtroDocumento}
+            onChange={e => setFiltroDocumento(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Área"
+            value={filtroArea}
+            onChange={e => setFiltroArea(e.target.value)}
+          />
+        </div>
+        <div className="filtros-row">
+          <input
+            type="date"
+            placeholder="Desde"
+            value={filtroFechaDesde}
+            onChange={e => setFiltroFechaDesde(e.target.value)}
+          />
+          <input
+            type="date"
+            placeholder="Hasta"
+            value={filtroFechaHasta}
+            onChange={e => setFiltroFechaHasta(e.target.value)}
+          />
+        </div>
+      </div>
 
       <DnDCalendar
         dayPropGetter={dayPropGetter}
         localizer={localizer}
-        events={eventos}
+        events={eventosFiltrados}
         startAccessor="start"
         endAccessor="end"
         formats={formats}
@@ -315,7 +377,6 @@ const handleGuardarTurno = (e) => {
         views={["month", "week", "day"]}
         defaultView="week"
         popup
-        // allDayAccessor={() => false}
         messages={{
           week: "Semana",
           work_week: "Semana laboral",

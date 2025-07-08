@@ -2,22 +2,25 @@ import React, { useEffect, useState } from "react";
 import './ListaTurnos.css';
 import { FaUserCircle, FaSearch, FaEraser } from "react-icons/fa";
 import { format } from "date-fns";
-import del from "../../../assets/delete.png"
-import editar from '../../../assets/editar.svg'
+import del from "../../../assets/delete.png";
+import editar from '../../../assets/editar.svg';
 
 function ListaTurnos({ actualizar }) {
   const [turnos, setTurnos] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroArea, setFiltroArea] = useState("");
+  const [filtroDocumento, setFiltroDocumento] = useState("");
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
   const [turnosFiltrados, setTurnosFiltrados] = useState([]);
-  const [turnoEditando, setTurnoEditando] = useState()
+  const [turnoEditando, setTurnoEditando] = useState(null);
 
+  // Utilidades
   const getEmpleado = id => empleados.find(e => e.id === id);
 
-  const eliminarTurno = (id) => {
+  // CRUD
+  const eliminarTurno = id => {
     const nuevosTurnos = turnos.filter(t => t.id !== id);
     setTurnos(nuevosTurnos);
     setTurnosFiltrados(nuevosTurnos);
@@ -31,58 +34,32 @@ function ListaTurnos({ actualizar }) {
     setTurnos(nuevosTurnos);
     setTurnosFiltrados(nuevosTurnos);
     localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
-    setTurnoEditando(null); // Cierra el modal
+    setTurnoEditando(null);
   };
 
+  // Cálculo de horas trabajadas
   function calcularHorasTrabajadas(turno) {
     if (!turno.horaInicio || !turno.horaFin) return "";
-
     const [hIni, mIni] = turno.horaInicio.split(":").map(Number);
     const [hFin, mFin] = turno.horaFin.split(":").map(Number);
-
     const inicio = new Date(0, 0, 0, hIni, mIni);
     const fin = new Date(0, 0, 0, hFin, mFin);
-
     let diffMs = fin - inicio;
-
-    // Si la hora de fin es menor que la de inicio, asumimos que cruza medianoche
-    if (diffMs < 0) {
-      diffMs += 24 * 60 * 60 * 1000;
-    }
-
+    if (diffMs < 0) diffMs += 24 * 60 * 60 * 1000;
     const minutosTrabajados = diffMs / 60000 - parseInt(turno.minutosDescanso || 0);
     const horas = Math.floor(minutosTrabajados / 60);
     const minutos = minutosTrabajados % 60;
-
     return `${horas}h ${minutos}min`;
   }
 
-
-
-  useEffect(() => {
-    const empleadosGuardados = localStorage.getItem("empleados");
-    const turnosGuardados = localStorage.getItem("turnos");
-
-    if (empleadosGuardados) {
-      setEmpleados(JSON.parse(empleadosGuardados));
-    } else {
-      setEmpleados([]);
-    }
-
-    if (turnosGuardados) {
-      setTurnos(JSON.parse(turnosGuardados));
-    } else {
-      setTurnos([]);
-    }
-  }, [actualizar]);
-
-  // Filtrar turnos solo al hacer clic en "Buscar"
+  // Filtros
   const filtrarTurnos = () => {
     const filtrados = turnos.filter(turno => {
       const emp = getEmpleado(turno.empleadoId) || {};
       const nombreCompleto = `${emp.nombre || ""} ${emp.apellido || ""}`.toLowerCase();
       const area = (emp.area || "").toLowerCase();
       const fecha = turno.diaInicio || "";
+      const documento = emp.cc || "";
 
       let cumpleFecha = true;
       if (fechaDesde && fecha < fechaDesde) cumpleFecha = false;
@@ -91,33 +68,40 @@ function ListaTurnos({ actualizar }) {
       return (
         nombreCompleto.includes(filtroNombre.toLowerCase()) &&
         area.includes(filtroArea.toLowerCase()) &&
+        documento.toString().includes(filtroDocumento) &&
         cumpleFecha
       );
     });
     setTurnosFiltrados(filtrados);
   };
 
-  // Limpiar filtros y mostrar todos los turnos
   const limpiarFiltros = () => {
     setFiltroNombre("");
     setFiltroArea("");
+    setFiltroDocumento("");
     setFechaDesde("");
     setFechaHasta("");
     setTurnosFiltrados(turnos);
   };
 
-  // Mostrar todos los turnos al cargar por primera vez o cuando cambian los turnos
+  // Carga inicial
+  useEffect(() => {
+    const empleadosGuardados = localStorage.getItem("empleados");
+    const turnosGuardados = localStorage.getItem("turnos");
+    setEmpleados(empleadosGuardados ? JSON.parse(empleadosGuardados) : []);
+    setTurnos(turnosGuardados ? JSON.parse(turnosGuardados) : []);
+  }, [actualizar]);
+
+  // Actualiza turnos filtrados cuando cambian los turnos
   useEffect(() => {
     setTurnosFiltrados(turnos);
   }, [turnos]);
 
+  // Render
   return (
     <div className="turnos-section-card">
       <h2>Lista de Turnos</h2>
-      <button
-        className="btn-imprimir"
-        onClick={() => window.print()}
-      >
+      <button className="btn-imprimir" onClick={() => window.print()}>
         Generar PDF
       </button>
 
@@ -134,6 +118,12 @@ function ListaTurnos({ actualizar }) {
           placeholder="Filtrar por área"
           value={filtroArea}
           onChange={e => setFiltroArea(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Filtrar por documento"
+          value={filtroDocumento}
+          onChange={e => setFiltroDocumento(e.target.value)}
         />
         <input
           type="date"
@@ -157,6 +147,7 @@ function ListaTurnos({ actualizar }) {
         </button>
       </div>
 
+      {/* Tabla de turnos */}
       <table className="lista-turnos-table">
         <thead>
           <tr>
@@ -210,10 +201,8 @@ function ListaTurnos({ actualizar }) {
                     className="btn-eliminar-turno"
                     onClick={() => eliminarTurno(turno.id)}
                     title="Eliminar turno"
-
                   >
                     <img src={del} alt="btn-eliminar" />
-
                   </button>
                 </td>
               </tr>
@@ -221,25 +210,30 @@ function ListaTurnos({ actualizar }) {
           })}
         </tbody>
       </table>
+
+      {/* Modal de edición */}
       {turnoEditando && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Editar Turno</h3>
-            <label>Hora Inicio:
+            <label>
+              Hora Inicio:
               <input
                 type="time"
                 value={turnoEditando.horaInicio}
                 onChange={e => setTurnoEditando({ ...turnoEditando, horaInicio: e.target.value })}
               />
             </label>
-            <label>Hora Fin:
+            <label>
+              Hora Fin:
               <input
                 type="time"
                 value={turnoEditando.horaFin}
                 onChange={e => setTurnoEditando({ ...turnoEditando, horaFin: e.target.value })}
               />
             </label>
-            <label>Minutos de descanso:
+            <label>
+              Minutos de descanso:
               <input
                 type="number"
                 value={turnoEditando.minutosDescanso}
@@ -253,7 +247,6 @@ function ListaTurnos({ actualizar }) {
           </div>
         </div>
       )}
-
     </div>
   );
 }
