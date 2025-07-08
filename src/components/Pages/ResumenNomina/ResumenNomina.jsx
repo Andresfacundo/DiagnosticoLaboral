@@ -97,7 +97,7 @@ function ResumenNomina({ actualizar }) {
       } catch (error) {
         console.error("Error al cargar resumen:", error);
       } finally {
-        setMostrarSpinner(false); 
+        setMostrarSpinner(false);
       }
     };
 
@@ -191,6 +191,7 @@ function ResumenNomina({ actualizar }) {
         </button>
       </fieldset>
 
+
       {empleadosFiltrados.length > 0 ? (
         <table border={1} cellPadding={4} className="resumen-nomina-table">
           <thead>
@@ -233,6 +234,43 @@ function ResumenNomina({ actualizar }) {
               </tr>
             ))}
           </tbody>
+          {empleadosFiltrados.length > 0 && (
+            <tfoot>
+              <tr style={{ background: "#f8fafc", fontWeight: "bold" }}>
+                <td colSpan={3}>Totales</td>
+                <td>
+                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.cantidadTurnos), 0)}
+                </td>
+                <td>
+                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalHoras), 0).toFixed(2)}
+                </td>
+                <td>
+                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horasExtra), 0).toFixed(2)}
+                </td>
+                <td>
+                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.recargoNocturno ?? 0), 0).toFixed(2)}
+                </td>
+                <td>
+                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasFestivas ?? 0), 0).toFixed(2)}
+                </td>
+                <td>
+                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoExtra), 0).toLocaleString('es-CO')}
+                </td>
+                <td>
+                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.recargoNocturno ?? 0), 0).toLocaleString('es-CO')}
+                </td>
+                <td>
+                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoFestivo ?? 0), 0).toLocaleString('es-CO')}
+                </td>
+                <td>
+                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalPagar), 0).toLocaleString('es-CO')}</b>
+                </td>
+                <td>
+                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.costoTotal), 0).toLocaleString('es-CO')}</b>
+                </td>
+              </tr>
+            </tfoot>
+          )}
         </table>
       ) : (
         <div className="no-empleados">
