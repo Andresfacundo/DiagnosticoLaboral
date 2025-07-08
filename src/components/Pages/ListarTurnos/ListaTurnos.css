@@ -1,55 +1,4 @@
-/* Filtros modernos y responsivos */
-.filtros-turnos {
-  background: #f8fafc;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px #dfbd7c22;
-  padding: 10px 12px 8px 12px;
-  margin-bottom: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: flex-end;
-  border: 1px solid #f1e7d1;
-  /* max-width: 900px; */
-}
 
-.filtros-turnos input[type="text"],
-.filtros-turnos input[type="date"] {
-  padding: 6px 10px;
-  border: 1px solid #e2e8f0;
-  border-radius: 5px;
-  font-size: 0.97rem;
-  background: #fff;
-  transition: border 0.2s;
-  min-width: 120px;
-  flex: 1 1 140px;
-  max-width: 180px;
-}
-
-.filtros-turnos input:focus {
-  border-color: #dfbd7c;
-  background: #fffbe7;
-  outline: none;
-}
-
-.filtros-turnos button {
-  padding: 7px 14px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: 500;
-  background: #dfbd7c;
-  color: #222;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.18s;
-}
-
-.filtros-turnos button:hover {
-  background: #cfa44e;
-}
 .lista-turnos-table th{
   background-color: #f5f6fa;
   color: #333;
@@ -105,25 +54,6 @@
     content: attr(data-label);
     padding-bottom: 4px;
     display: block;
-  }
-}
-
-/* Responsive para filtros */
-@media (max-width: 700px) {
-  .filtros-turnos {
-    gap: 8px;
-    padding: 8px 2vw 6px 2vw;
-    max-width: 100%;
-  }
-  .filtros-turnos input[type="text"],
-  .filtros-turnos input[type="date"] {
-    max-width: 100%;
-    min-width: 90px;
-    font-size: 0.95rem;
-  }
-  .filtros-turnos button {
-    width: 100%;
-    justify-content: center;
   }
 }
 .btn-editar-turno {

@@ -9,7 +9,6 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import del from "../../../assets/delete.png";
 import getColombianHolidays from "colombian-holidays";
-import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -327,19 +326,19 @@ function CalendarioTurnos() {
         <div className="filtros-row">
           <input
             type="text"
-            placeholder="Nombre"
+            placeholder="Filtrar por nombre"
             value={filtroNombre}
             onChange={e => setFiltroNombre(e.target.value)}
           />
           <input
             type="text"
-            placeholder="Documento"
+            placeholder="Filtrar por documento"
             value={filtroDocumento}
             onChange={e => setFiltroDocumento(e.target.value)}
           />
           <input
             type="text"
-            placeholder="Área"
+            placeholder="Filtrar por área"
             value={filtroArea}
             onChange={e => setFiltroArea(e.target.value)}
           />

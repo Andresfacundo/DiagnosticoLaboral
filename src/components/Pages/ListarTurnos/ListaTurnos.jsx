@@ -105,46 +105,52 @@ function ListaTurnos({ actualizar }) {
         Generar PDF
       </button>
 
-      {/* Filtros */}
-      <div className="filtros-turnos">
-        <input
-          type="text"
-          placeholder="Filtrar por nombre"
-          value={filtroNombre}
-          onChange={e => setFiltroNombre(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filtrar por área"
-          value={filtroArea}
-          onChange={e => setFiltroArea(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filtrar por documento"
-          value={filtroDocumento}
-          onChange={e => setFiltroDocumento(e.target.value)}
-        />
-        <input
-          type="date"
-          value={fechaDesde}
-          onChange={e => setFechaDesde(e.target.value)}
-          placeholder="Desde"
-        />
-        <input
-          type="date"
-          value={fechaHasta}
-          onChange={e => setFechaHasta(e.target.value)}
-          placeholder="Hasta"
-        />
-        <button onClick={filtrarTurnos}>
-          <FaSearch style={{ marginRight: 5 }} />
-          Buscar
-        </button>
-        <button onClick={limpiarFiltros}>
-          <FaEraser style={{ marginRight: 5 }} />
-          Limpiar
-        </button>
+      <div className="filtros-turnos-agrupados">
+        <span className="filtros-titulo">Filtros</span>
+        <div className="filtros-row">
+          <input
+            type="text"
+            placeholder="Filtrar por nombre"
+            value={filtroNombre}
+            onChange={e => setFiltroNombre(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Filtrar por área"
+            value={filtroArea}
+            onChange={e => setFiltroArea(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Filtrar por documento"
+            value={filtroDocumento}
+            onChange={e => setFiltroDocumento(e.target.value)}
+          />
+
+        </div>
+        <div className="filtros-row">
+          <input
+            type="date"
+            value={fechaDesde}
+            onChange={e => setFechaDesde(e.target.value)}
+            placeholder="Desde"
+          />
+          <input
+            type="date"
+            value={fechaHasta}
+            onChange={e => setFechaHasta(e.target.value)}
+            placeholder="Hasta"
+          />
+
+          <button onClick={filtrarTurnos}>
+            <FaSearch style={{ marginRight: 5 }} />
+            Buscar
+          </button>
+          <button onClick={limpiarFiltros}>
+            <FaEraser style={{ marginRight: 5 }} />
+            Limpiar
+          </button>
+        </div>
       </div>
 
       {/* Tabla de turnos */}
