@@ -76,7 +76,7 @@ const Resultados = () => {
             {showPDFModal && (
               <div className="pdf-selection-modal">
                 <div className="modal-content">
-                  <h2>Seleccionar Resultados para PDF</h2>
+                  <h2>Selecciona para generar PDF</h2>
                   {results.map((result, index) => (
                     <div 
                       key={index} 

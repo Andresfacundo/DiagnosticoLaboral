@@ -81,7 +81,7 @@
   padding: 1rem;
 }
 
-.modal-content {
+.modal-overlay .modal-content {
   background-color: #fff;
   padding: 2rem;
   border-radius: 10px;
@@ -91,20 +91,20 @@
   animation: fadeIn 0.3s ease;
 }
 
-.modal-content h3 {
+.modal-overlay .modal-content h3 {
   margin-top: 0;
   margin-bottom: 1rem;
   font-size: 1.25rem;
 }
 
-.modal-content label {
+.modal-overlay .modal-content label {
   display: block;
   margin-bottom: 1rem;
   font-size: 0.95rem;
   color: #333;
 }
 
-.modal-content input {
+.modal-overlay .modal-content input {
   width: 100%;
   padding: 8px 10px;
   border-radius: 5px;
@@ -154,7 +154,7 @@
 
 /* Responsive para pantallas pequeñas */
 @media (max-width: 480px) {
-  .modal-content {
+  .modal-overlay .modal-content {
     padding: 1rem;
   }
 
