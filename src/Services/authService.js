@@ -28,8 +28,8 @@ const authService = {
         
         // Si rol es un objeto, determinar el rol real
         if (typeof userData.rol === 'object') {
-            if (userData.rol.superadmin) return 'superadmin';
             if (userData.rol.admin) return 'admin';
+            if (userData.rol.asociado) return 'asociado';
             return 'user';
         }
         
@@ -42,7 +42,7 @@ const authService = {
         const userRole = authService.getUserRole();
         
         if (requiredRole === 'admin') {
-            return userRole === 'admin' || userRole === 'superadmin';
+            return userRole === 'admin' || userRole === 'asociado';
         }
         return userRole === requiredRole;
     },

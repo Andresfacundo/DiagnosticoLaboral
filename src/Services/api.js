@@ -1,4 +1,5 @@
 import axios from "axios";
+import authService from "./authService";
 const API_URL = import.meta.env.VITE_API_URL
 
 
@@ -23,7 +24,12 @@ export const obtenerDiagnostico = async () => {
 
 export const calcularNomina = async (formData) => {
     try{
-        const response = await axios.post(`${API_URL}/api/calcular`, formData);
+        const token = authService.getToken();
+        const response = await axios.post(`${API_URL}/api/calcular`, formData,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data
         
     }catch(error){

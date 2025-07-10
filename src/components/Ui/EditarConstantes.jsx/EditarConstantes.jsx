@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './EditarConstantes.css'
 import { useNavigate } from "react-router-dom";
+import authService from "../../../Services/authService";
 const API_URL = import.meta.env.VITE_API_URL
+
 
 const EditarConstantes = () => {
     const [constantes, setConstantes] = useState({
@@ -26,8 +28,13 @@ const EditarConstantes = () => {
 
 
     useEffect(() => {
+        const token = authService.getToken();
         // Obtener valores actuales
-        axios.get(`${API_URL}/api/constants`).then(res => {
+        axios.get(`${API_URL}/api/constants`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => {
             setConstantes(res.data);
         });
     }, []);
@@ -45,12 +52,20 @@ const EditarConstantes = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = authService.getToken();
         try {
-            await axios.patch(`${API_URL}/api/constants`, {
-                salarioMinimo: parseInt(constantes.salarioMinimo),
-                auxilioDeTransporte: parseInt(constantes.auxilioDeTransporte),
-                UVT: parseInt(constantes.UVT)
-            });
+            await axios.patch(`${API_URL}/api/constants`,
+                {
+                    salarioMinimo: parseInt(constantes.salarioMinimo),
+                    auxilioDeTransporte: parseInt(constantes.auxilioDeTransporte),
+                    UVT: parseInt(constantes.UVT)
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                }
+            );
             setMensaje("Constantes actualizadas correctamente");
         } catch (error) {
             setMensaje("Error al actualizar las constantes");

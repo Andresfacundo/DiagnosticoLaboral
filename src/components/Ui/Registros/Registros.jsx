@@ -4,6 +4,7 @@ import del from "../../../../public/delete.svg";
 import contactarEmpleador from "../ContactarEmpleador/ContactarEmpleador";
 import "./Registros.css";
 import SpinnerTimed from "../SpinnerTimed/SpinnerTimed";
+import authService from "../../../Services/authService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -55,10 +56,15 @@ const Registros = () => {
   }, []);
 
   const eliminarDiagnostico = async (id) => {
+    const token = authService.getToken();
     const confirmacion = window.confirm("¿Está seguro de que desea eliminar este diagnóstico?");
     if(!confirmacion) return;
     try {
-      await axios.delete(`${API_URL}/api/diagnostico/${id}`);
+      await axios.delete(`${API_URL}/api/diagnostico/${id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
       setHistorial((prevHistorial) => prevHistorial.filter((item) => item.id !== id));
     }catch (error) {
       console.error("Error al eliminar el diagnóstico:", error);

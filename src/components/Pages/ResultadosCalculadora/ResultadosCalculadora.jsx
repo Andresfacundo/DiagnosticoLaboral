@@ -15,7 +15,6 @@ const Resultados = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [showPDFModal, setShowPDFModal] = useState(false);
   const [selectedResults, setSelectedResults] = useState([]);
-  console.log(results)
 
   useEffect(() => {
     const storedResults = localStorage.getItem("Resultados");

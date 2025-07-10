@@ -114,11 +114,11 @@ const Navbar = ({id}) => {
                             <li className='diagnostico'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico laboral</NavLink></li>
                             <li className='home'><NavLink to='/areas-servicio' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Áreas de servicio</NavLink></li>
                             
-                            {/* Solo mostrar Gestión de preguntas para asociado/admin */}
+                            {/* Solo mostrar Gestión de preguntas para admin */}
                             {hasAccess('admin') && (
                                 <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>                            
                             )}
-                            {hasAccess('asociado') && (
+                            {hasAccess('admin') && (
                                 <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
                             )}
                             {/* Solo mostrar Calculadora para asociado/admin */}
