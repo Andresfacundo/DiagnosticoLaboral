@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import GVA from '../GVA/GVA.jsx'
 import './Navbar.css'
-import user from '../../../../public/usuario.png'
-import logout from '../../../../public/cerrar-sesion.png'
+// import user from '../../../../public/usuario.png'
+// import logout from '../../../../public/cerrar-sesion.png'
 import hamburgerIcon from '../../../../public/menu.svg' // You'll need to add this image
 import closeIcon from '../../../../public/close-menu.svg' // You'll need to add this image
 import axios from 'axios'
@@ -139,14 +139,14 @@ const Navbar = ({id}) => {
                         {isAuthenticated ? (
                             <li className='login'>
                                 <NavLink to='/cerrando-sesion' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
-                                    <img src={logout} alt='icon-logout' className='logo-user' />
+                                    <img src='/cerrar-sesion.png' alt='icon-logout' className='logo-user' />
                                     <span className="menu-text">Cerrar sesión</span>
                                 </NavLink>
                             </li>
                         ) : (
                             <li className='login'>
                                 <NavLink to='login' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>
-                                    <img src={user} alt='icon-user' className='logo-user' />
+                                    <img src='/usuario.png' alt='icon-user' className='logo-user' />
                                     <span className="menu-text">Iniciar sesión</span>
                                 </NavLink>
                             </li>
