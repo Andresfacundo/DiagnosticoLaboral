@@ -172,6 +172,9 @@
   .sidebar-horarios{
     display: none;
   }
+  .filtros-turnos-agrupados{
+    display: none;
+  }
 }
 
 .turnos-section-card .btn-imprimir{
