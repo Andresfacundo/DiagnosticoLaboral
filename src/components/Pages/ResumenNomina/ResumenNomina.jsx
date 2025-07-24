@@ -5,6 +5,141 @@ import SpinnerTimed from "../../Ui/SpinnerTimed/SpinnerTimed";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const HORA_NOCTURNA_INICIO = 21;
+const HORA_NOCTURNA_FIN = 6;
+const HORAS_SEMANALES_MAXIMAS = 44;
+
+// Función para agrupar turnos por semana (igual que el backend)
+function agruparTurnosPorSemana(turnos) {
+  const semanas = {};
+  turnos.forEach(turno => {
+    const fecha = new Date(`${turno.diaInicio}T00:00:00`);
+    const inicioSemana = new Date(fecha);
+    const dia = fecha.getDay();
+    const offset = dia === 0 ? -6 : 1 - dia;
+    inicioSemana.setDate(fecha.getDate() + offset);
+    const claveSemana = inicioSemana.toISOString().split('T')[0];
+    if (!semanas[claveSemana]) semanas[claveSemana] = [];
+    semanas[claveSemana].push(turno);
+  });
+  return semanas;
+}
+
+// Función para calcular horas nocturnas (igual que el backend)
+function calcularHorasNocturnas(horaInicio, horaFin, minutosDescanso = 0) {
+  let inicio = horaInicio * 60;
+  let fin = horaFin * 60;
+  if (fin <= inicio) fin += 24 * 60;
+  const duracionTotal = fin - inicio;
+  let nocturnas = 0, diurnas = 0;
+
+  for (let minuto = 0; minuto < duracionTotal; minuto++) {
+    const horaReal = ((inicio + minuto) / 60) % 24;
+    if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) nocturnas++;
+    else diurnas++;
+  }
+
+  nocturnas = nocturnas / 60;
+  diurnas = diurnas / 60;
+  const tiempoTrabajado = (nocturnas + diurnas) - (minutosDescanso / 60);
+
+  return {
+    horasNocturnas: Number(nocturnas.toFixed(2)),
+    horasDiurnas: Number(diurnas.toFixed(2)),
+    tiempoTrabajado: Number(tiempoTrabajado.toFixed(2)),
+  };
+}
+
+// Función para calcular extras desde un minuto específico (igual que el backend)
+function calcularHorasExtrasDesdeMinuto(horaInicio, horaFin, minutosDescanso, minutosHastaExtra) {
+  let inicio = horaInicio * 60;
+  let fin = horaFin * 60;
+  if (fin <= inicio) fin += 24 * 60;
+  
+  const duracionTotal = fin - inicio;
+  const tiempoSinDescanso = duracionTotal - minutosDescanso;
+  
+  if (minutosHastaExtra >= tiempoSinDescanso) {
+    return { extrasNocturnas: 0, extrasDiurnas: 0 };
+  }
+  
+  let extrasNocturnas = 0, extrasDiurnas = 0;
+  let minutosContados = 0;
+  let minutosDescansoDistribuidos = 0;
+  
+  for (let minuto = inicio; minuto < fin; minuto++) {
+    const minutosTranscurridos = minuto - inicio;
+    const descansoEsperado = (minutosTranscurridos / duracionTotal) * minutosDescanso;
+    
+    if (minutosDescansoDistribuidos < descansoEsperado) {
+      minutosDescansoDistribuidos++;
+      continue;
+    }
+    
+    if (minutosContados >= minutosHastaExtra) {
+      const horaReal = (minuto / 60) % 24;
+      if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) {
+        extrasNocturnas++;
+      } else {
+        extrasDiurnas++;
+      }
+    }
+    minutosContados++;
+  }
+
+  return {
+    extrasNocturnas: extrasNocturnas / 60,
+    extrasDiurnas: extrasDiurnas / 60
+  };
+}
+
+// Función corregida: cálculo SEMANAL de horas extras (igual que el backend)
+function calcularHorasExtrasSemanales(turnosFiltrados, esTrabajadorDireccion = false) {
+  if (esTrabajadorDireccion) {
+    return { horasExtrasDiurnas: 0, horasExtrasNocturnas: 0 };
+  }
+
+  const semanasTurnos = agruparTurnosPorSemana(turnosFiltrados);
+  let horasExtraDiurnas = 0;
+  let horasExtraNocturnas = 0;
+
+  for (const claveSemana in semanasTurnos) {
+    let horasAcumuladas = 0;
+    const turnosSemana = semanasTurnos[claveSemana];
+
+    for (const turno of turnosSemana) {
+      const [hiH, hiM] = turno.horaInicio.split(":").map(Number);
+      const [hfH, hfM] = turno.horaFin.split(":").map(Number);
+      const horaInicio = hiH + hiM / 60;
+      const horaFin = hfH + hfM / 60;
+      const minutosDescanso = Number(turno.minutosDescanso) || 0;
+
+      const { tiempoTrabajado } = calcularHorasNocturnas(horaInicio, horaFin, minutosDescanso);
+
+      const espacioDisponible = Math.max(0, HORAS_SEMANALES_MAXIMAS - horasAcumuladas);
+      const horasAsignadas = Math.min(tiempoTrabajado, espacioDisponible);
+      const horasExcedentes = Math.max(0, tiempoTrabajado - espacioDisponible);
+
+      horasAcumuladas += horasAsignadas;
+
+      if (horasExcedentes > 0) {
+        const minutosHastaExtra = espacioDisponible * 60;
+        const { extrasNocturnas, extrasDiurnas } = calcularHorasExtrasDesdeMinuto(
+          horaInicio, horaFin, minutosDescanso, minutosHastaExtra
+        );
+
+        horasExtraNocturnas += extrasNocturnas;
+        horasExtraDiurnas += extrasDiurnas;
+      }
+    }
+  }
+
+  return {
+    horasExtrasDiurnas: horasExtraDiurnas,
+    horasExtrasNocturnas: horasExtraNocturnas
+  };
+}
+
 function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFiltro = "") {
   if (!fechaDesdeFiltro && !fechaHastaFiltro) {
     return empleado;
@@ -18,29 +153,71 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
     return true;
   });
 
-
   const cantidadTurnos = turnosFiltrados.length;
   const salarioHora = parseFloat(empleado.salarioHora);
 
+  // Recalcular totales desde los turnos filtrados
   const totalHoras = turnosFiltrados.reduce((sum, turno) => sum + parseFloat(turno.tiempoTrabajado || 0), 0);
-  // const horasExtra = turnosFiltrados.reduce((sum, turno) => sum + parseFloat(turno.horasExtra || 0), 0);
-  const totalHorasFestivas = turnosFiltrados.reduce((sum, turno) => sum + parseFloat(turno.horasFestivas || 0), 0);
-  const horasExtraDiurnas = turnosFiltrados.reduce((sum, turno) => parseFloat(turno.horasExtraDiurnas || 0) + sum, 0);
-  const horasExtraNocturnas = turnosFiltrados.reduce((sum, turno) => parseFloat(turno.horasExtraNocturnas || 0) + sum, 0);
-  const totalHorasNocturnas = turnosFiltrados.reduce((sum, turno) => sum + parseFloat(turno.horasNocturnas || 0), 0);
-  const horasExtraTotales = horasExtraDiurnas + horasExtraNocturnas;
-  console.log('horasExtraTotales', horasExtraNocturnas)
+  const totalHorasFestivas = turnosFiltrados.reduce((sum, turno) => {
+    return sum + (turno.esFestivo ? parseFloat(turno.tiempoTrabajado || 0) : 0);
+  }, 0);
 
+  // Calcular recargo nocturno total
+  let totalHorasNocturnas = 0;
+  turnosFiltrados.forEach(turno => {
+    const [hiH, hiM] = turno.horaInicio.split(":").map(Number);
+    const [hfH, hfM] = turno.horaFin.split(":").map(Number);
+    const horaInicio = hiH + hiM / 60;
+    const horaFin = hfH + hfM / 60;
+    const minutosDescanso = Number(turno.minutosDescanso) || 0;
+
+    let inicioMin = horaInicio * 60;
+    let finMin = horaFin * 60;
+    if (finMin <= inicioMin) finMin += 24 * 60;
+    
+    const duracionTotal = finMin - inicioMin;
+    let recargoNocturnoTurno = 0;
+    let minutosDescansoDistribuidos = 0;
+    
+    for (let minuto = 0; minuto < duracionTotal; minuto++) {
+      const descansoEsperado = (minuto / duracionTotal) * minutosDescanso;
+      if (minutosDescansoDistribuidos < descansoEsperado) {
+        minutosDescansoDistribuidos++;
+        continue;
+      }
+      
+      const horaReal = ((inicioMin + minuto) / 60) % 24;
+      if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) {
+        recargoNocturnoTurno++;
+      }
+    }
+    totalHorasNocturnas += recargoNocturnoTurno / 60;
+  });
+  
+  // CÁLCULO CORREGIDO: Usar lógica SEMANAL (igual que el backend)
+  const { horasExtrasDiurnas, horasExtrasNocturnas } = calcularHorasExtrasSemanales(
+    turnosFiltrados, 
+    empleado.esTrabajadorDireccion
+  );
+  
+  const horasExtraTotales = horasExtrasDiurnas + horasExtrasNocturnas;
+  
+  // Calcular recargo nocturno sin incluir horas extras nocturnas
+  const horasNocturnasSinExtras = Math.max(0, totalHorasNocturnas - horasExtrasNocturnas);
+
+  // Usar la misma lógica de cálculo que el backend
   const valores = {
-    horasExtra: empleado.esTrabajadorDireccion ? 0 : horasExtra * salarioHora * 1.25,
-    recargoNocturno: totalHorasNocturnas * salarioHora * 0.35,
+    horasExtraDiurnas: empleado.esTrabajadorDireccion ? 0 : horasExtrasDiurnas * salarioHora * 1.25,
+    horasExtraNocturnas: empleado.esTrabajadorDireccion ? 0 : horasExtrasNocturnas * salarioHora * 1.75,
+    recargoNocturno: horasNocturnasSinExtras * salarioHora * 0.35,
     recargoFestivo: totalHorasFestivas * salarioHora * 0.80
   };
 
+  // Usar los mismos cálculos finales que el backend
   const totalValores = Object.values(valores).reduce((sum, val) => sum + val, 0);
   const totalPagar = Math.round(totalValores * 0.92);
   const costoTotal = Math.round(totalValores * 1.3855);
-  const pagoExtra = Math.round(valores.horasExtra);
+  const pagoExtra = Math.round(valores.horasExtraDiurnas + valores.horasExtraNocturnas);
   const valorRecargoNocturno = Math.round(valores.recargoNocturno);
   const pagoFestivo = Math.round(valores.recargoFestivo);
 
@@ -48,24 +225,25 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
     ...empleado,
     cantidadTurnos,
     totalHoras: totalHoras.toFixed(2),
-    horasExtra: horasExtra.toFixed(2),
+    horasExtra: horasExtraTotales.toFixed(2),
     pagoExtra,
     pagoFestivo,
     totalPagar,
     costoTotal,
     horas: {
       ...empleado.horas,
-      horasExtraDiurnas: horasExtraDiurnas.toFixed(2),
-      horasExtraNocturnas: horasExtraNocturnas.toFixed(2),
+      horasExtraDiurnas: horasExtrasDiurnas.toFixed(2),
+      horasExtraNocturnas: horasExtrasNocturnas.toFixed(2),
       horasExtraTotales: horasExtraTotales.toFixed(2),
-      recargoNocturno: totalHorasNocturnas.toFixed(2) ,
+      recargoNocturno: horasNocturnasSinExtras.toFixed(2),
       horasFestivas: totalHorasFestivas.toFixed(2),
       totalHoras: totalHoras.toFixed(2)
     },
     valores: {
       ...empleado.valores,
-      horasExtra: pagoExtra,
-      recargoNocturno: valorRecargoNocturno - horasExtraNocturnas,
+      horasExtraDiurnas: Math.round(valores.horasExtraDiurnas),
+      horasExtraNocturnas: Math.round(valores.horasExtraNocturnas),
+      recargoNocturno: valorRecargoNocturno,
       recargoFestivo: pagoFestivo
     }
   };
@@ -198,7 +376,6 @@ function ResumenNomina({ actualizar }) {
         </button>
       </fieldset>
 
-
       {empleadosFiltrados.length > 0 ? (
         <table border={1} cellPadding={4} className="resumen-nomina-table">
           <thead>
@@ -224,7 +401,6 @@ function ResumenNomina({ actualizar }) {
               <th>Neto a pagar</th>
               <th>Costo total</th>
             </tr>
-
           </thead>
           <tbody>
             {empleadosFiltrados.map(emp => (
