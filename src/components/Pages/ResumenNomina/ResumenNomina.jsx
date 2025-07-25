@@ -356,24 +356,27 @@ function ResumenNomina({ actualizar }) {
           value={filtroArea}
           onChange={e => setFiltroArea(e.target.value)}
         />
-        <input
-          type="date"
-          value={fechaDesde}
-          onChange={e => setFechaDesde(e.target.value)}
-        />
-        <input
-          type="date"
-          value={fechaHasta}
-          onChange={e => setFechaHasta(e.target.value)}
-        />
-        <button onClick={filtrarEmpleados}>
-          <FaSearch style={{ marginRight: 5 }} />
-          Buscar
-        </button>
-        <button onClick={limpiarFiltros}>
-          <FaEraser style={{ marginRight: 5 }} />
-          Limpiar
-        </button>
+        <div className="filtros-fechas-resumen">
+          <input
+            type="date"
+            value={fechaDesde}
+            onChange={e => setFechaDesde(e.target.value)}
+          />
+          <input
+            type="date"
+            value={fechaHasta}
+            onChange={e => setFechaHasta(e.target.value)}
+          />
+          <button onClick={filtrarEmpleados}>
+            <FaSearch style={{ marginRight: 5 }} />
+            Buscar
+          </button>
+          <button onClick={limpiarFiltros}>
+            <FaEraser style={{ marginRight: 5 }} />
+            Limpiar
+          </button>
+
+        </div>
       </fieldset>
 
       {empleadosFiltrados.length > 0 ? (

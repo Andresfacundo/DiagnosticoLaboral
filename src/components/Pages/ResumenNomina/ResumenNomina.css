@@ -43,6 +43,12 @@
   font-size: 1.1rem;
   margin-bottom: 8px;
 }
+.filtros .filtros-fechas-resumen{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 
 /* Tabla */
 .resumen-nomina-table {
