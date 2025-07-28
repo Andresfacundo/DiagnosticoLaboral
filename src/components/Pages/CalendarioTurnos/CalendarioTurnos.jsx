@@ -388,17 +388,23 @@ function CalendarioTurnos() {
           showMore: (total) => `+ Ver más (${total})`,
         }}
         culture="es"
+
+        // Versión más simple usando CSS con opacidad directa
         eventPropGetter={(event) => {
           const empleado = empleados.find(e => e.id === event.empleadoId);
-          const color = empleado?.color || "#79797960";
+          const baseColor = empleado?.color || "#797979";
+
           return {
             style: {
-              backgroundColor: color,
-              
+              background: `linear-gradient(135deg, ${baseColor}CC 0%, ${baseColor}70 100%)`,
+              // border: `1px solid ${baseColor}DD`,
+              borderRadius: '4px',
+              color: '#333',
             },
             className: "calendario-event",
           };
         }}
+
 
         draggableAccessor={() => true}
         resizableAccessor={() => true}
