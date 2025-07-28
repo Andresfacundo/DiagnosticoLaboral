@@ -25,7 +25,7 @@
 }
 
 .calendario-event {
-  background-color: #79797960 !important;
+  /* background-color: #79797960 !important; */
   color: #000000 !important;
   border-radius: 2px !important;
   border-left: 2px solid #3333338a !important;
@@ -44,7 +44,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background: linear-gradient(135deg, #7979796b, #6666661a) !important;
+  /* background: linear-gradient(135deg, #7979796b, #6666661a) !important; */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -56,8 +56,7 @@
   width: 100% !important;
   height: 100% !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: end !important;
   font-size: inherit !important;
   writing-mode: vertical-rl !important;
   text-orientation: mixed !important;

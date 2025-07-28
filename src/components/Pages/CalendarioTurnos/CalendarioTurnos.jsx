@@ -134,7 +134,7 @@ function CalendarioTurnos() {
       const [horaInicioHoras, horaInicioMinutos] = turno.horaInicio.split(':').map(Number);
       const [horaFinHoras, horaFinMinutos] = turno.horaFin.split(':').map(Number);
       const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
-        (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);      
+        (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
 
       if (cruzaMedianoche) {
 
@@ -388,7 +388,18 @@ function CalendarioTurnos() {
           showMore: (total) => `+ Ver más (${total})`,
         }}
         culture="es"
-        eventPropGetter={() => ({ className: "calendario-event" })}
+        eventPropGetter={(event) => {
+          const empleado = empleados.find(e => e.id === event.empleadoId);
+          const color = empleado?.color || "#79797960";
+          return {
+            style: {
+              backgroundColor: color,
+              
+            },
+            className: "calendario-event",
+          };
+        }}
+
         draggableAccessor={() => true}
         resizableAccessor={() => true}
       />

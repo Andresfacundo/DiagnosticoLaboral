@@ -92,6 +92,7 @@ function ListaEmpleados() {
               <th>Clasificación</th>
               <th>Área</th>
               <th>Salario Base</th>
+              <th>Color</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -104,6 +105,15 @@ function ListaEmpleados() {
                 <td data-label="Clasificación">{emp.clasificacionPersonal}</td>
                 <td data-label="Área">{emp.area}</td>
                 <td data-label="Salario Base">${parseFloat(emp.salarioBase).toLocaleString('es-CO')}</td>
+                <td data-label="Color">
+                  <div style={{
+                    backgroundColor: emp.color || '#ccc',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                  }} />
+                </td>
+
                 <td data-label="Acciones" className="acciones">
                   <button onClick={() => handleEditClick(emp)} className="edit-button">
                     <img className='editar-btn' src={editar} alt="" />
@@ -166,10 +176,16 @@ function ListaEmpleados() {
               <input
                 type="text"
                 name="salarioBase"
-                value={'$'+ parseFloat(empleadoEdit.salarioBase).toLocaleString('es-CO')}
+                value={'$' + parseFloat(empleadoEdit.salarioBase).toLocaleString('es-CO')}
                 onChange={handleEditChange}
                 placeholder="Salario Base"
                 onWheel={e => e.target.blur()}
+              />
+              <input
+                type="color"
+                name="color"
+                value={empleadoEdit.color || '#000000'}
+                onChange={handleEditChange}
               />
             </form>
             <div className="modal-actions">
