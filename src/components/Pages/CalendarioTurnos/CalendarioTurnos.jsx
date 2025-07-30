@@ -21,9 +21,7 @@ const localizer = dateFnsLocalizer({
 const formats = {
   timeGutterFormat: "hh:mm a",
   eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
-    localizer.format(start, "hh:mm a", culture) +
-    " - " +
-    localizer.format(end, "hh:mm a", culture),
+    `${localizer.format(start, "hh:mm a", culture)} - ${localizer.format(end, "hh:mm a", culture)}`,
   agendaTimeFormat: "hh:mm a",
 };
 
@@ -50,7 +48,6 @@ function CalendarioTurnos() {
   const [filtroFechaDesde, setFiltroFechaDesde] = useState("");
   const [filtroFechaHasta, setFiltroFechaHasta] = useState("");
 
-
   const eventosFiltrados = eventos.filter(ev => {
     const empleado = empleados.find(e => e.id === ev.empleadoId);
     if (!empleado) return false;
@@ -59,12 +56,10 @@ function CalendarioTurnos() {
     const documento = empleado.cc ? empleado.cc.toString() : "";
     const area = empleado.area ? empleado.area.toLowerCase() : "";
 
-    // Filtros de texto
     if (filtroNombre && !nombreCompleto.includes(filtroNombre.toLowerCase())) return false;
     if (filtroDocumento && !documento.includes(filtroDocumento)) return false;
     if (filtroArea && !area.includes(filtroArea.toLowerCase())) return false;
 
-    // Filtro de fechas
     if (filtroFechaDesde && ev.start < new Date(filtroFechaDesde)) return false;
     if (filtroFechaHasta && ev.end > new Date(filtroFechaHasta + "T23:59:59")) return false;
 
@@ -99,9 +94,7 @@ function CalendarioTurnos() {
   const dayPropGetter = (date) => {
     if (esFestivo(date)) {
       return {
-        style: {
-          backgroundColor: "#ff0000",
-        },
+        style: { backgroundColor: "#ff0000" },
         className: "dia-festivo",
       };
     }
@@ -129,16 +122,13 @@ function CalendarioTurnos() {
       const startDate = new Date(`${turno.diaInicio}T${turno.horaInicio}`);
       const endDate = new Date(`${turno.diaFin}T${turno.horaFin}`);
 
-
       // Verificar si el turno cruza la medianoche (hora fin menor que hora inicio)
-      const [horaInicioHoras, horaInicioMinutos] = turno.horaInicio.split(':').map(Number);
-      const [horaFinHoras, horaFinMinutos] = turno.horaFin.split(':').map(Number);
-      const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
-        (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
+      const [horaInicioHoras, horaInicioMinutos] = turno.horaInicio.split(":").map(Number);
+      const [horaFinHoras, horaFinMinutos] = turno.horaFin.split(":").map(Number);
+      const cruzaMedianoche =
+        horaFinHoras < horaInicioHoras || (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
 
       if (cruzaMedianoche) {
-
-        // Turno nocturno que cruza medianoche
         eventosFormateados.push({
           id: turno.id,
           title: getEmpleadoNombre(turno.empleadoId),
@@ -147,15 +137,11 @@ function CalendarioTurnos() {
           empleadoId: turno.empleadoId,
           minutosDescanso: turno.minutosDescanso,
           resource: turno,
-          // allDay: false,
         });
       } else {
-        // Turno normal o que abarca múltiples días
         const current = new Date(startDate);
-
         while (current <= endDate) {
           const dia = format(current, "yyyy-MM-dd");
-
           eventosFormateados.push({
             id: turno.id,
             title: getEmpleadoNombre(turno.empleadoId),
@@ -165,7 +151,6 @@ function CalendarioTurnos() {
             minutosDescanso: turno.minutosDescanso,
             resource: turno,
           });
-
           current.setDate(current.getDate() + 1);
         }
       }
@@ -219,18 +204,44 @@ function CalendarioTurnos() {
     setModalOpen(true);
   };
 
+  // Función para actualizar un turno existente en localStorage (sin cambiar id)
+  const actualizarTurnoPorId = (turnoActualizado) => {
+    let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
+    const nuevosTurnos = turnosActuales.map((t) => (t.id === turnoActualizado.id ? turnoActualizado : t));
+    guardarTurnosEnLocalStorage(nuevosTurnos);
+    recargarEventosDesdeLS();
+  };
+
+  // Función para crear un id único basado en los datos, sin usar Date.now()
+  const crearTurnoId = (turno) =>
+    [turno.empleadoId, turno.diaInicio, turno.horaInicio, turno.diaFin, turno.horaFin].join("_");
+
   const handleGuardarTurno = (e) => {
     e.preventDefault();
-    let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
 
-    const [horaInicioHoras, horaInicioMinutos] = nuevoTurno.horaInicio.split(':').map(Number);
-    const [horaFinHoras, horaFinMinutos] = nuevoTurno.horaFin.split(':').map(Number);
-    const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
-      (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
+    if (modalType === "edit" && turnoSeleccionado) {
+      // Edición: actualiza el turno existente sin cambiar id
+      const turnoEditado = {
+        ...turnoSeleccionado.resource, // base del turno original
+        ...nuevoTurno, // datos actualizados desde el formulario
+        id: turnoSeleccionado.id, // conservar mismo id
+      };
+      actualizarTurnoPorId(turnoEditado);
+      setModalOpen(false);
+      return;
+    }
+
+    // CREACIÓN de un nuevo turno (puede haber varios días)
+    const turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
+
+    const [horaInicioHoras, horaInicioMinutos] = nuevoTurno.horaInicio.split(":").map(Number);
+    const [horaFinHoras, horaFinMinutos] = nuevoTurno.horaFin.split(":").map(Number);
+    const cruzaMedianoche =
+      horaFinHoras < horaInicioHoras || (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
 
     const nuevosTurnos = [];
 
-    // Si cruza medianoche y día fin es igual a día inicio, sumamos 1 día automáticamente
+    // Si cruza medianoche y día fin es igual al día inicio, sumamos 1 día automáticamente
     let diaFinReal = nuevoTurno.diaFin;
     if (cruzaMedianoche && nuevoTurno.diaFin === nuevoTurno.diaInicio) {
       const fecha = new Date(nuevoTurno.diaInicio + "T00:00");
@@ -242,32 +253,27 @@ function CalendarioTurnos() {
     const end = new Date(`${diaFinReal}T${nuevoTurno.horaFin}`);
 
     if (cruzaMedianoche) {
+      const turnoId = crearTurnoId({ ...nuevoTurno, diaFin: diaFinReal });
       nuevosTurnos.push({
         ...nuevoTurno,
         diaFin: diaFinReal,
-        id: `turno_${Date.now()}`,
+        id: turnoId,
       });
     } else {
       const current = new Date(start);
       while (current <= end) {
         const dia = format(current, "yyyy-MM-dd");
+        const turnoId = crearTurnoId({ ...nuevoTurno, diaInicio: dia, diaFin: dia });
         nuevosTurnos.push({
           ...nuevoTurno,
           diaInicio: dia,
           diaFin: dia,
           horaInicio: nuevoTurno.horaInicio,
           horaFin: nuevoTurno.horaFin,
-          id: `turno_${Date.now()}_${dia}`,
+          id: turnoId,
         });
         current.setDate(current.getDate() + 1);
       }
-    }
-
-    // Si es edición, eliminar el anterior antes de guardar
-    if (modalType === "edit" && turnoSeleccionado) {
-      turnosActuales = turnosActuales.filter(
-        (t) => t.id !== turnoSeleccionado.id
-      );
     }
 
     const turnosFinales = [...turnosActuales, ...nuevosTurnos];
@@ -276,12 +282,9 @@ function CalendarioTurnos() {
     recargarEventosDesdeLS();
   };
 
-
   const handleEliminarTurno = () => {
     const turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
-    const turnosActualizados = turnosActuales.filter(
-      (t) => t.id !== turnoSeleccionado.id
-    );
+    const turnosActualizados = turnosActuales.filter((t) => t.id !== turnoSeleccionado.id);
     guardarTurnosEnLocalStorage(turnosActualizados);
     setModalOpen(false);
     setTurnoSeleccionado(null);
@@ -290,9 +293,7 @@ function CalendarioTurnos() {
 
   const actualizarTurno = (eventId, cambios) => {
     const turnos = JSON.parse(localStorage.getItem("turnos")) || [];
-    const nuevosTurnos = turnos.map((t) =>
-      t.id === eventId ? { ...t, ...cambios } : t
-    );
+    const nuevosTurnos = turnos.map((t) => (t.id === eventId ? { ...t, ...cambios } : t));
     guardarTurnosEnLocalStorage(nuevosTurnos);
     recargarEventosDesdeLS();
   };
@@ -316,7 +317,6 @@ function CalendarioTurnos() {
   };
 
   return (
-
     <div className="calendario-turnos-container">
       <button className="btn-imprimir" onClick={() => window.print()}>
         Generar PDF
@@ -328,19 +328,19 @@ function CalendarioTurnos() {
             type="text"
             placeholder="Filtrar por nombre"
             value={filtroNombre}
-            onChange={e => setFiltroNombre(e.target.value)}
+            onChange={(e) => setFiltroNombre(e.target.value)}
           />
           <input
             type="text"
             placeholder="Filtrar por documento"
             value={filtroDocumento}
-            onChange={e => setFiltroDocumento(e.target.value)}
+            onChange={(e) => setFiltroDocumento(e.target.value)}
           />
           <input
             type="text"
             placeholder="Filtrar por área"
             value={filtroArea}
-            onChange={e => setFiltroArea(e.target.value)}
+            onChange={(e) => setFiltroArea(e.target.value)}
           />
         </div>
         <div className="filtros-row">
@@ -348,13 +348,13 @@ function CalendarioTurnos() {
             type="date"
             placeholder="Desde"
             value={filtroFechaDesde}
-            onChange={e => setFiltroFechaDesde(e.target.value)}
+            onChange={(e) => setFiltroFechaDesde(e.target.value)}
           />
           <input
             type="date"
             placeholder="Hasta"
             value={filtroFechaHasta}
-            onChange={e => setFiltroFechaHasta(e.target.value)}
+            onChange={(e) => setFiltroFechaHasta(e.target.value)}
           />
         </div>
       </div>
@@ -388,24 +388,18 @@ function CalendarioTurnos() {
           showMore: (total) => `+ Ver más (${total})`,
         }}
         culture="es"
-
-        // Versión más simple usando CSS con opacidad directa
         eventPropGetter={(event) => {
-          const empleado = empleados.find(e => e.id === event.empleadoId);
+          const empleado = empleados.find((e) => e.id === event.empleadoId);
           const baseColor = empleado?.color || "#797979";
-
           return {
             style: {
               background: `linear-gradient(135deg, ${baseColor}CC 0%, ${baseColor}70 100%)`,
-              // border: `1px solid ${baseColor}DD`,
-              borderRadius: '4px',
-              color: '#333',
+              borderRadius: "4px",
+              color: "#333",
             },
             className: "calendario-event",
           };
         }}
-
-
         draggableAccessor={() => true}
         resizableAccessor={() => true}
       />
@@ -413,21 +407,15 @@ function CalendarioTurnos() {
       <Modal
         isOpen={modalOpen}
         onRequestClose={() => setModalOpen(false)}
-        contentLabel={
-          modalType === "create" ? "Crear Turno" : "Editar Turno"
-        }
+        contentLabel={modalType === "create" ? "Crear Turno" : "Editar Turno"}
         className="turno-modal"
         overlayClassName="turno-modal-overlay"
       >
         <div className="modal-header">
           <h3>{modalType === "create" ? "Crear Turno" : "Editar Turno"}</h3>
           {modalType === "edit" && (
-            <button
-              type="button"
-              onClick={handleEliminarTurno}
-              className="bttn-eliminar"
-            >
-              <img src={del} alt="" />
+            <button type="button" onClick={handleEliminarTurno} className="bttn-eliminar">
+              <img src={del} alt="Eliminar turno" />
             </button>
           )}
         </div>
@@ -439,9 +427,7 @@ function CalendarioTurnos() {
               className="form-select"
               name="empleadoId"
               value={String(nuevoTurno.empleadoId)}
-              onChange={(e) =>
-                setNuevoTurno({ ...nuevoTurno, empleadoId: e.target.value })
-              }
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, empleadoId: e.target.value })}
               required
             >
               <option value="">Seleccione un empleado</option>
@@ -460,9 +446,7 @@ function CalendarioTurnos() {
               className="form-input"
               name="diaInicio"
               value={nuevoTurno.diaInicio}
-              onChange={(e) =>
-                setNuevoTurno({ ...nuevoTurno, diaInicio: e.target.value })
-              }
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, diaInicio: e.target.value })}
               required
             />
           </div>
@@ -474,9 +458,7 @@ function CalendarioTurnos() {
               className="form-input"
               name="diaFin"
               value={nuevoTurno.diaFin}
-              onChange={(e) =>
-                setNuevoTurno({ ...nuevoTurno, diaFin: e.target.value })
-              }
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, diaFin: e.target.value })}
               required
             />
           </div>
@@ -488,9 +470,7 @@ function CalendarioTurnos() {
               className="form-input"
               name="horaInicio"
               value={nuevoTurno.horaInicio}
-              onChange={(e) =>
-                setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })
-              }
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })}
               required
             />
           </div>
@@ -502,9 +482,7 @@ function CalendarioTurnos() {
               className="form-input"
               name="horaFin"
               value={nuevoTurno.horaFin}
-              onChange={(e) =>
-                setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })
-              }
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })}
               required
             />
           </div>
@@ -516,12 +494,7 @@ function CalendarioTurnos() {
               min={0}
               name="minutosDescanso"
               value={nuevoTurno.minutosDescanso}
-              onChange={(e) =>
-                setNuevoTurno({
-                  ...nuevoTurno,
-                  minutosDescanso: e.target.value,
-                })
-              }
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, minutosDescanso: e.target.value })}
               onWheel={(e) => e.target.blur()}
               className="form-input"
               required
@@ -529,18 +502,10 @@ function CalendarioTurnos() {
           </div>
 
           <div className="form-buttons">
-            <button
-              type="button"
-              onClick={() => setModalOpen(false)}
-              className="btn-secondary"
-            >
+            <button type="button" onClick={() => setModalOpen(false)} className="btn-secondary">
               Cancelar
             </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={empleados.length === 0}
-            >
+            <button type="submit" className="btn-primary" disabled={empleados.length === 0}>
               {modalType === "create" ? "Crear turno" : "Guardar cambios"}
             </button>
           </div>
