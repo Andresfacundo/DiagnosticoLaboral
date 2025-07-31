@@ -166,6 +166,17 @@ function Sidebar() {
               </NavLink>
             </li>
             )}
+            
+            <li>
+              <NavLink
+                to="registro-extras"
+                className={({ isActive }) => isActive ? "active" : ""}
+                onClick={handleLinkClick}
+              >
+                Registro horas extras
+              </NavLink>
+            </li>
+           
           </ul>
         </nav>
       </aside>

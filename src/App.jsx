@@ -33,6 +33,7 @@ import Sidebar from './components/Ui/Sidebard/Sidebard.jsx'
 import Configuracion from './components/Ui/Configuracion/Configuracion.jsx'
 import PrivateRoute from './components/Ui/PrivateRoute/PrivateRoute.jsx'
 import NotAuthorized from './components/Ui/NotAuthorized/NotAuthorized.jsx'
+import RegistroHorasExtras from './components/Pages/RegistroHorasExtras/RegistroHorasExtras.jsx'
 
 function App() {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ function App() {
           <Route path="resumen" element={<ResumenPage />} />
           <Route path="Configuracion" element={<Configuracion />} />
           <Route index element={<EmpleadosPage />} />
+          <Route path="registro-extras" element={<RegistroHorasExtras />} />
         </Route>
         {/* Rutas admin y asociados */}
         <Route element={<PrivateRoute allowedRoles={['admin','asociado']} />}>
