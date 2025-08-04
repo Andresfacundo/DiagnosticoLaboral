@@ -383,17 +383,17 @@ function ResumenNomina({ actualizar }) {
               <th rowSpan={2}>Trabajador</th>
               <th rowSpan={2}>N° Documento</th>
               <th rowSpan={2}>Área</th>
-              <th colSpan={8}>Cantidades</th>
-              <th colSpan={6}>Valores</th>
+              <th colSpan={7}>Cantidades</th>
+              <th colSpan={7}>Valores</th>
             </tr>
             <tr>
               <th>Turnos</th>
               <th>Horas trabajadas</th>
               <th>Horas extras diurnas</th>
               <th>Horas extras nocturnas</th>
-              <th>Otras Horas</th>
               <th>Recargo nocturno</th>
               <th>Recargo festivo</th>
+              <th>Otras Horas</th>
               <th>Valor otras horas</th>
               <th>Valor horas extras</th>
               <th>Valor recargo nocturno</th>
@@ -412,9 +412,9 @@ function ResumenNomina({ actualizar }) {
                 <td>{emp.totalHoras}</td>
                 <td>{emp.horas?.horasExtraDiurnas ?? "0.00"}</td>
                 <td>{emp.horas?.horasExtraNocturnas ?? "0.00"}</td>
-                <td>{emp.horas?.otrasHorasExtras ?? "0.00"}</td>
                 <td>{emp.horas?.recargoNocturno ?? "0.00"}</td>
                 <td>{emp.horas?.horasFestivas ?? "0.00"}</td>
+                <td>{emp.horas?.otrasHorasExtras ?? "0.00"}</td>
                 <td>${emp.valores?.otrasHorasExtras.toLocaleString('es-CO')}</td>
                 <td>${emp.pagoExtra.toLocaleString('es-CO')}</td>
                 <td>${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? 0}</td>
