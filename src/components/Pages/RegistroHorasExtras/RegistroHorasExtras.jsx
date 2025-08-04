@@ -72,7 +72,7 @@ function calcularHorasExtrasDetallado(turnosFiltrados, empleado) {
         for (let minuto = inicio; minuto < fin; minuto++) {
           const minutosTranscurridos = minuto - inicio;
           const descansoEsperado = (minutosTranscurridos / duracionTotal) * minutosDescanso;
-          
+
           if (minutosDescansoDistribuidos < descansoEsperado) {
             minutosDescansoDistribuidos++;
             continue;
@@ -157,14 +157,14 @@ function RegistroHorasExtras({ actualizar }) {
         const data = await res.json();
 
         setResumen(data);
-        
+
         // Generar todos los registros de horas extras
         const todosLosRegistros = [];
         data.resumenEmpleados.forEach(empleado => {
           const registros = calcularHorasExtrasDetallado(empleado.detalleTurnos, empleado);
           todosLosRegistros.push(...registros);
         });
-        
+
         setRegistrosExtras(todosLosRegistros);
       } catch (error) {
         console.error("Error al cargar resumen:", error);
@@ -176,11 +176,11 @@ function RegistroHorasExtras({ actualizar }) {
     cargarResumen();
   }, [actualizar]);
 
-  if (mostrarSpinner || !resumen) return <SpinnerTimed />;
-
-  const filtrarRegistros = () => {
+  
+  
+  useEffect(() => {
     if (!resumen) return;
-    
+
     const todosLosRegistros = [];
     resumen.resumenEmpleados.forEach(empleado => {
       let turnosFiltrados = empleado.detalleTurnos;
@@ -207,9 +207,12 @@ function RegistroHorasExtras({ actualizar }) {
         registro.area.toLowerCase().includes(filtroArea.toLowerCase())
       );
     });
-
+    
     setRegistrosExtras(registrosFiltrados);
-  };
+    
+  }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta])
+  
+  if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
   const limpiarFiltros = () => {
     setFiltroNombre("");
@@ -217,7 +220,7 @@ function RegistroHorasExtras({ actualizar }) {
     setFiltroArea("");
     setFechaDesde("");
     setFechaHasta("");
-    
+
     if (resumen) {
       const todosLosRegistros = [];
       resumen.resumenEmpleados.forEach(empleado => {
@@ -265,10 +268,6 @@ function RegistroHorasExtras({ actualizar }) {
             value={fechaHasta}
             onChange={e => setFechaHasta(e.target.value)}
           />
-          <button onClick={filtrarRegistros}>
-            <FaSearch style={{ marginRight: 5 }} />
-            Buscar
-          </button>
           <button onClick={limpiarFiltros}>
             <FaEraser style={{ marginRight: 5 }} />
             Limpiar
@@ -300,8 +299,8 @@ function RegistroHorasExtras({ actualizar }) {
                 <td>{registro.area}</td>
                 <td>{registro.fechaInicio}</td>
                 <td>{registro.fechaFin}</td>
-                <td>{registro.horaInicio? format(new Date(`2020-01-01T${registro.horaInicio}`), "hh:mm a"): ""}</td>
-                <td>{registro.horaFin? format(new Date(`2020-01-01T${registro.horaFin}`), "hh:mm a"): ""}</td>
+                <td>{registro.horaInicio ? format(new Date(`2020-01-01T${registro.horaInicio}`), "hh:mm a") : ""}</td>
+                <td>{registro.horaFin ? format(new Date(`2020-01-01T${registro.horaFin}`), "hh:mm a") : ""}</td>
                 <td>{registro.horasExtrasDiurnas}</td>
                 <td>{registro.horasExtrasNocturnas}</td>
                 <td>{registro.actividad}</td>
@@ -324,7 +323,7 @@ function RegistroHorasExtras({ actualizar }) {
           )}
         </table>
       ) : (
-        <div className="no-registros">
+        <div className="no-empleados">
           <p>No hay registros de horas extras disponibles con los filtros actuales.</p>
           <span>Los empleados mostrados no tienen horas extras registradas en el período seleccionado.</span>
         </div>

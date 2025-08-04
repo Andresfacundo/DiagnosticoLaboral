@@ -52,14 +52,14 @@ function ListaTurnos({ actualizar }) {
     return `${horas}h ${minutos}min`;
   }
 
-  // Filtros
-  const filtrarTurnos = () => {
+
+  useEffect(() => {
     const filtrados = turnos.filter(turno => {
       const emp = getEmpleado(turno.empleadoId) || {};
       const nombreCompleto = `${emp.nombre || ""} ${emp.apellido || ""}`.toLowerCase();
       const area = (emp.area || "").toLowerCase();
-      const fecha = turno.diaInicio || "";
       const documento = emp.cc || "";
+      const fecha = turno.diaInicio || "";
 
       let cumpleFecha = true;
       if (fechaDesde && fecha < fechaDesde) cumpleFecha = false;
@@ -73,7 +73,8 @@ function ListaTurnos({ actualizar }) {
       );
     });
     setTurnosFiltrados(filtrados);
-  };
+  }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta, turnos]);
+
 
   const limpiarFiltros = () => {
     setFiltroNombre("");
@@ -141,11 +142,6 @@ function ListaTurnos({ actualizar }) {
             onChange={e => setFechaHasta(e.target.value)}
             placeholder="Hasta"
           />
-
-          <button onClick={filtrarTurnos}>
-            <FaSearch style={{ marginRight: 5 }} />
-            Buscar
-          </button>
           <button onClick={limpiarFiltros}>
             <FaEraser style={{ marginRight: 5 }} />
             Limpiar

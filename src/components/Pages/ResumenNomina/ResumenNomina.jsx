@@ -55,27 +55,27 @@ function calcularHorasExtrasDesdeMinuto(horaInicio, horaFin, minutosDescanso, mi
   let inicio = horaInicio * 60;
   let fin = horaFin * 60;
   if (fin <= inicio) fin += 24 * 60;
-  
+
   const duracionTotal = fin - inicio;
   const tiempoSinDescanso = duracionTotal - minutosDescanso;
-  
+
   if (minutosHastaExtra >= tiempoSinDescanso) {
     return { extrasNocturnas: 0, extrasDiurnas: 0 };
   }
-  
+
   let extrasNocturnas = 0, extrasDiurnas = 0;
   let minutosContados = 0;
   let minutosDescansoDistribuidos = 0;
-  
+
   for (let minuto = inicio; minuto < fin; minuto++) {
     const minutosTranscurridos = minuto - inicio;
     const descansoEsperado = (minutosTranscurridos / duracionTotal) * minutosDescanso;
-    
+
     if (minutosDescansoDistribuidos < descansoEsperado) {
       minutosDescansoDistribuidos++;
       continue;
     }
-    
+
     if (minutosContados >= minutosHastaExtra) {
       const horaReal = (minuto / 60) % 24;
       if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) {
@@ -174,18 +174,18 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
     let inicioMin = horaInicio * 60;
     let finMin = horaFin * 60;
     if (finMin <= inicioMin) finMin += 24 * 60;
-    
+
     const duracionTotal = finMin - inicioMin;
     let recargoNocturnoTurno = 0;
     let minutosDescansoDistribuidos = 0;
-    
+
     for (let minuto = 0; minuto < duracionTotal; minuto++) {
       const descansoEsperado = (minuto / duracionTotal) * minutosDescanso;
       if (minutosDescansoDistribuidos < descansoEsperado) {
         minutosDescansoDistribuidos++;
         continue;
       }
-      
+
       const horaReal = ((inicioMin + minuto) / 60) % 24;
       if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) {
         recargoNocturnoTurno++;
@@ -193,15 +193,15 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
     }
     totalHorasNocturnas += recargoNocturnoTurno / 60;
   });
-  
+
   // CÁLCULO CORREGIDO: Usar lógica SEMANAL (igual que el backend)
   const { horasExtrasDiurnas, horasExtrasNocturnas } = calcularHorasExtrasSemanales(
-    turnosFiltrados, 
+    turnosFiltrados,
     empleado.esTrabajadorDireccion
   );
-  
+
   const horasExtraTotales = horasExtrasDiurnas + horasExtrasNocturnas;
-  
+
   // Calcular recargo nocturno sin incluir horas extras nocturnas
   const horasNocturnasSinExtras = Math.max(0, totalHorasNocturnas - horasExtrasNocturnas);
 
@@ -289,9 +289,8 @@ function ResumenNomina({ actualizar }) {
     cargarResumen();
   }, [actualizar]);
 
-  if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
-  const filtrarEmpleados = () => {
+  useEffect(() => {
     if (!resumen) return;
     const filtrados = resumen.resumenEmpleados
       .filter(emp => {
@@ -317,7 +316,10 @@ function ResumenNomina({ actualizar }) {
       })
       .map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta));
     setEmpleadosFiltrados(filtrados);
-  };
+
+  }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta]);
+
+  if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
   const limpiarFiltros = () => {
     setFiltroNombre("");
@@ -367,10 +369,6 @@ function ResumenNomina({ actualizar }) {
             value={fechaHasta}
             onChange={e => setFechaHasta(e.target.value)}
           />
-          <button onClick={filtrarEmpleados}>
-            <FaSearch style={{ marginRight: 5 }} />
-            Buscar
-          </button>
           <button onClick={limpiarFiltros}>
             <FaEraser style={{ marginRight: 5 }} />
             Limpiar
