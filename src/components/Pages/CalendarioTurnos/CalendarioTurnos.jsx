@@ -48,6 +48,40 @@ function CalendarioTurnos() {
   const [filtroFechaDesde, setFiltroFechaDesde] = useState("");
   const [filtroFechaHasta, setFiltroFechaHasta] = useState("");
 
+  // Función para calcular las horas trabajadas
+  const calcularHorasTrabajadas = (horaInicio, horaFin, minutosDescanso = 0) => {
+    const [horaInicioHoras, horaInicioMinutos] = horaInicio.split(":").map(Number);
+    const [horaFinHoras, horaFinMinutos] = horaFin.split(":").map(Number);
+    
+    let totalMinutos = 0;
+    
+    // Verificar si cruza medianoche
+    const cruzaMedianoche = horaFinHoras < horaInicioHoras || 
+      (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
+    
+    if (cruzaMedianoche) {
+      // Calcular minutos hasta medianoche + minutos desde medianoche
+      const minutosHastaMedianoche = (24 * 60) - (horaInicioHoras * 60 + horaInicioMinutos);
+      const minutosDesdeMedianoche = horaFinHoras * 60 + horaFinMinutos;
+      totalMinutos = minutosHastaMedianoche + minutosDesdeMedianoche;
+    } else {
+      // Cálculo normal
+      totalMinutos = (horaFinHoras * 60 + horaFinMinutos) - (horaInicioHoras * 60 + horaInicioMinutos);
+    }
+    
+    // Restar minutos de descanso
+    totalMinutos -= parseInt(minutosDescanso) || 0;
+    
+    // Convertir a horas
+    return totalMinutos / 60;
+  };
+
+  // Función para validar las horas del turno
+  const validarHorasTurno = (horaInicio, horaFin, minutosDescanso) => {
+    const horasTrabajadas = calcularHorasTrabajadas(horaInicio, horaFin, minutosDescanso);
+    return horasTrabajadas <= 11;
+  };
+
   const eventosFiltrados = eventos.filter(ev => {
     const empleado = empleados.find(e => e.id === ev.empleadoId);
     if (!empleado) return false;
@@ -219,6 +253,13 @@ function CalendarioTurnos() {
   const handleGuardarTurno = (e) => {
     e.preventDefault();
 
+    // Validar que las horas trabajadas no excedan las 11 horas
+    if (!validarHorasTurno(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso)) {
+      const horasTrabajadas = calcularHorasTrabajadas(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso);
+      alert(`No se puede crear el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) exceden el máximo permitido de 11 horas.`);
+      return;
+    }
+
     if (modalType === "edit" && turnoSeleccionado) {
       // Edición: actualiza el turno existente sin cambiar id
       const turnoEditado = {
@@ -299,21 +340,49 @@ function CalendarioTurnos() {
   };
 
   const handleEventDrop = ({ event, start, end }) => {
+    // Validar horas antes de permitir el drop
+    const horaInicio = format(start, "HH:mm");
+    const horaFin = format(end, "HH:mm");
+    
+    if (!validarHorasTurno(horaInicio, horaFin, event.minutosDescanso)) {
+      const horasTrabajadas = calcularHorasTrabajadas(horaInicio, horaFin, event.minutosDescanso);
+      alert(`No se puede mover el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) excederían el máximo permitido de 11 horas.`);
+      return;
+    }
+
     actualizarTurno(event.id, {
       diaInicio: format(start, "yyyy-MM-dd"),
       diaFin: format(end, "yyyy-MM-dd"),
-      horaInicio: format(start, "HH:mm"),
-      horaFin: format(end, "HH:mm"),
+      horaInicio: horaInicio,
+      horaFin: horaFin,
     });
   };
 
   const handleEventResize = ({ event, start, end }) => {
+    // Validar horas antes de permitir el resize
+    const horaInicio = format(start, "HH:mm");
+    const horaFin = format(end, "HH:mm");
+    
+    if (!validarHorasTurno(horaInicio, horaFin, event.minutosDescanso)) {
+      const horasTrabajadas = calcularHorasTrabajadas(horaInicio, horaFin, event.minutosDescanso);
+      alert(`No se puede redimensionar el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) excederían el máximo permitido de 11 horas.`);
+      return;
+    }
+
     actualizarTurno(event.id, {
       diaInicio: format(start, "yyyy-MM-dd"),
       diaFin: format(end, "yyyy-MM-dd"),
-      horaInicio: format(start, "HH:mm"),
-      horaFin: format(end, "HH:mm"),
+      horaInicio: horaInicio,
+      horaFin: horaFin,
     });
+  };
+
+  // Función para obtener las horas trabajadas del turno actual (para mostrar en el modal)
+  const getHorasTrabajadasActual = () => {
+    if (nuevoTurno.horaInicio && nuevoTurno.horaFin) {
+      return calcularHorasTrabajadas(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso);
+    }
+    return 0;
   };
 
   return (
@@ -501,11 +570,32 @@ function CalendarioTurnos() {
             />
           </div>
 
+          {/* Mostrar las horas trabajadas calculadas */}
+          {nuevoTurno.horaInicio && nuevoTurno.horaFin && (
+            <div className="form-group">
+              <label className="form-label">
+                Horas trabajadas: 
+                <span style={{ 
+                  color: getHorasTrabajadasActual() > 11 ? 'red' : 'green',
+                  fontWeight: 'bold',
+                  marginLeft: '5px'
+                }}>
+                  {getHorasTrabajadasActual().toFixed(2)} horas
+                  {getHorasTrabajadasActual() > 11 && ' (Excede el máximo de 11 horas)'}
+                </span>
+              </label>
+            </div>
+          )}
+
           <div className="form-buttons">
             <button type="button" onClick={() => setModalOpen(false)} className="btn-secondary">
               Cancelar
             </button>
-            <button type="submit" className="btn-primary" disabled={empleados.length === 0}>
+            <button 
+              type="submit" 
+              className="btn-primary" 
+              disabled={empleados.length === 0 || getHorasTrabajadasActual() > 11}
+            >
               {modalType === "create" ? "Crear turno" : "Guardar cambios"}
             </button>
           </div>

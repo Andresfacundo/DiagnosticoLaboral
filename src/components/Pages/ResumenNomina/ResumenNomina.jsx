@@ -194,7 +194,6 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
     totalHorasNocturnas += recargoNocturnoTurno / 60;
   });
 
-  // CÁLCULO CORREGIDO: Usar lógica SEMANAL (igual que el backend)
   const { horasExtrasDiurnas, horasExtrasNocturnas } = calcularHorasExtrasSemanales(
     turnosFiltrados,
     empleado.esTrabajadorDireccion
@@ -392,10 +391,10 @@ function ResumenNomina({ actualizar }) {
               <th>Horas trabajadas</th>
               <th>Horas extras diurnas</th>
               <th>Horas extras nocturnas</th>
-              <th>Total horas extras</th>
+              <th>Otras Horas</th>
               <th>Recargo nocturno</th>
               <th>Recargo festivo</th>
-              <th>Horas festivas</th>
+              <th>Valor otras horas</th>
               <th>Valor horas extras</th>
               <th>Valor recargo nocturno</th>
               <th>Valor recargo festivo</th>
@@ -413,10 +412,10 @@ function ResumenNomina({ actualizar }) {
                 <td>{emp.totalHoras}</td>
                 <td>{emp.horas?.horasExtraDiurnas ?? "0.00"}</td>
                 <td>{emp.horas?.horasExtraNocturnas ?? "0.00"}</td>
-                <td>{emp.horas?.horasExtraTotales ?? "0.00"}</td>
+                <td>{emp.horas?.otrasHorasExtras ?? "0.00"}</td>
                 <td>{emp.horas?.recargoNocturno ?? "0.00"}</td>
                 <td>{emp.horas?.horasFestivas ?? "0.00"}</td>
-                <td>{emp.horas?.recargoFestivo ?? "0.00"}</td>
+                <td>${emp.valores?.otrasHorasExtras.toLocaleString('es-CO')}</td>
                 <td>${emp.pagoExtra.toLocaleString('es-CO')}</td>
                 <td>${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? 0}</td>
                 <td>${emp.pagoFestivo?.toLocaleString('es-CO') ?? 0}</td>
@@ -442,7 +441,7 @@ function ResumenNomina({ actualizar }) {
                   {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasExtraNocturnas || 0), 0).toFixed(2)}
                 </td>
                 <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasExtraTotales || 0), 0).toFixed(2)}
+                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.otrasHorasExtras || 0), 0).toFixed(2)}
                 </td>
                 <td>
                   {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.recargoNocturno || 0), 0).toFixed(2)}
@@ -451,7 +450,7 @@ function ResumenNomina({ actualizar }) {
                   {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasFestivas || 0), 0).toFixed(2)}
                 </td>
                 <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.recargoFestivo || 0), 0).toFixed(2)}
+                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.otrasHorasExtras), 0).toLocaleString('es-CO')}
                 </td>
                 <td>
                   ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoExtra), 0).toLocaleString('es-CO')}
