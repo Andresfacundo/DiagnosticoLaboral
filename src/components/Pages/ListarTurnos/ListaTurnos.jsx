@@ -5,6 +5,8 @@ import { format } from "date-fns";
 import es from "date-fns/locale/es";
 import del from "../../../assets/delete.png";
 import editar from '../../../assets/editar.svg';
+import filtrar from '../../../assets/filtrar.svg';
+import quitarFiltro from '../../../assets/quitarFiltro.svg';
 
 function ListaTurnos({ actualizar }) {
   const [turnos, setTurnos] = useState([]);
@@ -16,6 +18,8 @@ function ListaTurnos({ actualizar }) {
   const [fechaHasta, setFechaHasta] = useState("");
   const [turnosFiltrados, setTurnosFiltrados] = useState([]);
   const [turnoEditando, setTurnoEditando] = useState(null);
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+
 
   const formatearFecha = (fechaString) => {
     if (!fechaString) return '-';
@@ -110,55 +114,92 @@ function ListaTurnos({ actualizar }) {
     setTurnosFiltrados(turnos);
   }, [turnos]);
 
+  const nombresUnicos = Array.from(
+    new Set(
+      turnos.map(t => {
+        const emp = getEmpleado(t.empleadoId) || {};
+        return `${emp.nombre || ""} ${emp.apellido || ""}`.trim();
+      })
+    )
+  ).filter(n => n);
+
+  const areasUnicas = Array.from(
+    new Set(
+      turnos.map(t => {
+        const emp = getEmpleado(t.empleadoId) || {};
+        return emp.area || "";
+      })
+    )
+  ).filter(a => a);
+
   // Render
   return (
     <div className="turnos-section-card">
-      <h2>Lista de Turnos</h2>
+      {/* <h2>Lista de Turnos</h2> */}
       <button className="btn-imprimir" onClick={() => window.print()}>
         Generar PDF
       </button>
-
-      <div className="filtros-turnos-agrupados">
-        <span className="filtros-titulo">Filtros</span>
-        <div className="filtros-row">
-          <input
-            type="text"
-            placeholder="Filtrar por nombre"
-            value={filtroNombre}
-            onChange={e => setFiltroNombre(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Filtrar por área"
-            value={filtroArea}
-            onChange={e => setFiltroArea(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Filtrar por documento"
-            value={filtroDocumento}
-            onChange={e => setFiltroDocumento(e.target.value)}
-          />
-
+      <div className="filtros-calendario">
+        <div className="filtros-calendario-header">
+          <span className="filtros-calendario-titulo">Filtros</span>
+          <span>
+            <button type="button" onClick={() => setMostrarFiltros((v) => !v)}>
+              <img src={filtrar} alt="filtro" />
+            </button>
+          </span>
         </div>
-        <div className="filtros-row">
-          <input
-            type="date"
-            value={fechaDesde}
-            onChange={e => setFechaDesde(e.target.value)}
-            placeholder="Desde"
-          />
-          <input
-            type="date"
-            value={fechaHasta}
-            onChange={e => setFechaHasta(e.target.value)}
-            placeholder="Hasta"
-          />
-          <button onClick={limpiarFiltros}>
-            <FaEraser style={{ marginRight: 5 }} />
-            Limpiar
-          </button>
-        </div>
+        {mostrarFiltros && (
+          <div className="filtros-dropdown">
+            <div className="filtros-calendario-container">
+              <div className="filtros-calendario-box">
+                <select
+                  value={filtroNombre}
+                  onChange={e => setFiltroNombre(e.target.value)}
+                >
+                  <option value="">Todos los nombres</option>
+                  {nombresUnicos.map(nombre => (
+                    <option key={nombre} value={nombre}>{nombre}</option>
+                  ))}
+                </select>
+                <select
+                  value={filtroArea}
+                  onChange={e => setFiltroArea(e.target.value)}
+                >
+                  <option value="">Todas las áreas</option>
+                  {areasUnicas.map(area => (
+                    <option key={area} value={area}>{area}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Filtrar por documento"
+                  value={filtroDocumento}
+                  onChange={e => setFiltroDocumento(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="filtros-calendario-fechas">
+              <input
+                type="date"
+                placeholder="Desde"
+                value={fechaDesde}
+                onChange={(e) => setFiltroFechaDesde(e.target.value)}
+              />
+              <input
+                type="date"
+                placeholder="Hasta"
+                value={fechaHasta}
+                onChange={(e) => setFiltroFechaHasta(e.target.value)}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
+              <button type="button" onClick={limpiarFiltros} className="btn-limpiar-filtros">
+                <img src={quitarFiltro} alt="Quitar filtros" style={{ marginRight: 6 }} />
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tabla de turnos */}

@@ -36,7 +36,7 @@
   font-weight: 500 !important;
   font-size: 0.85em !important;
   cursor: move !important;
-  letter-spacing: 1px !important; 
+  letter-spacing: 1px !important;
   text-orientation: mixed !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -411,64 +411,219 @@
 }
 
 /* Agrupación de filtros */
-.filtros-turnos-agrupados {
-  background: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #dfbd7c22;
-  padding: 5px 12px 5px 12px;
+
+.filtros-calendario {
+  position: relative;
+  display: inline-block;
   margin-bottom: 22px;
-  display: flex;
-  flex-direction: column;
-  /* gap: 10px; */
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 4px 14px 1px 14px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
   border: 1px solid #e0e0e0;
+  margin-left: 1cqb;
 }
 
-.filtros-titulo {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  letter-spacing: 0.5px;
-}
-
-.filtros-row {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-
-.filtros-row input[type="text"],
-.filtros-row input[type="date"] {
-  padding: 7px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
+.filtros-calendario-titulo {
+  font-weight: 500;
+  color: #333;
+  margin-right: 16px;
   font-size: 1rem;
-  background: #fff;
-  transition: border 0.2s;
-  min-width: 140px;
-  flex: 1 1 160px;
+  letter-spacing: 1px;
 }
 
-.filtros-row input:focus {
+.filtros-calendario>span:last-child {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.filtros-calendario button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
   outline: none;
 }
-.filtros-turnos-agrupados button{
-  padding: 2px 12px;
-  border: none;
-  border-radius: 6px;
-  background-color: #dfbd7c;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+
+.filtros-calendario button:hover,
+.filtros-calendario button:focus {
+  background: #e3eafc;
 }
 
-/* Responsive */
-@media (max-width: 700px) {
-  .filtros-turnos-agrupados {
-    padding: 10px 4vw 6px 4vw;
+.filtros-calendario button img {
+  width: 26px;
+  height: 26px;
+  vertical-align: middle;
+}
+
+/* --- Menú desplegable de filtros --- */
+.filtros-dropdown {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.12);
+  padding: 18px 20px;
+  z-index: 200;
+  min-width: 340px;
+  border-radius: 10px;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
   }
-  .filtros-row {
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Contenedor de filtros --- */
+.filtros-calendario-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.filtros-calendario-box {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filtros-calendario-box select,
+.filtros-calendario-box input {
+  padding: 8px 12px;
+  border: 1px solid #bfc8d7;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333;
+  /* background-color: #f5f8ff; */
+  transition: border 0.2s;
+}
+
+.filtros-calendario-box select:focus,
+.filtros-calendario-box input:focus {
+  border-color: #1976d2;
+  background: #e3eafc;
+  outline: none;
+}
+
+.filtros-calendario-box select {
+  min-width: 140px;
+}
+
+.filtros-calendario-fechas {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.filtros-calendario-fechas input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #bfc8d7;
+  /* background: #f5f8ff; */
+  font-size: 1rem;
+  color: #333;
+  transition: border 0.2s;
+  width: 100%;
+}
+
+.filtros-calendario-fechas input:focus {
+  border-color: #1976d2;
+  background: #e3eafc;
+  outline: none;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .filtros-dropdown {
+    min-width: 90vw;
+    left: 0;
+    right: 0;
+    padding: 14px 8px;
+  }
+
+  .filtros-calendario-box {
+    flex-direction: column;
     gap: 8px;
   }
+
+  .filtros-calendario-fechas {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* --- Sombra para destacar el menú --- */
+.filtros-dropdown {
+  box-shadow: 0 6px 24px rgba(25, 118, 210, 0.13);
+}
+
+/* --- Animación para los botones --- */
+.filtros-calendario button:active {
+  background: #dbe6fd;
+}
+
+/* --- Mejorar el aspecto de los select --- */
+.filtros-calendario-box select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8L0.803848 0.5H11.1962L6 8Z' fill='%231976d2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px 10px;
+  padding-right: 28px;
+}
+
+/* --- Etiquetas de filtro --- */
+.filtros-calendario-box label {
+  font-weight: 500;
+  color: #1976d2;
+  margin-right: 6px;
+  font-size: 0.98rem;
+}
+
+/* --- Sugerencia visual para el menú --- */
+.filtros-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 24px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-left: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+  transform: rotate(45deg);
+  z-index: 201;
+  box-shadow: -2px -2px 6px rgba(25, 118, 210, 0.07);
+}
+
+.btn-limpiar-filtros {
+  background: #f5f8ff;
+  border: 1px solid #e0e0e0;
+  color: #1976d2;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-limpiar-filtros:hover,
+.btn-limpiar-filtros:focus {
+  background: #e3eafc;
+  color: #0d47a1;
 }

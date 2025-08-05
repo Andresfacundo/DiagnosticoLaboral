@@ -79,13 +79,14 @@
 /* ===== CONTENIDO PRINCIPAL ===== */
 .main-horarios-content {
   flex: 1;
-  padding: 24px;
+  padding: 15px;
   background: #ffffff;
-  margin: 16px;
+  margin: 10px;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   overflow-x: auto;
   min-height: calc(100vh - 200px);
+  /* border: 2px solid red; */
 }
 
 /* ===== BOTÓN MÓVIL PARA TOGGLE ===== */

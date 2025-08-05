@@ -4,6 +4,8 @@ import './RegistroHorasExtras.css';
 import SpinnerTimed from "../../Ui/SpinnerTimed/SpinnerTimed";
 import { format } from "date-fns";
 import es from "date-fns/locale/es";
+import filtrar from '../../../assets/filtrar.svg';
+import quitarFiltro from '../../../assets/quitarFiltro.svg';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -164,6 +166,7 @@ function RegistroHorasExtras({ actualizar }) {
   const [registrosExtras, setRegistrosExtras] = useState([]);
   const [mostrarSpinner, setMostrarSpinner] = useState(true);
   const [actividadesEditables, setActividadesEditables] = useState({});
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
 
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -285,6 +288,21 @@ function RegistroHorasExtras({ actualizar }) {
     );
     guardarActividadesEnLocalStorage(actividadesEditables);
   };
+  const nombresUnicos = resumen
+    ? Array.from(
+      new Set(
+        resumen.resumenEmpleados.map(emp => `${emp.nombre} ${emp.apellido}`.trim())
+      )
+    ).filter(n => n)
+    : [];
+
+  const areasUnicas = resumen
+    ? Array.from(
+      new Set(
+        resumen.resumenEmpleados.map(emp => emp.area || "")
+      )
+    ).filter(a => a)
+    : [];
   if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
   return (
@@ -293,43 +311,68 @@ function RegistroHorasExtras({ actualizar }) {
         Generar PDF
       </button>
 
-      <fieldset className="filtros">
-        <legend><strong>Filtros</strong></legend>
-        <input
-          type="text"
-          placeholder="Filtrar por nombre"
-          value={filtroNombre}
-          onChange={e => setFiltroNombre(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filtrar por documento"
-          value={filtroDocumento}
-          onChange={e => setFiltroDocumento(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filtrar por área"
-          value={filtroArea}
-          onChange={e => setFiltroArea(e.target.value)}
-        />
-        <div className="filtros-fechas-resumen">
-          <input
-            type="date"
-            value={fechaDesde}
-            onChange={e => setFechaDesde(e.target.value)}
-          />
-          <input
-            type="date"
-            value={fechaHasta}
-            onChange={e => setFechaHasta(e.target.value)}
-          />
-          <button onClick={limpiarFiltros}>
-            <FaEraser style={{ marginRight: 5 }} />
-            Limpiar
-          </button>
+      <div className="filtros-calendario">
+        <div className="filtros-calendario-header">
+          <span className="filtros-calendario-titulo">Filtros</span>
+          <span>
+            <button type="button" onClick={() => setMostrarFiltros((v) => !v)}>
+              <img src={filtrar} alt="filtro" />
+            </button>
+          </span>
         </div>
-      </fieldset>
+        {mostrarFiltros && (
+          <div className="filtros-dropdown">
+            <div className="filtros-calendario-container">
+              <div className="filtros-calendario-box">
+                <select
+                  value={filtroNombre}
+                  onChange={e => setFiltroNombre(e.target.value)}
+                >
+                  <option value="">Todos los nombres</option>
+                  {nombresUnicos.map(nombre => (
+                    <option key={nombre} value={nombre}>{nombre}</option>
+                  ))}
+                </select>
+                <select
+                  value={filtroArea}
+                  onChange={e => setFiltroArea(e.target.value)}
+                >
+                  <option value="">Todas las áreas</option>
+                  {areasUnicas.map(area => (
+                    <option key={area} value={area}>{area}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Filtrar por documento"
+                  value={filtroDocumento}
+                  onChange={e => setFiltroDocumento(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="filtros-calendario-fechas">
+              <input
+                type="date"
+                placeholder="Desde"
+                value={fechaDesde}
+                onChange={(e) => setFechaDesde(e.target.value)}
+              />
+              <input
+                type="date"
+                placeholder="Hasta"
+                value={fechaHasta}
+                onChange={(e) => setFechaHasta(e.target.value)}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
+              <button type="button" onClick={limpiarFiltros} className="btn-limpiar-filtros">
+                <img src={quitarFiltro} alt="Quitar filtros" style={{ marginRight: 6 }} />
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {registrosExtras.length > 0 ? (
         <table border={1} cellPadding={4} className="registro-horas-extras-table">

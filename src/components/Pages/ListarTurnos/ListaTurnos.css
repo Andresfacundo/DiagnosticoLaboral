@@ -1,17 +1,172 @@
+/* --- Card principal --- */
+.turnos-section-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(25, 118, 210, 0.09);
+  padding: 28px 18px 18px 18px;
+  /* margin: 24px auto; */
 
-.lista-turnos-table th{
-  background-color: #f5f6fa;
+}
+
+/* --- Tabla de turnos --- */
+.lista-turnos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 18px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+}
+
+.lista-turnos-table th,
+.lista-turnos-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.lista-turnos-table th {
+  background: #DFBD7C;
+  font-weight: 600;
+  font-size: 16px;
+
   color: #333;
+
 }
-.lista-turnos-table .btn-eliminar-turno{
+.lista-turnos-table th:nth-child(1) {
+  border-top-left-radius: 4px;
+ 
+}
+.lista-turnos-table th:nth-child(10) {
+  border-top-right-radius: 4px;
+ 
+}
+
+.lista-turnos-table tr:last-child td {
+  border-bottom: none;
+}
+
+.lista-turnos-table td {
+  font-size: 0.98rem;
+
+}
+
+.lista-turnos-table tr:hover {
+  background: #f0f4ff;
+  transition: background 0.2s;
+}
+
+.empleado-icon {
+  font-size: 1.2rem;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* --- Botones de acción --- */
+.btn-editar-turno,
+.btn-eliminar-turno {
+  background: none;
   border: none;
-  background-color: transparent;
   cursor: pointer;
+  padding: 4px 7px;
+  border-radius: 5px;
+  transition: background 0.2s;
+  margin-right: 4px;
+}
+
+.btn-editar-turno:hover {
+  background: #e3eafc;
+}
+
+.btn-eliminar-turno:hover {
+  background: #ffebee;
+}
+
+/* --- Modal edición --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px 24px;
+  box-shadow: 0 6px 24px rgba(25, 118, 210, 0.13);
+  min-width: 320px;
+  max-width: 95vw;
+}
+
+.modal-content h3 {
+  margin-bottom: 18px;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 12px;
+  color: #333;
+  font-weight: 500;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #bfc8d7;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #333;
+  /* background: #f5f8ff; */
+  transition: border 0.2s;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.modal-actions button {
+  background: #DFBD7C;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .turnos-section-card {
+    padding: 14px 4vw;
+    max-width: 99vw;
+  }
+  .lista-turnos-table th,
+  .lista-turnos-table td {
+    padding: 8px 4px;
+    font-size: 0.95rem;
+    text-align: left;
+  }
 
 }
 
-/* Responsive para tabla de turnos */
-@media (max-width: 700px) {
+@media (max-width: 600px) {
+  .turnos-section-card {
+    padding: 8px 2vw;
+  }
   .lista-turnos-table,
   .lista-turnos-table thead,
   .lista-turnos-table tbody,
@@ -20,166 +175,37 @@
   .lista-turnos-table tr {
     display: block;
     width: 100%;
+
   }
   .lista-turnos-table thead {
     display: none;
   }
   .lista-turnos-table tr {
-    margin-bottom: 18px;
-    background: #fff;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    border: 1px solid #e0e0e0;
+    margin-bottom: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
     padding: 8px 0;
   }
   .lista-turnos-table td {
-    border: none;
-    border-bottom: 1px solid #eee;
+    display: flex;
+    padding: 8px 10px;
+    border-bottom: none;
     position: relative;
-    padding-left: 50%;
     text-align: left;
-    min-height: 44px;
-    white-space: pre-line;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    font-size: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
   }
   .lista-turnos-table td:before {
-    position: absolute;
-    left: 12px;
-    top: 12px;
-    width: 45%;
-    white-space: normal;
-    font-weight: bold;
     content: attr(data-label);
-    padding-bottom: 4px;
+    font-weight: 600;
     display: block;
-  }
-}
-.btn-editar-turno {
-  border: none;
-  padding: 6px 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  background:transparent;
-
-}
-.btn-editar-turno img{
-  width: 23px;
-  height: 23px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.modal-overlay .modal-content {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 400px;
-  width: 100%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease;
-}
-
-.modal-overlay .modal-content h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-}
-
-.modal-overlay .modal-content label {
-  display: block;
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-  color: #333;
-}
-
-.modal-overlay .modal-content input {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin-top: 5px;
-  font-size: 1rem;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-
-.modal-actions button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.modal-actions button:first-child {
-  background-color: #DFBD7C;
-  color: white;
-}
-
-.modal-actions button:first-child:hover {
-  background-color: #DFBD7C;
-}
-
-.modal-actions button:last-child {
-  background-color: #DFBD7C;
-  color: white;
-}
-
-.modal-actions button:last-child:hover {
-  background-color: #DFBD7C;
-}
-
-/* Animación para el modal */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive para pantallas pequeñas */
-@media (max-width: 480px) {
-  .modal-overlay .modal-content {
-    padding: 1rem;
-  }
-
-  .modal-actions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .modal-actions button {
-    width: 100%;
+    margin-bottom: 4px;
+    font-size: 0.97rem;
   }
 }
 
-@media print{
-  .sidebar-horarios{
-    display: none;
-  }
-  .filtros-turnos-agrupados{
-    display: none;
-  }
+/* --- Scroll para tablas grandes --- */
+.lista-turnos-table {
+  overflow-x: auto;
 }
-
-.turnos-section-card .btn-imprimir{
-  margin-bottom: 20px;
-}
-
-
-

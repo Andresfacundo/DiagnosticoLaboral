@@ -29,7 +29,8 @@
 }
 
 /* Estilos para los inputs */
-.agregar-empleado-form input, select {
+.agregar-empleado-form input,
+.agregar-empleado-form select {
   width: 100%;
   padding: 0.8rem 1rem;
   margin-bottom: 0;

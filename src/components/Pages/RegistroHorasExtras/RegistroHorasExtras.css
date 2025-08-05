@@ -19,3 +19,83 @@
     outline: 2px solid #333;
     border-radius: 2px;
 }
+/* RegistroHorasExtras.css */
+
+.registro-horas-extras-container {
+  padding: 1.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+  background-color: #ffffff;
+}
+
+
+
+
+.registro-horas-extras-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.registro-horas-extras-table th,
+.registro-horas-extras-table td {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: middle;
+  text-align: center;
+}
+.registro-horas-extras-table th:nth-child(1) {
+    border-top-left-radius: 4px;
+
+}
+.registro-horas-extras-table th:nth-child(8) {
+    border-top-right-radius: 4px;
+}
+.registro-horas-extras-table th{
+    color: #333;
+    font-weight: 600;
+}
+
+.registro-horas-extras-table thead {
+  background-color: #f1f5f9;
+}
+
+.actividad-editable input {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #94a3b8;
+  border-radius: 3px;
+  font-size: 0.95rem;
+}
+
+.no-empleados {
+  text-align: center;
+  margin-top: 2rem;
+  color: #475569;
+  background-color: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.375rem;
+}
+
+/* Responsive */
+
+
+@media print {
+  .filtros-calendario,
+  .btn-imprimir,
+  .sidebar-horarios,
+  .btn-limpiar-filtros {
+    display: none;
+  }
+
+  .registro-horas-extras-container {
+    padding: 0;
+  }
+
+  .registro-horas-extras-table {
+    font-size: 0.8rem;
+  }
+}
+

@@ -34,14 +34,14 @@ h1 {
 
 
 /* Filtros */
-.filtros {
+.historial-container .filtros {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.filtros input {
+.historial-container .filtros input {
   flex: 1;
   min-width: 250px;
   padding: 0.75rem 1rem;
@@ -51,7 +51,7 @@ h1 {
   transition: var(--transition);
 }
 
-.filtros input:focus {
+.historial-container .filtros input:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
@@ -65,13 +65,13 @@ h1 {
   box-shadow: var(--box-shadow);
 }
 
-table {
+.tabla-resultados table {
   width: 100%;
   border-collapse: collapse;
 }
 
-table th,
-table td {
+.tabla-resultados table th,
+.tabla-resultados table td {
   padding: 1rem;
   text-align: center;
 }
@@ -81,7 +81,7 @@ table td {
   gap: 1rem;
 }
 
-table th {
+.tabla-resultados table th {
   background-color: var(--color-secondary);
   color: white;
   font-weight: 600;
@@ -89,24 +89,24 @@ table th {
   top: 0;
 }
 
-table th:first-child {
+.tabla-resultados table th:first-child {
   border-top-left-radius: var(--border-radius);
 }
 
-table th:last-child {
+.tabla-resultados table th:last-child {
   border-top-right-radius: var(--border-radius);
 }
 
-table tr {
+.tabla-resultados table tr {
   border-bottom: 1px solid var(--color-gray);
   transition: var(--transition);
 }
 
-table tr:hover {
+.tabla-resultados table tr:hover {
   background-color: var(--color-gray-light);
 }
 
-table tr:last-child {
+.tabla-resultados table tr:last-child {
   border-bottom: none;
 }
 
@@ -299,8 +299,8 @@ table tr:last-child {
     width: 100%;
   }
   
-  table th, 
-  table td {
+  .tabla-resultados table th, 
+  .tabla-resultados table td {
     padding: 0.75rem;
   }
   
@@ -321,7 +321,7 @@ table tr:last-child {
 }
 
 @media (max-width: 480px) {
-  table {
+  .tabla-resultados table {
     display: block;
   }
   

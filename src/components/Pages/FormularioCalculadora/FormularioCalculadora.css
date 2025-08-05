@@ -115,7 +115,7 @@
 }
 
 .calculator-container input,
-select {
+.calculator-container select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -123,7 +123,7 @@ select {
 }
 
 .calculator-container input:focus,
-select:focus {
+.calculator-container select:focus {
     outline: none;
     border-color: #4A90E2;
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
