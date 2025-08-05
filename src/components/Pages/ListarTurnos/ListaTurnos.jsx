@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import './ListaTurnos.css';
 import { FaUserCircle, FaSearch, FaEraser } from "react-icons/fa";
 import { format } from "date-fns";
+import es from "date-fns/locale/es";
 import del from "../../../assets/delete.png";
 import editar from '../../../assets/editar.svg';
 
@@ -15,6 +16,17 @@ function ListaTurnos({ actualizar }) {
   const [fechaHasta, setFechaHasta] = useState("");
   const [turnosFiltrados, setTurnosFiltrados] = useState([]);
   const [turnoEditando, setTurnoEditando] = useState(null);
+
+  const formatearFecha = (fechaString) => {
+    if (!fechaString) return '-';
+    try {
+      const fecha = new Date(fechaString + 'T00:00:00');
+      // Mes abreviado y en español, sin punto
+      return format(fecha, "dd/MMM/yyyy", { locale: es }).replace('.', '').toLowerCase();
+    } catch (error) {
+      return fechaString;
+    }
+  };
 
   // Utilidades
   const getEmpleado = id => empleados.find(e => e.id === id);
@@ -177,8 +189,8 @@ function ListaTurnos({ actualizar }) {
                 </td>
                 <td data-label="CC">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
                 <td data-label="Área">{emp.area}</td>
-                <td data-label="Fecha">{turno.diaInicio}</td>
-                <td data-label="Fecha">{turno.diaFin}</td>
+                <td data-label="Fecha">{formatearFecha(turno.diaInicio)}</td>
+                <td data-label="Fecha">{formatearFecha(turno.diaFin)}</td>
                 <td data-label="Hora Inicio">
                   {turno.horaInicio
                     ? format(new Date(`2020-01-01T${turno.horaInicio}`), "hh:mm a")

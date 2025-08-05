@@ -3,12 +3,24 @@ import { FaSearch, FaEraser } from "react-icons/fa";
 import './RegistroHorasExtras.css';
 import SpinnerTimed from "../../Ui/SpinnerTimed/SpinnerTimed";
 import { format } from "date-fns";
+import es from "date-fns/locale/es";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const HORA_NOCTURNA_INICIO = 21;
 const HORA_NOCTURNA_FIN = 6;
 const HORAS_SEMANALES_MAXIMAS = 44;
+
+const formatearFecha = (fechaString) => {
+  if (!fechaString) return '-';
+  try {
+    const fecha = new Date(fechaString + 'T00:00:00');
+    // Mes abreviado y en español, sin punto
+    return format(fecha, "dd/MMM/yyyy", { locale: es }).replace('.', '').toLowerCase();
+  } catch (error) {
+    return fechaString;
+  }
+};
 
 // Agrupa los turnos por semana y trabajador
 function agruparTurnosPorSemanaYTrabajador(turnos, empleado) {
@@ -225,14 +237,14 @@ function RegistroHorasExtras({ actualizar }) {
 
   }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta, resumen]);
 
-  
+
   const limpiarFiltros = () => {
     setFiltroNombre("");
     setFiltroDocumento("");
     setFiltroArea("");
     setFechaDesde("");
     setFechaHasta("");
-    
+
     if (resumen) {
       const todosLosRegistros = [];
       resumen.resumenEmpleados.forEach(empleado => {
@@ -242,11 +254,11 @@ function RegistroHorasExtras({ actualizar }) {
       setRegistrosExtras(todosLosRegistros);
     }
   };
-  
+
   const guardarActividadesEnLocalStorage = (actividades) => {
     localStorage.setItem("actividadesExtras", JSON.stringify(actividades));
   };
-  
+
   // Carga actividades editadas desde localStorage
   const cargarActividadesDeLocalStorage = () => {
     const data = localStorage.getItem("actividadesExtras");
@@ -264,12 +276,12 @@ function RegistroHorasExtras({ actualizar }) {
       return nuevas;
     });
   };
-  
+
   const handleActividadBlur = (index) => {
     setRegistrosExtras(prev =>
       prev.map((registro, i) =>
         i === index ? { ...registro, actividad: actividadesEditables[index] || registro.actividad } : registro
-  )
+      )
     );
     guardarActividadesEnLocalStorage(actividadesEditables);
   };
@@ -339,8 +351,8 @@ function RegistroHorasExtras({ actualizar }) {
                 <td>{registro.empleado}</td>
                 <td>{parseFloat(registro.cc).toLocaleString('es-CO')}</td>
                 <td>{registro.area}</td>
-                <td>{registro.fechaInicio}</td>
-                <td>{registro.fechaFin}</td>
+                <td>{formatearFecha(registro.fechaInicio)}</td>
+                <td>{formatearFecha(registro.fechaFin)}</td>
                 <td>{registro.horasExtrasDiurnas}</td>
                 <td>{registro.horasExtrasNocturnas}</td>
                 <td className="actividad-editable">
