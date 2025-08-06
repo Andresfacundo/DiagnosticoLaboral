@@ -288,21 +288,18 @@ function RegistroHorasExtras({ actualizar }) {
     );
     guardarActividadesEnLocalStorage(actividadesEditables);
   };
-  const nombresUnicos = resumen
-    ? Array.from(
-      new Set(
-        resumen.resumenEmpleados.map(emp => `${emp.nombre} ${emp.apellido}`.trim())
-      )
-    ).filter(n => n)
-    : [];
+  const nombresUnicos = Array.from(
+    new Set(
+      registrosExtras.map(registro => registro.empleado)
+    )
+    ).filter(n => n);
 
-  const areasUnicas = resumen
-    ? Array.from(
-      new Set(
-        resumen.resumenEmpleados.map(emp => emp.area || "")
-      )
-    ).filter(a => a)
-    : [];
+  const areasUnicas = Array.from(
+    new Set(
+      registrosExtras.map(registro => registro.area || "")
+    )
+    ).filter(a => a);
+  
   if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
   return (

@@ -219,50 +219,62 @@ function ListaTurnos({ actualizar }) {
           </tr>
         </thead>
         <tbody>
-          {turnosFiltrados.map(turno => {
-            const emp = getEmpleado(turno.empleadoId) || {};
-            const horasTrabajadas = calcularHorasTrabajadas(turno);
-            return (
-              <tr key={turno.id}>
-                <td data-label="Empleado">
-                  <span className="empleado-icon"><FaUserCircle /></span>
-                  {emp.nombre} {emp.apellido}
-                </td>
-                <td data-label="CC">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
-                <td data-label="Área">{emp.area}</td>
-                <td data-label="Fecha">{formatearFecha(turno.diaInicio)}</td>
-                <td data-label="Fecha">{formatearFecha(turno.diaFin)}</td>
-                <td data-label="Hora Inicio">
-                  {turno.horaInicio
-                    ? format(new Date(`2020-01-01T${turno.horaInicio}`), "hh:mm a")
-                    : ""}
-                </td>
-                <td data-label="Hora Fin">
-                  {turno.horaFin
-                    ? format(new Date(`2020-01-01T${turno.horaFin}`), "hh:mm a")
-                    : ""}
-                </td>
-                <td data-label="Minutos Descanso">{turno.minutosDescanso}</td>
-                <td data-label="Horas Trabajadas">{horasTrabajadas}</td>
-                <td data-label="Acciones">
-                  <button
-                    className="btn-editar-turno"
-                    onClick={() => setTurnoEditando(turno)}
-                    title="Editar turno"
-                  >
-                    <img src={editar} alt="" />
-                  </button>
-                  <button
-                    className="btn-eliminar-turno"
-                    onClick={() => eliminarTurno(turno.id)}
-                    title="Eliminar turno"
-                  >
-                    <img src={del} alt="btn-eliminar" />
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+          {turnosFiltrados
+            .slice() // Para no mutar el estado original
+            .sort((a, b) => {
+              // Ordena por fecha de inicio ascendente
+              if (a.diaInicio < b.diaInicio) return -1;
+              if (a.diaInicio > b.diaInicio) return 1;
+              // Si tienen la misma fecha, puedes ordenar por horaInicio si lo deseas
+              if (a.horaInicio && b.horaInicio) {
+                return a.horaInicio.localeCompare(b.horaInicio);
+              }
+              return 0;
+            })
+            .map(turno => {
+              const emp = getEmpleado(turno.empleadoId) || {};
+              const horasTrabajadas = calcularHorasTrabajadas(turno);
+              return (
+                <tr key={turno.id}>
+                  <td data-label="Empleado">
+                    <span className="empleado-icon"><FaUserCircle /></span>
+                    {emp.nombre} {emp.apellido}
+                  </td>
+                  <td data-label="CC">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
+                  <td data-label="Área">{emp.area}</td>
+                  <td data-label="Fecha">{formatearFecha(turno.diaInicio)}</td>
+                  <td data-label="Fecha">{formatearFecha(turno.diaFin)}</td>
+                  <td data-label="Hora Inicio">
+                    {turno.horaInicio
+                      ? format(new Date(`2020-01-01T${turno.horaInicio}`), "hh:mm a")
+                      : ""}
+                  </td>
+                  <td data-label="Hora Fin">
+                    {turno.horaFin
+                      ? format(new Date(`2020-01-01T${turno.horaFin}`), "hh:mm a")
+                      : ""}
+                  </td>
+                  <td data-label="Minutos Descanso">{turno.minutosDescanso}</td>
+                  <td data-label="Horas Trabajadas">{horasTrabajadas}</td>
+                  <td data-label="Acciones">
+                    <button
+                      className="btn-editar-turno"
+                      onClick={() => setTurnoEditando(turno)}
+                      title="Editar turno"
+                    >
+                      <img src={editar} alt="" />
+                    </button>
+                    <button
+                      className="btn-eliminar-turno"
+                      onClick={() => eliminarTurno(turno.id)}
+                      title="Eliminar turno"
+                    >
+                      <img src={del} alt="btn-eliminar" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
 

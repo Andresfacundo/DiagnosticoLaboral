@@ -11,7 +11,7 @@ const HORA_NOCTURNA_INICIO = 21;
 const HORA_NOCTURNA_FIN = 6;
 const HORAS_SEMANALES_MAXIMAS = 44;
 
-// Función para agrupar turnos por semana (igual que el backend)
+// ... (todas las funciones helper permanecen igual)
 function agruparTurnosPorSemana(turnos) {
   const semanas = {};
   turnos.forEach(turno => {
@@ -27,7 +27,6 @@ function agruparTurnosPorSemana(turnos) {
   return semanas;
 }
 
-// Función para calcular horas nocturnas (igual que el backend)
 function calcularHorasNocturnas(horaInicio, horaFin, minutosDescanso = 0) {
   let inicio = horaInicio * 60;
   let fin = horaFin * 60;
@@ -52,7 +51,6 @@ function calcularHorasNocturnas(horaInicio, horaFin, minutosDescanso = 0) {
   };
 }
 
-// Función para calcular extras desde un minuto específico (igual que el backend)
 function calcularHorasExtrasDesdeMinuto(horaInicio, horaFin, minutosDescanso, minutosHastaExtra) {
   let inicio = horaInicio * 60;
   let fin = horaFin * 60;
@@ -95,7 +93,6 @@ function calcularHorasExtrasDesdeMinuto(horaInicio, horaFin, minutosDescanso, mi
   };
 }
 
-// Función corregida: cálculo SEMANAL de horas extras (igual que el backend)
 function calcularHorasExtrasSemanales(turnosFiltrados, esTrabajadorDireccion = false) {
   if (esTrabajadorDireccion) {
     return { horasExtrasDiurnas: 0, horasExtrasNocturnas: 0 };
@@ -158,13 +155,11 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
   const cantidadTurnos = turnosFiltrados.length;
   const salarioHora = parseFloat(empleado.salarioHora);
 
-  // Recalcular totales desde los turnos filtrados
   const totalHoras = turnosFiltrados.reduce((sum, turno) => sum + parseFloat(turno.tiempoTrabajado || 0), 0);
   const totalHorasFestivas = turnosFiltrados.reduce((sum, turno) => {
     return sum + (turno.esFestivo ? parseFloat(turno.tiempoTrabajado || 0) : 0);
   }, 0);
 
-  // Calcular recargo nocturno total
   let totalHorasNocturnas = 0;
   turnosFiltrados.forEach(turno => {
     const [hiH, hiM] = turno.horaInicio.split(":").map(Number);
@@ -202,11 +197,8 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
   );
 
   const horasExtraTotales = horasExtrasDiurnas + horasExtrasNocturnas;
-
-  // Calcular recargo nocturno sin incluir horas extras nocturnas
   const horasNocturnasSinExtras = Math.max(0, totalHorasNocturnas - horasExtrasNocturnas);
 
-  // Usar la misma lógica de cálculo que el backend
   const valores = {
     horasExtraDiurnas: empleado.esTrabajadorDireccion ? 0 : horasExtrasDiurnas * salarioHora * 1.25,
     horasExtraNocturnas: empleado.esTrabajadorDireccion ? 0 : horasExtrasNocturnas * salarioHora * 1.75,
@@ -214,7 +206,6 @@ function recalcularValoresPorFecha(empleado, fechaDesdeFiltro = "", fechaHastaFi
     recargoFestivo: totalHorasFestivas * salarioHora * 0.80
   };
 
-  // Usar los mismos cálculos finales que el backend
   const totalValores = Object.values(valores).reduce((sum, val) => sum + val, 0);
   const totalPagar = Math.round(totalValores * 0.92);
   const costoTotal = Math.round(totalValores * 1.3855);
@@ -260,12 +251,18 @@ function ResumenNomina({ actualizar }) {
   const [empleadosFiltrados, setEmpleadosFiltrados] = useState([]);
   const [mostrarSpinner, setMostrarSpinner] = useState(true);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  // ✅ NUEVO: Estado para controlar cuando los datos están completamente listos
+  const [datosListos, setDatosListos] = useState(false);
 
+  // ✅ MEJORADO: useEffect principal con mejor control del estado de carga
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
     const turnosGuardados = localStorage.getItem("turnos");
 
     const cargarResumen = async () => {
+      setMostrarSpinner(true);
+      setDatosListos(false); // ✅ Resetear estado
+      
       try {
         const res = await fetch(`${API_URL}/api/resumen`, {
           method: "POST",
@@ -280,9 +277,19 @@ function ResumenNomina({ actualizar }) {
         const data = await res.json();
 
         setResumen(data);
-        setEmpleadosFiltrados(data.resumenEmpleados.map(emp => recalcularValoresPorFecha(emp)));
+        
+        // ✅ MEJORADO: Procesar empleados inmediatamente
+        const empleadosProcesados = data.resumenEmpleados
+          ?.filter(emp => emp.detalleTurnos && emp.detalleTurnos.length > 0)
+          ?.map(emp => recalcularValoresPorFecha(emp)) || [];
+        
+        setEmpleadosFiltrados(empleadosProcesados);
+        setDatosListos(true); // ✅ Marcar datos como listos
+        
       } catch (error) {
         console.error("Error al cargar resumen:", error);
+        setEmpleadosFiltrados([]);
+        setDatosListos(true); // ✅ También marcar como listo en caso de error
       } finally {
         setMostrarSpinner(false);
       }
@@ -291,11 +298,16 @@ function ResumenNomina({ actualizar }) {
     cargarResumen();
   }, [actualizar]);
 
-
+  // ✅ MEJORADO: useEffect de filtros con mejor control
   useEffect(() => {
-    if (!resumen) return;
+    // ✅ Solo ejecutar si tenemos datos del resumen
+    if (!resumen || !datosListos) return;
+    
     const filtrados = resumen.resumenEmpleados
-      .filter(emp => {
+      ?.filter(emp => {
+        // Solo empleados con al menos un turno asignado
+        if (!emp.detalleTurnos || emp.detalleTurnos.length === 0) return false;
+
         const nombreCompleto = `${emp.nombre} ${emp.apellido}`.toLowerCase();
 
         let cumpleFecha = true;
@@ -316,12 +328,10 @@ function ResumenNomina({ actualizar }) {
           cumpleFecha
         );
       })
-      .map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta));
+      ?.map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta)) || [];
+    
     setEmpleadosFiltrados(filtrados);
-
-  }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta]);
-
-  if (mostrarSpinner || !resumen) return <SpinnerTimed />;
+  }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta, resumen, datosListos]);
 
   const limpiarFiltros = () => {
     setFiltroNombre("");
@@ -329,25 +339,32 @@ function ResumenNomina({ actualizar }) {
     setFiltroArea("");
     setFechaDesde("");
     setFechaHasta("");
-    if (resumen) {
-      setEmpleadosFiltrados(resumen.resumenEmpleados.map(emp => recalcularValoresPorFecha(emp)));
+    
+    if (resumen && datosListos) {
+      const filtrados = resumen.resumenEmpleados
+        ?.filter(emp => emp.detalleTurnos && emp.detalleTurnos.length > 0)
+        ?.map(emp => recalcularValoresPorFecha(emp)) || [];
+      setEmpleadosFiltrados(filtrados);
     }
   };
-  const nombresUnicos = resumen
-    ? Array.from(
-      new Set(
-        resumen.resumenEmpleados.map(emp => `${emp.nombre} ${emp.apellido}`.trim())
-      )
-    ).filter(n => n)
-    : [];
+    
+  // Filtros solo con empleados actualmente en el listado
+  const nombresUnicos = Array.from(
+    new Set(
+      empleadosFiltrados.map(emp => `${emp.nombre} ${emp.apellido}`.trim())
+    )
+  ).filter(n => n);
 
-  const areasUnicas = resumen
-    ? Array.from(
-      new Set(
-        resumen.resumenEmpleados.map(emp => emp.area || "")
-      )
-    ).filter(a => a)
-    : [];
+  const areasUnicas = Array.from(
+    new Set(
+      empleadosFiltrados.map(emp => emp.area || "")
+    )
+  ).filter(a => a);
+
+  // ✅ MEJORADO: Condición de renderizado más precisa
+  if (mostrarSpinner || !datosListos) {
+    return <SpinnerTimed />;
+  }
 
   return (
     <div className="resumen-nomina-container">
@@ -457,12 +474,12 @@ function ResumenNomina({ actualizar }) {
                 <td>{emp.horas?.recargoNocturno ?? "0.00"}</td>
                 <td>{emp.horas?.horasFestivas ?? "0.00"}</td>
                 <td>{emp.horas?.otrasHorasExtras ?? "0.00"}</td>
-                <td>${emp.valores?.otrasHorasExtras.toLocaleString('es-CO')}</td>
-                <td>${emp.pagoExtra.toLocaleString('es-CO')}</td>
-                <td>${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? 0}</td>
-                <td>${emp.pagoFestivo?.toLocaleString('es-CO') ?? 0}</td>
-                <td><b>${emp.totalPagar.toLocaleString('es-CO')}</b></td>
-                <td><b>${emp.costoTotal.toLocaleString('es-CO')}</b></td>
+                <td>${emp.valores?.otrasHorasExtras?.toLocaleString('es-CO') ?? "0"}</td>
+                <td>${emp.pagoExtra?.toLocaleString('es-CO') ?? "0"}</td>
+                <td>${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? "0"}</td>
+                <td>${emp.pagoFestivo?.toLocaleString('es-CO') ?? "0"}</td>
+                <td><b>${emp.totalPagar?.toLocaleString('es-CO') ?? "0"}</b></td>
+                <td><b>${emp.costoTotal?.toLocaleString('es-CO') ?? "0"}</b></td>
               </tr>
             ))}
           </tbody>
@@ -492,10 +509,10 @@ function ResumenNomina({ actualizar }) {
                   {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasFestivas || 0), 0).toFixed(2)}
                 </td>
                 <td>
-                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.otrasHorasExtras), 0).toLocaleString('es-CO')}
+                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.otrasHorasExtras || 0), 0).toLocaleString('es-CO')}
                 </td>
                 <td>
-                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoExtra), 0).toLocaleString('es-CO')}
+                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoExtra || 0), 0).toLocaleString('es-CO')}
                 </td>
                 <td>
                   ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.recargoNocturno ?? 0), 0).toLocaleString('es-CO')}
@@ -504,10 +521,10 @@ function ResumenNomina({ actualizar }) {
                   ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoFestivo ?? 0), 0).toLocaleString('es-CO')}
                 </td>
                 <td>
-                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalPagar), 0).toLocaleString('es-CO')}</b>
+                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalPagar || 0), 0).toLocaleString('es-CO')}</b>
                 </td>
                 <td>
-                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.costoTotal), 0).toLocaleString('es-CO')}</b>
+                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.costoTotal || 0), 0).toLocaleString('es-CO')}</b>
                 </td>
               </tr>
             </tfoot>
@@ -522,5 +539,4 @@ function ResumenNomina({ actualizar }) {
     </div>
   );
 }
-
 export default ResumenNomina;
