@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import './ListaTurnos.css';
 import { FaUserCircle, FaSearch, FaEraser } from "react-icons/fa";
 import { format } from "date-fns";
@@ -19,36 +19,52 @@ function ListaTurnos({ actualizar }) {
   const [turnosFiltrados, setTurnosFiltrados] = useState([]);
   const [turnoEditando, setTurnoEditando] = useState(null);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    if (!mostrarFiltros) return;
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setMostrarFiltros(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+
+
+
+  }, [mostrarFiltros]);
+
+  const handleFiltroChange = (setterFunction, value) => {
+    setterFunction(value);
+    setTimeout(() => setMostrarFiltros(false), 100);
+  };
 
 
   const formatearFecha = (fechaString) => {
     if (!fechaString) return '-';
     try {
       const fecha = new Date(fechaString + 'T00:00:00');
-      // Mes abreviado y en español, sin punto
       return format(fecha, "dd/MMM/yyyy", { locale: es }).replace('.', '').toLowerCase();
     } catch (error) {
       return fechaString;
     }
   };
 
-  // Utilidades
   const getEmpleado = id => empleados.find(e => e.id === id);
 
-  // CRUD
   const eliminarTurno = id => {
     const nuevosTurnos = turnos.filter(t => t.id !== id);
     setTurnos(nuevosTurnos);
-    setTurnosFiltrados(nuevosTurnos);
     localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
   };
-
   const guardarEdicionTurno = () => {
     const nuevosTurnos = turnos.map(t =>
       t.id === turnoEditando.id ? turnoEditando : t
     );
     setTurnos(nuevosTurnos);
-    setTurnosFiltrados(nuevosTurnos);
     localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
     setTurnoEditando(null);
   };
@@ -99,6 +115,7 @@ function ListaTurnos({ actualizar }) {
     setFechaDesde("");
     setFechaHasta("");
     setTurnosFiltrados(turnos);
+    setMostrarFiltros(false);
   };
 
   // Carga inicial
@@ -109,10 +126,6 @@ function ListaTurnos({ actualizar }) {
     setTurnos(turnosGuardados ? JSON.parse(turnosGuardados) : []);
   }, [actualizar]);
 
-  // Actualiza turnos filtrados cuando cambian los turnos
-  useEffect(() => {
-    setTurnosFiltrados(turnos);
-  }, [turnos]);
 
   const nombresUnicos = Array.from(
     new Set(
@@ -149,12 +162,12 @@ function ListaTurnos({ actualizar }) {
           </span>
         </div>
         {mostrarFiltros && (
-          <div className="filtros-dropdown">
-            <div className="filtros-calendario-container">
+          <div className="filtros-dropdown" ref={modalRef}>
+            <div className="filtros-calendario-container" >
               <div className="filtros-calendario-box">
                 <select
                   value={filtroNombre}
-                  onChange={e => setFiltroNombre(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroNombre, e.target.value)}
                 >
                   <option value="">Todos los nombres</option>
                   {nombresUnicos.map(nombre => (
@@ -163,7 +176,7 @@ function ListaTurnos({ actualizar }) {
                 </select>
                 <select
                   value={filtroArea}
-                  onChange={e => setFiltroArea(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroArea, e.target.value)}
                 >
                   <option value="">Todas las áreas</option>
                   {areasUnicas.map(area => (
@@ -183,13 +196,13 @@ function ListaTurnos({ actualizar }) {
                 type="date"
                 placeholder="Desde"
                 value={fechaDesde}
-                onChange={(e) => setFiltroFechaDesde(e.target.value)}
+                onChange={(e) => setFechaDesde(e.target.value)}
               />
               <input
                 type="date"
                 placeholder="Hasta"
                 value={fechaHasta}
-                onChange={(e) => setFiltroFechaHasta(e.target.value)}
+                onChange={(e) => setFechaHasta(e.target.value)}
               />
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import es from "date-fns/locale/es";
@@ -50,6 +50,29 @@ function CalendarioTurnos() {
   const [filtroFechaDesde, setFiltroFechaDesde] = useState("");
   const [filtroFechaHasta, setFiltroFechaHasta] = useState("");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    if(!mostrarFiltros) return;
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setMostrarFiltros(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+ 
+    
+
+  }, [mostrarFiltros]);
+
+
+  const handleFiltroChange = (setterFunction, value) => {
+    setterFunction(value);
+    setTimeout(() => setMostrarFiltros(false), 100);
+  };
 
   // Función para calcular las horas trabajadas
   const calcularHorasTrabajadas = (horaInicio, horaFin, minutosDescanso = 0) => {
@@ -241,7 +264,6 @@ function CalendarioTurnos() {
     setModalOpen(true);
   };
 
-  // Función para actualizar un turno existente en localStorage (sin cambiar id)
   const actualizarTurnoPorId = (turnoActualizado) => {
     let turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
     const nuevosTurnos = turnosActuales.map((t) => (t.id === turnoActualizado.id ? turnoActualizado : t));
@@ -249,7 +271,6 @@ function CalendarioTurnos() {
     recargarEventosDesdeLS();
   };
 
-  // Función para crear un id único basado en los datos, sin usar Date.now()
   const crearTurnoId = (turno) =>
     [turno.empleadoId, turno.diaInicio, turno.horaInicio, turno.diaFin, turno.horaFin].join("_");
 
@@ -411,6 +432,7 @@ function CalendarioTurnos() {
     setFiltroArea("");
     setFiltroFechaDesde("");
     setFiltroFechaHasta("");
+    setMostrarFiltros(false);
   };
 
   return (
@@ -428,12 +450,12 @@ function CalendarioTurnos() {
           </span>
         </div>
         {mostrarFiltros && (
-          <div className="filtros-dropdown">
+          <div className="filtros-dropdown" ref={modalRef}>
             <div className="filtros-calendario-container">
               <div className="filtros-calendario-box">
                 <select
                   value={filtroNombre}
-                  onChange={e => setFiltroNombre(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroNombre, e.target.value)}
                 >
                   <option value="">Todos los nombres</option>
                   {nombresUnicos.map(nombre => (
@@ -442,7 +464,7 @@ function CalendarioTurnos() {
                 </select>
                 <select
                   value={filtroArea}
-                  onChange={e => setFiltroArea(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroArea, e.target.value)}
                 >
                   <option value="">Todas las áreas</option>
                   {areasUnicas.map(area => (
@@ -469,6 +491,7 @@ function CalendarioTurnos() {
                 placeholder="Hasta"
                 value={filtroFechaHasta}
                 onChange={(e) => setFiltroFechaHasta(e.target.value)}
+                onBlur={() => setMostrarFiltros(false)}
               />
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>

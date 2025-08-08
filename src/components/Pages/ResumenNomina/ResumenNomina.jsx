@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaSearch, FaEraser } from "react-icons/fa";
 import './ResumenNomina.css';
 import SpinnerTimed from "../../Ui/SpinnerTimed/SpinnerTimed";
@@ -11,7 +11,6 @@ const HORA_NOCTURNA_INICIO = 21;
 const HORA_NOCTURNA_FIN = 6;
 const HORAS_SEMANALES_MAXIMAS = 44;
 
-// ... (todas las funciones helper permanecen igual)
 function agruparTurnosPorSemana(turnos) {
   const semanas = {};
   turnos.forEach(turno => {
@@ -251,18 +250,33 @@ function ResumenNomina({ actualizar }) {
   const [empleadosFiltrados, setEmpleadosFiltrados] = useState([]);
   const [mostrarSpinner, setMostrarSpinner] = useState(true);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  // ✅ NUEVO: Estado para controlar cuando los datos están completamente listos
   const [datosListos, setDatosListos] = useState(false);
+  const modalRef = useRef(null);
 
-  // ✅ MEJORADO: useEffect principal con mejor control del estado de carga
+  useEffect(() => {
+    if (!mostrarFiltros) return;
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setMostrarFiltros(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+
+
+
+  }, [mostrarFiltros]);
+
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
     const turnosGuardados = localStorage.getItem("turnos");
 
     const cargarResumen = async () => {
       setMostrarSpinner(true);
-      setDatosListos(false); // ✅ Resetear estado
-      
+      setDatosListos(false);
+
       try {
         const res = await fetch(`${API_URL}/api/resumen`, {
           method: "POST",
@@ -277,19 +291,18 @@ function ResumenNomina({ actualizar }) {
         const data = await res.json();
 
         setResumen(data);
-        
-        // ✅ MEJORADO: Procesar empleados inmediatamente
+
         const empleadosProcesados = data.resumenEmpleados
           ?.filter(emp => emp.detalleTurnos && emp.detalleTurnos.length > 0)
           ?.map(emp => recalcularValoresPorFecha(emp)) || [];
-        
+
         setEmpleadosFiltrados(empleadosProcesados);
-        setDatosListos(true); // ✅ Marcar datos como listos
-        
+        setDatosListos(true);
+
       } catch (error) {
         console.error("Error al cargar resumen:", error);
         setEmpleadosFiltrados([]);
-        setDatosListos(true); // ✅ También marcar como listo en caso de error
+        setDatosListos(true);
       } finally {
         setMostrarSpinner(false);
       }
@@ -298,14 +311,13 @@ function ResumenNomina({ actualizar }) {
     cargarResumen();
   }, [actualizar]);
 
-  // ✅ MEJORADO: useEffect de filtros con mejor control
+
   useEffect(() => {
-    // ✅ Solo ejecutar si tenemos datos del resumen
+
     if (!resumen || !datosListos) return;
-    
+
     const filtrados = resumen.resumenEmpleados
       ?.filter(emp => {
-        // Solo empleados con al menos un turno asignado
         if (!emp.detalleTurnos || emp.detalleTurnos.length === 0) return false;
 
         const nombreCompleto = `${emp.nombre} ${emp.apellido}`.toLowerCase();
@@ -329,7 +341,7 @@ function ResumenNomina({ actualizar }) {
         );
       })
       ?.map(emp => recalcularValoresPorFecha(emp, fechaDesde, fechaHasta)) || [];
-    
+
     setEmpleadosFiltrados(filtrados);
   }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta, resumen, datosListos]);
 
@@ -339,7 +351,7 @@ function ResumenNomina({ actualizar }) {
     setFiltroArea("");
     setFechaDesde("");
     setFechaHasta("");
-    
+
     if (resumen && datosListos) {
       const filtrados = resumen.resumenEmpleados
         ?.filter(emp => emp.detalleTurnos && emp.detalleTurnos.length > 0)
@@ -347,8 +359,8 @@ function ResumenNomina({ actualizar }) {
       setEmpleadosFiltrados(filtrados);
     }
   };
-    
-  // Filtros solo con empleados actualmente en el listado
+
+
   const nombresUnicos = Array.from(
     new Set(
       empleadosFiltrados.map(emp => `${emp.nombre} ${emp.apellido}`.trim())
@@ -361,7 +373,6 @@ function ResumenNomina({ actualizar }) {
     )
   ).filter(a => a);
 
-  // ✅ MEJORADO: Condición de renderizado más precisa
   if (mostrarSpinner || !datosListos) {
     return <SpinnerTimed />;
   }
@@ -372,7 +383,7 @@ function ResumenNomina({ actualizar }) {
         Generar PDF
       </button>
 
-      <div className="filtros-calendario">
+      <div className="filtros-calendario" ref={modalRef}>
         <div className="filtros-calendario-header">
           <span className="filtros-calendario-titulo">Filtros</span>
           <span>
@@ -382,7 +393,7 @@ function ResumenNomina({ actualizar }) {
           </span>
         </div>
         {mostrarFiltros && (
-          <div className="filtros-dropdown">
+          <div className="filtros-dropdown" >
             <div className="filtros-calendario-container">
               <div className="filtros-calendario-box">
                 <select

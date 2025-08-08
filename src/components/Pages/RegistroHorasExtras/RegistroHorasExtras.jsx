@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaSearch, FaEraser } from "react-icons/fa";
 import './RegistroHorasExtras.css';
 import SpinnerTimed from "../../Ui/SpinnerTimed/SpinnerTimed";
@@ -167,6 +167,25 @@ function RegistroHorasExtras({ actualizar }) {
   const [mostrarSpinner, setMostrarSpinner] = useState(true);
   const [actividadesEditables, setActividadesEditables] = useState({});
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const modalRef = React.useRef(null);
+
+
+  
+    useEffect(() => {
+      if (!mostrarFiltros) return;
+      const handleClickOutside = (event) => {
+        if (modalRef.current && !modalRef.current.contains(event.target)) {
+          setMostrarFiltros(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+  
+  
+  
+    }, [mostrarFiltros]);
 
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -318,7 +337,7 @@ function RegistroHorasExtras({ actualizar }) {
           </span>
         </div>
         {mostrarFiltros && (
-          <div className="filtros-dropdown">
+          <div className="filtros-dropdown" ref={modalRef}>
             <div className="filtros-calendario-container">
               <div className="filtros-calendario-box">
                 <select
