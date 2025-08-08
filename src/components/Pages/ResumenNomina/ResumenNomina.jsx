@@ -500,13 +500,13 @@ function ResumenNomina({ actualizar }) {
                   {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasExtraNocturnas || 0), 0).toFixed(2)}
                 </td>
                 <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.otrasHorasExtras || 0), 0).toFixed(2)}
-                </td>
-                <td>
                   {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.recargoNocturno || 0), 0).toFixed(2)}
                 </td>
                 <td>
                   {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasFestivas || 0), 0).toFixed(2)}
+                </td>
+                <td>
+                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.otrasHorasExtras || 0), 0).toFixed(2)}
                 </td>
                 <td>
                   ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.otrasHorasExtras || 0), 0).toLocaleString('es-CO')}
