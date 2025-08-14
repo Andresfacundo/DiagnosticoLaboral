@@ -85,7 +85,7 @@
 }
 
 /* --- Modal edición --- */
-.modal-overlay {
+.modal-overlay-turnos {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.13);
@@ -95,7 +95,7 @@
   z-index: 999;
 }
 
-.modal-content {
+.modal-overlay-turnos .modal-content {
   background: #fff;
   border-radius: 10px;
   padding: 28px 24px;
@@ -104,18 +104,18 @@
   max-width: 95vw;
 }
 
-.modal-content h3 {
+.modal-overlay-turnos .modal-content h3 {
   margin-bottom: 18px;
 }
 
-.modal-content label {
+.modal-overlay-turnos .modal-content label {
   display: block;
   margin-bottom: 12px;
   color: #333;
   font-weight: 500;
 }
 
-.modal-content input {
+.modal-overlay-turnos .modal-content input {
   width: 100%;
   padding: 8px 12px;
   border-radius: 6px;

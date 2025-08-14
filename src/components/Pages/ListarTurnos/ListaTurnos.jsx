@@ -293,7 +293,7 @@ function ListaTurnos({ actualizar }) {
 
       {/* Modal de edición */}
       {turnoEditando && (
-        <div className="modal-overlay">
+        <div className="modal-overlay-turnos">
           <div className="modal-content">
             <h3>Editar Turno</h3>
             <label>
