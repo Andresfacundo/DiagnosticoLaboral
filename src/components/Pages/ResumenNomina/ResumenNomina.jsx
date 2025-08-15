@@ -293,8 +293,7 @@ function ResumenNomina({ actualizar }) {
         setResumen(data);
 
         const empleadosProcesados = data.resumenEmpleados
-          ?.filter(emp => emp.detalleTurnos && emp.detalleTurnos.length > 0)
-          ?.map(emp => recalcularValoresPorFecha(emp)) || [];
+          ?.filter(emp => emp.detalleTurnos && emp.detalleTurnos.length > 0) || [];
 
         setEmpleadosFiltrados(empleadosProcesados);
         setDatosListos(true);

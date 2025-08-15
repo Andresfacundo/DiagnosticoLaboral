@@ -209,3 +209,24 @@
 .lista-turnos-table {
   overflow-x: auto;
 }
+@media print{
+  .lista-turnos-table{
+    width: 100%;
+    /* font-size: 16px; */
+    /* font-size: 12px; */
+    /* border-collapse: collapse; */
+  }
+  .lista-turnos-table th,
+  .lista-turnos-table td {
+    font-size: 22px;
+    padding: 15px 6px;
+    /* margin: 0; */
+
+  }
+  .lista-turnos-table th:nth-child(10),
+  .lista-turnos-table td:nth-child(10) {
+    display: none;
+
+
+  }
+}

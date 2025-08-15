@@ -52,8 +52,22 @@ function CalendarioTurnos() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const modalRef = useRef(null);
 
+
+  const generarOpcionesHora = () => {
+    const opciones = [];
+    for (let h = 0; h < 24; h++) {
+      for (let m = 0; m < 60; m += 30) {
+        const hora = h.toString().padStart(2, "0");
+        const minuto = m.toString().padStart(2, "0");
+        opciones.push(`${hora}:${minuto}`);
+      }
+    }
+    return opciones;
+  };
+  const opcionesHora = generarOpcionesHora();
+
   useEffect(() => {
-    if(!mostrarFiltros) return;
+    if (!mostrarFiltros) return;
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         setMostrarFiltros(false);
@@ -63,8 +77,8 @@ function CalendarioTurnos() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
- 
-    
+
+
 
   }, [mostrarFiltros]);
 
@@ -193,6 +207,15 @@ function CalendarioTurnos() {
           id: turno.id,
           title: getEmpleadoNombre(turno.empleadoId),
           start: startDate,
+          end: new Date(`${turno.diaInicio}T23:59:59`),
+          empleadoId: turno.empleadoId,
+          minutosDescanso: turno.minutosDescanso,
+          resource: turno,
+        });
+        eventosFormateados.push({
+          id: turno.id,
+          title: getEmpleadoNombre(turno.empleadoId),
+          start: new Date(`${turno.diaFin}T00:00`),
           end: endDate,
           empleadoId: turno.empleadoId,
           minutosDescanso: turno.minutosDescanso,
@@ -271,81 +294,107 @@ function CalendarioTurnos() {
     recargarEventosDesdeLS();
   };
 
-  const crearTurnoId = (turno) =>
-    [turno.empleadoId, turno.diaInicio, turno.horaInicio, turno.diaFin, turno.horaFin].join("_");
+  const crearTurnoId = (turno) => {
+    // Generar un ID único basado en los datos del turno y un timestamp
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    return `${turno.empleadoId}_${turno.diaInicio}_${turno.horaInicio}_${timestamp}_${random}`;
+  };
+
 
   const handleGuardarTurno = (e) => {
     e.preventDefault();
 
     // Validar que las horas trabajadas no excedan las 11 horas
     if (!validarHorasTurno(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso)) {
-      const horasTrabajadas = calcularHorasTrabajadas(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso);
-      alert(`No se puede crear el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) exceden el máximo permitido de 11 horas.`);
+      const horasTrabajadas = calcularHorasTrabajadas(
+        nuevoTurno.horaInicio,
+        nuevoTurno.horaFin,
+        nuevoTurno.minutosDescanso
+      );
+      alert(
+        `No se puede crear el turno. Las horas trabajadas (${horasTrabajadas.toFixed(
+          2
+        )} horas) exceden el máximo permitido de 11 horas.`
+      );
       return;
     }
 
+    // MODO EDICIÓN
     if (modalType === "edit" && turnoSeleccionado) {
-      // Edición: actualiza el turno existente sin cambiar id
       const turnoEditado = {
-        ...turnoSeleccionado.resource, // base del turno original
-        ...nuevoTurno, // datos actualizados desde el formulario
-        id: turnoSeleccionado.id, // conservar mismo id
+        ...turnoSeleccionado.resource,
+        ...nuevoTurno,
+        id: turnoSeleccionado.id,
       };
       actualizarTurnoPorId(turnoEditado);
       setModalOpen(false);
       return;
     }
 
-    // CREACIÓN de un nuevo turno (puede haber varios días)
+    // CREACIÓN de turnos
     const turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
 
     const [horaInicioHoras, horaInicioMinutos] = nuevoTurno.horaInicio.split(":").map(Number);
     const [horaFinHoras, horaFinMinutos] = nuevoTurno.horaFin.split(":").map(Number);
+
     const cruzaMedianoche =
-      horaFinHoras < horaInicioHoras || (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
+      horaFinHoras < horaInicioHoras ||
+      (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
 
     const nuevosTurnos = [];
 
-    // Si cruza medianoche y día fin es igual al día inicio, sumamos 1 día automáticamente
-    let diaFinReal = nuevoTurno.diaFin;
-    if (cruzaMedianoche && nuevoTurno.diaFin === nuevoTurno.diaInicio) {
-      const fecha = new Date(nuevoTurno.diaInicio + "T00:00");
-      fecha.setDate(fecha.getDate() + 1);
-      diaFinReal = format(fecha, "yyyy-MM-dd");
-    }
+    let startDate = new Date(nuevoTurno.diaInicio + "T00:00");
+    let endDate = new Date(nuevoTurno.diaFin + "T00:00");
 
-    const start = new Date(`${nuevoTurno.diaInicio}T${nuevoTurno.horaInicio}`);
-    const end = new Date(`${diaFinReal}T${nuevoTurno.horaFin}`);
+    // Recorremos el rango de días
+    let current = new Date(startDate);
+    while (current <= endDate) {
+      const diaSemana = current.getDay(); // 0 = domingo, 1 = lunes, etc.
 
-    if (cruzaMedianoche) {
-      const turnoId = crearTurnoId({ ...nuevoTurno, diaFin: diaFinReal });
+      // Saltar si es día de descanso
+      if (nuevoTurno.diasDescanso?.includes(diaSemana)) {
+        current.setDate(current.getDate() + 1);
+        continue;
+      }
+
+      const dia = format(current, "yyyy-MM-dd");
+
+      // Determinar día fin real del turno
+      let diaFinTurno;
+      if (cruzaMedianoche) {
+        const nextDay = new Date(current);
+        nextDay.setDate(nextDay.getDate() + 1);
+        diaFinTurno = format(nextDay, "yyyy-MM-dd");
+      } else {
+        diaFinTurno = dia;
+      }
+
+      const turnoId = crearTurnoId({
+        ...nuevoTurno,
+        diaInicio: dia,
+        diaFin: diaFinTurno,
+      });
+
       nuevosTurnos.push({
         ...nuevoTurno,
-        diaFin: diaFinReal,
+        diaInicio: dia,
+        diaFin: diaFinTurno,
         id: turnoId,
       });
-    } else {
-      const current = new Date(start);
-      while (current <= end) {
-        const dia = format(current, "yyyy-MM-dd");
-        const turnoId = crearTurnoId({ ...nuevoTurno, diaInicio: dia, diaFin: dia });
-        nuevosTurnos.push({
-          ...nuevoTurno,
-          diaInicio: dia,
-          diaFin: dia,
-          horaInicio: nuevoTurno.horaInicio,
-          horaFin: nuevoTurno.horaFin,
-          id: turnoId,
-        });
-        current.setDate(current.getDate() + 1);
-      }
+
+      current.setDate(current.getDate() + 1); // siguiente día
     }
 
+    // Guardar turnos en LS
     const turnosFinales = [...turnosActuales, ...nuevosTurnos];
     guardarTurnosEnLocalStorage(turnosFinales);
+
+    // Cerrar modal y refrescar calendario
     setModalOpen(false);
     recargarEventosDesdeLS();
   };
+
 
   const handleEliminarTurno = () => {
     const turnosActuales = JSON.parse(localStorage.getItem("turnos")) || [];
@@ -610,27 +659,62 @@ function CalendarioTurnos() {
 
           <div className="form-group">
             <label className="form-label">Hora inicio:</label>
-            <input
-              type="time"
-              className="form-input"
+            <select
+              className="form-select"
               name="horaInicio"
               value={nuevoTurno.horaInicio}
               onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })}
               required
-            />
+            >
+              <option value="" className="hora-option">Seleccione hora inicio</option>
+              {opcionesHora.map((hora) => (
+                <option key={hora} value={hora} className="hora-option">{hora}</option>
+              ))}
+            </select>
           </div>
 
           <div className="form-group">
             <label className="form-label">Hora fin:</label>
-            <input
-              type="time"
-              className="form-input"
+            <select
+              className="form-select"
               name="horaFin"
               value={nuevoTurno.horaFin}
               onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })}
               required
-            />
+            >
+              <option value="">Seleccione hora fin</option>
+              {opcionesHora.map((hora) => (
+                <option key={hora} value={hora}>{hora}</option>
+              ))}
+            </select>
           </div>
+          {/* <div className="form-group">
+            <label className="form-label">Días de descanso:</label>
+            <div className="dias-descanso-container">
+              {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"].map((dia, index) => (
+                <label
+                  key={dia}
+                  className={`dia-descanso ${nuevoTurno.diasDescanso?.includes(index) ? "activo" : ""}`}
+                >
+                  <input
+                    type="checkbox"
+                    value={index}
+                    checked={nuevoTurno.diasDescanso?.includes(index)}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      setNuevoTurno((prev) => {
+                        const diasDescanso = prev.diasDescanso || [];
+                        return diasDescanso.includes(value)
+                          ? { ...prev, diasDescanso: diasDescanso.filter((d) => d !== value) }
+                          : { ...prev, diasDescanso: [...diasDescanso, value] };
+                      });
+                    }}
+                  />
+                  {dia}
+                </label>
+              ))}
+            </div>
+          </div> */}
 
           <div className="form-group">
             <label className="form-label">Minutos de descanso:</label>

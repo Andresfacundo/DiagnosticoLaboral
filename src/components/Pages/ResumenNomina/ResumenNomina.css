@@ -12,8 +12,7 @@
   border-collapse: collapse;
   font-size: 1rem;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border: 1px solid red;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .resumen-nomina-table th,
@@ -28,9 +27,11 @@
   color: #333;
   font-weight: 600;
 }
+
 .resumen-nomina-table th:first-child {
   border-top-left-radius: 4px;
 }
+
 .resumen-nomina-table th:last-child {
   border-top-right-radius: 4px;
 }
@@ -61,40 +62,55 @@
 
 /* Responsive */
 @media (max-width: 900px) {
-  .resumen-nomina-table th, .resumen-nomina-table td {
+
+  .resumen-nomina-table th,
+  .resumen-nomina-table td {
     font-size: 0.95rem;
     padding: 6px 4px;
   }
 }
 
 @media (max-width: 700px) {
-    .resumen-nomina-table, .resumen-nomina-table thead, .resumen-nomina-table tbody, .resumen-nomina-table th, .resumen-nomina-table td, .resumen-nomina-table tr {
+
+  .resumen-nomina-table,
+  .resumen-nomina-table thead,
+  .resumen-nomina-table tbody,
+  .resumen-nomina-table th,
+  .resumen-nomina-table td,
+  .resumen-nomina-table tr {
     display: block;
     justify-content: space-between;
   }
+
   .resumen-nomina-table thead {
     display: none;
   }
+
   .resumen-nomina-table tr {
     margin-bottom: 16px;
     background: #fff;
     border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     border: 1px solid #e0e0e0;
     text-align: center;
   }
+
   .resumen-nomina-table td {
     border: none;
     border-bottom: 1px solid #eee;
     position: relative;
     padding-left: 50%;
     text-align: left;
-    min-height: 44px; /* más alto */
+    min-height: 44px;
+    /* más alto */
     white-space: pre-line;
-    padding-top: 12px;   /* espacio arriba */
-    padding-bottom: 12px;/* espacio abajo */
+    padding-top: 12px;
+    /* espacio arriba */
+    padding-bottom: 12px;
+    /* espacio abajo */
 
   }
+
   .resumen-nomina-table td:before {
     position: absolute;
     left: 12px;
@@ -106,7 +122,7 @@
     content: attr(data-label);
     padding-bottom: 4px;
     display: block;
-    
+
   }
 }
 
@@ -116,12 +132,28 @@
   }
 
 }
-.resumen-nomina-container .btn-imprimir{
+
+.resumen-nomina-container .btn-imprimir {
   margin-bottom: 20px;
 }
-/* Spinner simple */
-@media print{
-  .filtros{
-    display: none;
+
+@media print {
+  .resumen-nomina-table {
+    width: 100%;
+
   }
+  .resumen-nomina-table th,
+  .resumen-nomina-table td {
+    font-size: 19px;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;/* Chrome, Edge */
+    print-color-adjust: exact !important;/* Firefox */
+    color-adjust: exact !important;
+  }
+
+
+
+
+
 }

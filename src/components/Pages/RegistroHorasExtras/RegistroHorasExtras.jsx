@@ -17,14 +17,12 @@ const formatearFecha = (fechaString) => {
   if (!fechaString) return '-';
   try {
     const fecha = new Date(fechaString + 'T00:00:00');
-    // Mes abreviado y en español, sin punto
     return format(fecha, "dd/MMM/yyyy", { locale: es }).replace('.', '').toLowerCase();
   } catch (error) {
     return fechaString;
   }
 };
 
-// Agrupa los turnos por semana y trabajador
 function agruparTurnosPorSemanaYTrabajador(turnos, empleado) {
   const semanas = {};
   turnos.forEach(turno => {
@@ -40,7 +38,6 @@ function agruparTurnosPorSemanaYTrabajador(turnos, empleado) {
   return semanas;
 }
 
-// Calcula horas extras agrupadas por semana para cada trabajador
 function calcularHorasExtrasPorSemana(turnosFiltrados, empleado) {
   if (empleado.esTrabajadorDireccion) {
     return [];
@@ -121,7 +118,6 @@ function calcularHorasExtrasPorSemana(turnosFiltrados, empleado) {
         if (!horaInicioExtras) horaInicioExtras = horaInicioExtrasLocal;
         actividad = turno.actividad || actividad || 'No especificada';
 
-        // Calcular hora fin de las extras
         const horasExtrasTotales = (extrasNocturnasLocal + extrasDiurnasLocal) / 60;
         const [horaInicioH, horaInicioM] = horaInicioExtrasLocal.split(':').map(Number);
         const minutosInicioExtras = horaInicioH * 60 + horaInicioM;
@@ -281,7 +277,6 @@ function RegistroHorasExtras({ actualizar }) {
     localStorage.setItem("actividadesExtras", JSON.stringify(actividades));
   };
 
-  // Carga actividades editadas desde localStorage
   const cargarActividadesDeLocalStorage = () => {
     const data = localStorage.getItem("actividadesExtras");
     return data ? JSON.parse(data) : {};

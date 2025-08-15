@@ -1,24 +1,28 @@
-.registro-horas-extras-table th{    
-    background-color: #DFBD7C;
-    color: #000;
+.registro-horas-extras-table th {
+  background-color: #DFBD7C;
+  color: #000;
 
 }
-.actividad-editable{
-    padding: 0 16px;
+
+.actividad-editable {
+  padding: 0 16px;
 }
-.actividad-editable input{
-    width: 100%;
-    height: 100%;
-    padding: 5px;
-    border: none;
-    background: transparent;
-    font-size: 16px;
-    
+
+.actividad-editable input {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+
 }
-.actividad-editable input:focus{
-    outline: 2px solid #333;
-    border-radius: 2px;
+
+.actividad-editable input:focus {
+  outline: 2px solid #333;
+  border-radius: 2px;
 }
+
 /* RegistroHorasExtras.css */
 
 .registro-horas-extras-container {
@@ -46,16 +50,19 @@
   vertical-align: middle;
   text-align: center;
 }
+
 .registro-horas-extras-table th:nth-child(1) {
-    border-top-left-radius: 4px;
+  border-top-left-radius: 4px;
 
 }
+
 .registro-horas-extras-table th:nth-child(8) {
-    border-top-right-radius: 4px;
+  border-top-right-radius: 4px;
 }
-.registro-horas-extras-table th{
-    color: #333;
-    font-weight: 600;
+
+.registro-horas-extras-table th {
+  color: #333;
+  font-weight: 600;
 }
 
 .registro-horas-extras-table thead {
@@ -83,6 +90,11 @@
 
 
 @media print {
+  .registro-horas-extras-table {
+    width: 100%;
+
+  }
+
   .filtros-calendario,
   .btn-imprimir,
   .sidebar-horarios,
@@ -95,7 +107,6 @@
   }
 
   .registro-horas-extras-table {
-    font-size: 0.8rem;
+    font-size: 20px;
   }
 }
-
