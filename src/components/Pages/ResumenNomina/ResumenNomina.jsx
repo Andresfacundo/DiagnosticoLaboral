@@ -453,7 +453,7 @@ function ResumenNomina({ actualizar }) {
               <th rowSpan={2}>N° Documento</th>
               <th rowSpan={2}>Área</th>
               <th colSpan={7}>Cantidades</th>
-              <th colSpan={7}>Valores</th>
+              <th colSpan={6}>Valores</th>
             </tr>
             <tr>
               <th>Turnos</th>
@@ -462,8 +462,7 @@ function ResumenNomina({ actualizar }) {
               <th>Horas extras nocturnas</th>
               <th>Recargo nocturno</th>
               <th>Recargo festivo</th>
-              <th>Otras Horas</th>
-              <th>Valor otras horas</th>
+              <th>Horas festivas</th>
               <th>Valor horas extras</th>
               <th>Valor recargo nocturno</th>
               <th>Valor recargo festivo</th>
@@ -483,8 +482,7 @@ function ResumenNomina({ actualizar }) {
                 <td>{emp.horas?.horasExtraNocturnas ?? "0.00"}</td>
                 <td>{emp.horas?.recargoNocturno ?? "0.00"}</td>
                 <td>{emp.horas?.horasFestivas ?? "0.00"}</td>
-                <td>{emp.horas?.otrasHorasExtras ?? "0.00"}</td>
-                <td>${emp.valores?.otrasHorasExtras?.toLocaleString('es-CO') ?? "0"}</td>
+                <td>{emp.horas?.horasFestivas ?? "0.00"}</td>
                 <td>${emp.pagoExtra?.toLocaleString('es-CO') ?? "0"}</td>
                 <td>${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? "0"}</td>
                 <td>${emp.pagoFestivo?.toLocaleString('es-CO') ?? "0"}</td>
@@ -493,52 +491,47 @@ function ResumenNomina({ actualizar }) {
               </tr>
             ))}
           </tbody>
-          {empleadosFiltrados.length > 0 && (
-            <tfoot>
-              <tr style={{ background: "#f8fafc", fontWeight: "bold" }}>
-                <td colSpan={3}>Totales</td>
-                <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.cantidadTurnos), 0)}
-                </td>
-                <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalHoras), 0).toFixed(2)}
-                </td>
-                <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasExtraDiurnas || 0), 0).toFixed(2)}
-                </td>
-                <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasExtraNocturnas || 0), 0).toFixed(2)}
-                </td>
-                <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.recargoNocturno || 0), 0).toFixed(2)}
-                </td>
-                <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasFestivas || 0), 0).toFixed(2)}
-                </td>
-                <td>
-                  {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.otrasHorasExtras || 0), 0).toFixed(2)}
-                </td>
-                <td>
-                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.otrasHorasExtras || 0), 0).toLocaleString('es-CO')}
-                </td>
-                <td>
-                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoExtra || 0), 0).toLocaleString('es-CO')}
-                </td>
-                <td>
-                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.recargoNocturno ?? 0), 0).toLocaleString('es-CO')}
-                </td>
-                <td>
-                  ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoFestivo ?? 0), 0).toLocaleString('es-CO')}
-                </td>
-                <td>
-                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalPagar || 0), 0).toLocaleString('es-CO')}</b>
-                </td>
-                <td>
-                  <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.costoTotal || 0), 0).toLocaleString('es-CO')}</b>
-                </td>
-              </tr>
-            </tfoot>
-          )}
+          <tfoot>
+            <tr style={{ background: "#f8fafc", fontWeight: "bold" }}>
+              <td colSpan={3}>Totales</td>
+              <td>
+                {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.cantidadTurnos), 0)}
+              </td>
+              <td>
+                {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalHoras), 0).toFixed(2)}
+              </td>
+              <td>
+                {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasExtraDiurnas || 0), 0).toFixed(2)}
+              </td>
+              <td>
+                {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasExtraNocturnas || 0), 0).toFixed(2)}
+              </td>
+              <td>
+                {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.recargoNocturno || 0), 0).toFixed(2)}
+              </td>
+              <td>
+                {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasFestivas || 0), 0).toFixed(2)}
+              </td>
+              <td>
+                {empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.horas?.horasFestivas || 0), 0).toFixed(2)}
+              </td>
+              <td>
+                ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoExtra || 0), 0).toLocaleString('es-CO')}
+              </td>
+              <td>
+                ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.valores?.recargoNocturno ?? 0), 0).toLocaleString('es-CO')}
+              </td>
+              <td>
+                ${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.pagoFestivo ?? 0), 0).toLocaleString('es-CO')}
+              </td>
+              <td>
+                <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.totalPagar || 0), 0).toLocaleString('es-CO')}</b>
+              </td>
+              <td>
+                <b>${empleadosFiltrados.reduce((sum, emp) => sum + Number(emp.costoTotal || 0), 0).toLocaleString('es-CO')}</b>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       ) : (
         <div className="no-empleados">

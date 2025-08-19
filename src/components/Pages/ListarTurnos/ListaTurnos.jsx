@@ -7,6 +7,7 @@ import del from "../../../assets/delete.png";
 import editar from '../../../assets/editar.svg';
 import filtrar from '../../../assets/filtrar.svg';
 import quitarFiltro from '../../../assets/quitarFiltro.svg';
+import  generarOpcionesDescanso  from "../../../utils/OpcionesHoraDescanso";
 
 function ListaTurnos({ actualizar }) {
   const [turnos, setTurnos] = useState([]);
@@ -224,21 +225,22 @@ function ListaTurnos({ actualizar }) {
             <th>Área</th>
             <th>Fecha inicio</th>
             <th>Fecha fin</th>
-            <th>Hora Inicio</th>
-            <th>Hora Fin</th>
-            <th>Minutos Descanso</th>
-            <th>Horas Trabajadas</th>
+            <th>Hora inicio</th>
+            <th>Hora fin</th>
+            <th>Minutos descanso</th>
+            <th>Inicio minutos de descanso</th>
+            <th>Horas trabajadas</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {turnosFiltrados
-            .slice() // Para no mutar el estado original
+            .slice()
             .sort((a, b) => {
               // Ordena por fecha de inicio ascendente
               if (a.diaInicio < b.diaInicio) return -1;
               if (a.diaInicio > b.diaInicio) return 1;
-              // Si tienen la misma fecha, puedes ordenar por horaInicio si lo deseas
+
               if (a.horaInicio && b.horaInicio) {
                 return a.horaInicio.localeCompare(b.horaInicio);
               }
@@ -268,6 +270,7 @@ function ListaTurnos({ actualizar }) {
                       : ""}
                   </td>
                   <td data-label="Minutos Descanso">{turno.minutosDescanso}</td>
+                  <td data-label="Minutos Descanso">{turno.inicioDescanso || "Sin asignar"}</td>
                   <td data-label="Horas Trabajadas">{horasTrabajadas}</td>
                   <td data-label="Acciones">
                     <button
@@ -320,6 +323,17 @@ function ListaTurnos({ actualizar }) {
                 onChange={e => setTurnoEditando({ ...turnoEditando, minutosDescanso: e.target.value })}
               />
             </label>
+            <select
+              className="form-select"              
+              name="inicioDescanso"
+              value={turnoEditando.inicioDescanso}              
+              onChange={(e) => setTurnoEditando({ ...turnoEditando, inicioDescanso: e.target.value })}              
+            >
+              <option value="" className="hora-option">Seleccione hora inicio</option>
+              {generarOpcionesDescanso(turnoEditando.horaInicio, turnoEditando.horaFin).map((hora) => (
+                <option key={hora} value={hora} className="hora-option">{hora}</option>
+              ))}
+            </select>
             <div className="modal-actions">
               <button onClick={guardarEdicionTurno}>Guardar</button>
               <button onClick={() => setTurnoEditando(null)}>Cancelar</button>

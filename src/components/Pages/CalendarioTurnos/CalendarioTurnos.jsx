@@ -11,6 +11,7 @@ import del from "../../../assets/delete.png";
 import filtrar from "../../../assets/filtrar.svg";
 import quitarFiltro from "../../../assets/quitarFiltro.svg";
 import getColombianHolidays from "colombian-holidays";
+import generarOpcionesDescanso from "../../../utils/OpcionesHoraDescanso.js";
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -43,6 +44,7 @@ function CalendarioTurnos() {
     horaInicio: "",
     horaFin: "",
     minutosDescanso: 0,
+    inicioDescanso: "",
   });
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroDocumento, setFiltroDocumento] = useState("");
@@ -267,6 +269,7 @@ function CalendarioTurnos() {
       horaInicio,
       horaFin,
       minutosDescanso: 0,
+      inicioDescanso: "",
     });
     setTurnoSeleccionado(null);
     setModalType("create");
@@ -282,6 +285,7 @@ function CalendarioTurnos() {
       horaInicio: format(event.start, "HH:mm"),
       horaFin: format(event.end, "HH:mm"),
       minutosDescanso: event.minutosDescanso,
+      inicioDescanso: event.resource.inicioDescanso || "",
     });
     setModalType("edit");
     setModalOpen(true);
@@ -688,33 +692,6 @@ function CalendarioTurnos() {
               ))}
             </select>
           </div>
-          {/* <div className="form-group">
-            <label className="form-label">Días de descanso:</label>
-            <div className="dias-descanso-container">
-              {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"].map((dia, index) => (
-                <label
-                  key={dia}
-                  className={`dia-descanso ${nuevoTurno.diasDescanso?.includes(index) ? "activo" : ""}`}
-                >
-                  <input
-                    type="checkbox"
-                    value={index}
-                    checked={nuevoTurno.diasDescanso?.includes(index)}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      setNuevoTurno((prev) => {
-                        const diasDescanso = prev.diasDescanso || [];
-                        return diasDescanso.includes(value)
-                          ? { ...prev, diasDescanso: diasDescanso.filter((d) => d !== value) }
-                          : { ...prev, diasDescanso: [...diasDescanso, value] };
-                      });
-                    }}
-                  />
-                  {dia}
-                </label>
-              ))}
-            </div>
-          </div> */}
 
           <div className="form-group">
             <label className="form-label">Minutos de descanso:</label>
@@ -728,6 +705,21 @@ function CalendarioTurnos() {
               className="form-input"
               required
             />
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label">Hora inicio descanso:</label>
+            <select
+              className="form-select"
+              name="inicioDescanso"
+              value={nuevoTurno.inicioDescanso}
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, inicioDescanso: e.target.value })}              
+            >
+              <option value="" className="hora-option">Seleccione hora inicio</option>
+              {generarOpcionesDescanso(nuevoTurno.horaInicio, nuevoTurno.horaFin).map((hora) => (
+                <option key={hora} value={hora} className="hora-option">{hora}</option>
+              ))}
+            </select>
           </div>
 
           {/* Mostrar las horas trabajadas calculadas */}
