@@ -13,13 +13,14 @@ const HORA_NOCTURNA_INICIO = 21;
 const HORA_NOCTURNA_FIN = 6;
 const HORAS_SEMANALES_MAXIMAS = 44;
 
-const formatearFecha = (fechaString) => {
-  if (!fechaString) return '-';
+
+const formatearFechaHora = (fecha, hora) => {
+  if (!fecha || !hora) return '-';
   try {
-    const fecha = new Date(fechaString + 'T00:00:00');
-    return format(fecha, "dd/MMM/yyyy", { locale: es }).replace('.', '').toLowerCase();
+    const fechaObj = new Date(`${fecha}T${hora}:00`);
+    return format(fechaObj, "dd/MMM/yyyy h:mm a", { locale: es }).replace('.', '').toLowerCase();
   } catch (error) {
-    return fechaString;
+    return `${fecha} ${hora}`;
   }
 };
 
@@ -38,7 +39,7 @@ function agruparTurnosPorSemanaYTrabajador(turnos, empleado) {
   return semanas;
 }
 
-function calcularHorasExtrasPorSemana(turnosFiltrados, empleado) {
+function calcularHorasExtrasPorDia(turnosFiltrados, empleado) {
   if (empleado.esTrabajadorDireccion) {
     return [];
   }
@@ -47,63 +48,63 @@ function calcularHorasExtrasPorSemana(turnosFiltrados, empleado) {
   const registrosExtras = [];
 
   for (const claveSemana in semanasTurnos) {
-    let horasAcumuladas = 0;
-    let extrasNocturnas = 0;
-    let extrasDiurnas = 0;
-    let actividad = "";
-    let fechaInicioSemana = claveSemana;
-    let fechaFinSemana = claveSemana;
-    let horaInicioExtras = "";
-    let horaFinExtras = "";
-
+    let horasAcumuladasSemana = 0;
+    
     const turnosSemana = semanasTurnos[claveSemana].sort((a, b) => {
       const fechaA = new Date(`${a.diaInicio}T${a.horaInicio}`);
       const fechaB = new Date(`${b.diaInicio}T${b.horaInicio}`);
       return fechaA - fechaB;
     });
-
+    
     turnosSemana.forEach(turno => {
       const [hiH, hiM] = turno.horaInicio.split(":").map(Number);
       const [hfH, hfM] = turno.horaFin.split(":").map(Number);
       const horaInicio = hiH + hiM / 60;
       const horaFin = hfH + hfM / 60;
       const minutosDescanso = Number(turno.minutosDescanso) || 0;
+            
+      let inicioDescanso = null;
+      if (turno.inicioDescanso) {
+        const [hdH, hdM] = turno.inicioDescanso.split(":").map(Number);
+        inicioDescanso = hdH + hdM / 60;
+      }
 
       let inicio = horaInicio * 60;
       let fin = horaFin * 60;
       if (fin <= inicio) fin += 24 * 60;
+      
+      // Si no se especifica cuándo inicia el descanso, se asume al final del turno
+      let inicioDescansoMinutos = inicioDescanso ? inicioDescanso * 60 : (fin - minutosDescanso);
+      let finDescansoMinutos = inicioDescansoMinutos + minutosDescanso;
+
       const duracionTotal = fin - inicio;
       const tiempoTrabajado = (duracionTotal - minutosDescanso) / 60;
 
-      const espacioDisponible = Math.max(0, HORAS_SEMANALES_MAXIMAS - horasAcumuladas);
+      const espacioDisponible = Math.max(0, HORAS_SEMANALES_MAXIMAS - horasAcumuladasSemana);
       const horasExcedentes = Math.max(0, tiempoTrabajado - espacioDisponible);
 
       if (horasExcedentes > 0) {
         const minutosHastaExtra = espacioDisponible * 60;
         let minutosContados = 0;
-        let minutosDescansoDistribuidos = 0;
-        let horaInicioExtrasLocal = null;
         let extrasNocturnasLocal = 0;
         let extrasDiurnasLocal = 0;
+        let horaInicioExtras = null;
+        let horaFinExtras = null;
 
-        for (let minuto = inicio; minuto < fin; minuto++) {
-          const minutosTranscurridos = minuto - inicio;
-          const descansoEsperado = (minutosTranscurridos / duracionTotal) * minutosDescanso;
-
-          if (minutosDescansoDistribuidos < descansoEsperado) {
-            minutosDescansoDistribuidos++;
+        for (let minuto = inicio; minuto < fin; minuto++) {          
+          if (minuto >= inicioDescansoMinutos && minuto < finDescansoMinutos) {
             continue;
-          }
-
-          if (minutosContados >= minutosHastaExtra && horaInicioExtrasLocal === null) {
-            const horaReal = (minuto / 60) % 24;
-            const horas = Math.floor(horaReal);
-            const minutos = Math.round((horaReal - horas) * 60);
-            horaInicioExtrasLocal = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
           }
 
           if (minutosContados >= minutosHastaExtra) {
             const horaReal = (minuto / 60) % 24;
+                        
+            if (horaInicioExtras === null) {
+              const horas = Math.floor(horaReal);
+              const mins = Math.round((horaReal - horas) * 60);
+              horaInicioExtras = `${horas.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+            }
+                        
             if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) {
               extrasNocturnasLocal++;
             } else {
@@ -112,41 +113,53 @@ function calcularHorasExtrasPorSemana(turnosFiltrados, empleado) {
           }
           minutosContados++;
         }
+        
+        if (extrasNocturnasLocal > 0 || extrasDiurnasLocal > 0) {
+          const totalMinutosExtras = extrasNocturnasLocal + extrasDiurnasLocal;
+          const [horaInicioH, horaInicioM] = horaInicioExtras.split(':').map(Number);
+          const minutosInicioExtras = horaInicioH * 60 + horaInicioM;
+          const minutosFinExtras = minutosInicioExtras + totalMinutosExtras;
+          const horaFinReal = (minutosFinExtras / 60) % 24;
+          const horasFinH = Math.floor(horaFinReal);
+          const minutosFinM = Math.round((horaFinReal - horasFinH) * 60);
+          horaFinExtras = `${horasFinH.toString().padStart(2, '0')}:${minutosFinM.toString().padStart(2, '0')}`;
+        }
+        
+        if (extrasNocturnasLocal > 0 || extrasDiurnasLocal > 0) {          
+          let fechaInicio = turno.diaInicio;
+          let fechaFin = turno.diaFin;
+                    
+          if (horaFin < horaInicio) {            
+            const fechaInicioObj = new Date(`${turno.diaInicio}T00:00:00`);
+            const fechaFinObj = new Date(fechaInicioObj);
+            fechaFinObj.setDate(fechaFinObj.getDate() + 1);
+            fechaFin = fechaFinObj.toISOString().split('T')[0];
+          }
 
-        extrasNocturnas += extrasNocturnasLocal;
-        extrasDiurnas += extrasDiurnasLocal;
-        if (!horaInicioExtras) horaInicioExtras = horaInicioExtrasLocal;
-        actividad = turno.actividad || actividad || 'No especificada';
-
-        const horasExtrasTotales = (extrasNocturnasLocal + extrasDiurnasLocal) / 60;
-        const [horaInicioH, horaInicioM] = horaInicioExtrasLocal.split(':').map(Number);
-        const minutosInicioExtras = horaInicioH * 60 + horaInicioM;
-        const minutosFinExtras = minutosInicioExtras + (horasExtrasTotales * 60);
-        const horaFinReal = (minutosFinExtras / 60) % 24;
-        const horasFinH = Math.floor(horaFinReal);
-        const minutosFinM = Math.round((horaFinReal - horasFinH) * 60);
-        horaFinExtras = `${horasFinH.toString().padStart(2, '0')}:${minutosFinM.toString().padStart(2, '0')}`;
+          registrosExtras.push({
+            empleado: `${empleado.nombre} ${empleado.apellido}`,
+            cc: empleado.cc,
+            area: empleado.area,
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            horaInicioExtras: horaInicioExtras,
+            horaFinExtras: horaFinExtras,
+            fechaHoraInicio: formatearFechaHora(fechaInicio, horaInicioExtras),
+            fechaHoraFin: formatearFechaHora(fechaFin, horaFinExtras),
+            horasExtrasDiurnas: (extrasDiurnasLocal / 60).toFixed(2),
+            horasExtrasNocturnas: (extrasNocturnasLocal / 60).toFixed(2),
+            actividad: turno.actividad || 'No especificada',
+            turnoCompleto: {
+              horaInicio: turno.horaInicio,
+              horaFin: turno.horaFin,
+              minutosDescanso: turno.minutosDescanso
+            }
+          });
+        }
       }
-
-      horasAcumuladas += Math.min(tiempoTrabajado, espacioDisponible);
-      if (turno.diaInicio < fechaInicioSemana) fechaInicioSemana = turno.diaInicio;
-      if (turno.diaFin > fechaFinSemana) fechaFinSemana = turno.diaFin;
+      
+      horasAcumuladasSemana += Math.min(tiempoTrabajado, espacioDisponible);
     });
-
-    if (extrasNocturnas > 0 || extrasDiurnas > 0) {
-      registrosExtras.push({
-        empleado: `${empleado.nombre} ${empleado.apellido}`,
-        cc: empleado.cc,
-        area: empleado.area,
-        fechaInicio: fechaInicioSemana,
-        fechaFin: fechaFinSemana,
-        horaInicio: horaInicioExtras,
-        horaFin: horaFinExtras,
-        horasExtrasDiurnas: (extrasDiurnas / 60).toFixed(2),
-        horasExtrasNocturnas: (extrasNocturnas / 60).toFixed(2),
-        actividad: actividad
-      });
-    }
   }
 
   return registrosExtras;
@@ -165,23 +178,18 @@ function RegistroHorasExtras({ actualizar }) {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const modalRef = React.useRef(null);
 
-
-  
-    useEffect(() => {
-      if (!mostrarFiltros) return;
-      const handleClickOutside = (event) => {
-        if (modalRef.current && !modalRef.current.contains(event.target)) {
-          setMostrarFiltros(false);
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-  
-  
-  
-    }, [mostrarFiltros]);
+  useEffect(() => {
+    if (!mostrarFiltros) return;
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setMostrarFiltros(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [mostrarFiltros]);
 
   useEffect(() => {
     const empleadosGuardados = localStorage.getItem("empleados");
@@ -203,10 +211,10 @@ function RegistroHorasExtras({ actualizar }) {
 
         setResumen(data);
 
-        // Generar todos los registros de horas extras agrupados por semana
+        // Generar todos los registros de horas extras por día
         const todosLosRegistros = [];
         data.resumenEmpleados.forEach(empleado => {
-          const registros = calcularHorasExtrasPorSemana(empleado.detalleTurnos, empleado);
+          const registros = calcularHorasExtrasPorDia(empleado.detalleTurnos, empleado);
           todosLosRegistros.push(...registros);
         });
 
@@ -237,11 +245,10 @@ function RegistroHorasExtras({ actualizar }) {
         });
       }
 
-      const registros = calcularHorasExtrasPorSemana(turnosFiltrados, empleado);
+      const registros = calcularHorasExtrasPorDia(turnosFiltrados, empleado);
       todosLosRegistros.push(...registros);
     });
-
-    // Aplicar filtros de empleado
+    
     const registrosFiltrados = todosLosRegistros.filter(registro => {
       const nombreCompleto = registro.empleado.toLowerCase();
       return (
@@ -255,7 +262,6 @@ function RegistroHorasExtras({ actualizar }) {
 
   }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta, resumen]);
 
-
   const limpiarFiltros = () => {
     setFiltroNombre("");
     setFiltroDocumento("");
@@ -266,7 +272,7 @@ function RegistroHorasExtras({ actualizar }) {
     if (resumen) {
       const todosLosRegistros = [];
       resumen.resumenEmpleados.forEach(empleado => {
-        const registros = calcularHorasExtrasPorSemana(empleado.detalleTurnos, empleado);
+        const registros = calcularHorasExtrasPorDia(empleado.detalleTurnos, empleado);
         todosLosRegistros.push(...registros);
       });
       setRegistrosExtras(todosLosRegistros);
@@ -302,17 +308,18 @@ function RegistroHorasExtras({ actualizar }) {
     );
     guardarActividadesEnLocalStorage(actividadesEditables);
   };
+  
   const nombresUnicos = Array.from(
     new Set(
       registrosExtras.map(registro => registro.empleado)
     )
-    ).filter(n => n);
+  ).filter(n => n);
 
   const areasUnicas = Array.from(
     new Set(
       registrosExtras.map(registro => registro.area || "")
     )
-    ).filter(a => a);
+  ).filter(a => a);
   
   if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
@@ -392,10 +399,11 @@ function RegistroHorasExtras({ actualizar }) {
               <th>Trabajador</th>
               <th>CC</th>
               <th>Área</th>
-              <th>Fecha inicio</th>
-              <th>Fecha fin</th>
+              <th>Fecha y Hora Inicio</th>
+              <th>Fecha y Hora Fin</th>
               <th>Horas extras diurnas</th>
               <th>Horas extras nocturnas</th>
+              <th>Total horas extras</th>
               <th>Actividad</th>
             </tr>
           </thead>
@@ -405,17 +413,17 @@ function RegistroHorasExtras({ actualizar }) {
                 <td>{registro.empleado}</td>
                 <td>{parseFloat(registro.cc).toLocaleString('es-CO')}</td>
                 <td>{registro.area}</td>
-                <td>{formatearFecha(registro.fechaInicio)}</td>
-                <td>{formatearFecha(registro.fechaFin)}</td>
+                <td>{registro.fechaHoraInicio}</td>
+                <td>{registro.fechaHoraFin}</td>
                 <td>{registro.horasExtrasDiurnas}</td>
                 <td>{registro.horasExtrasNocturnas}</td>
+                <td>{(parseFloat(registro.horasExtrasDiurnas) + parseFloat(registro.horasExtrasNocturnas)).toFixed(2)}</td>
                 <td className="actividad-editable">
                   <input
                     type="text"
                     value={actividadesEditables[index] !== undefined ? actividadesEditables[index] : registro.actividad}
                     onChange={e => handleActividadChange(index, e.target.value)}
                     onBlur={() => handleActividadBlur(index)}
-
                   />
                 </td>
               </tr>
@@ -431,6 +439,9 @@ function RegistroHorasExtras({ actualizar }) {
                 <td>
                   {registrosExtras.reduce((sum, reg) => sum + Number(reg.horasExtrasNocturnas), 0).toFixed(2)}
                 </td>
+                <td>
+                  {registrosExtras.reduce((sum, reg) => sum + Number(reg.horasExtrasDiurnas) + Number(reg.horasExtrasNocturnas), 0).toFixed(2)}
+                </td>
                 <td>-</td>
               </tr>
             </tfoot>
@@ -445,4 +456,5 @@ function RegistroHorasExtras({ actualizar }) {
     </div>
   );
 }
+
 export default RegistroHorasExtras;

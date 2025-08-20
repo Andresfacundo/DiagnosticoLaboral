@@ -228,7 +228,7 @@ function ListaTurnos({ actualizar }) {
             <th>Hora inicio</th>
             <th>Hora fin</th>
             <th>Minutos descanso</th>
-            <th>Inicio minutos de descanso</th>
+            <th>Inicio minutos descanso</th>
             <th>Horas trabajadas</th>
             <th>Acciones</th>
           </tr>
