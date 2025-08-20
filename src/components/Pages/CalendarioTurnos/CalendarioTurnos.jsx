@@ -90,38 +90,40 @@ function CalendarioTurnos() {
     setTimeout(() => setMostrarFiltros(false), 100);
   };
 
-  // Función para calcular las horas trabajadas
+  // Devuelve los minutos trabajados
   const calcularHorasTrabajadas = (horaInicio, horaFin, minutosDescanso = 0) => {
     const [horaInicioHoras, horaInicioMinutos] = horaInicio.split(":").map(Number);
     const [horaFinHoras, horaFinMinutos] = horaFin.split(":").map(Number);
 
     let totalMinutos = 0;
 
-    // Verificar si cruza medianoche
-    const cruzaMedianoche = horaFinHoras < horaInicioHoras ||
+    const cruzaMedianoche =
+      horaFinHoras < horaInicioHoras ||
       (horaFinHoras === horaInicioHoras && horaFinMinutos < horaInicioMinutos);
 
     if (cruzaMedianoche) {
-      // Calcular minutos hasta medianoche + minutos desde medianoche
       const minutosHastaMedianoche = (24 * 60) - (horaInicioHoras * 60 + horaInicioMinutos);
       const minutosDesdeMedianoche = horaFinHoras * 60 + horaFinMinutos;
       totalMinutos = minutosHastaMedianoche + minutosDesdeMedianoche;
     } else {
-      // Cálculo normal
       totalMinutos = (horaFinHoras * 60 + horaFinMinutos) - (horaInicioHoras * 60 + horaInicioMinutos);
     }
 
-    // Restar minutos de descanso
     totalMinutos -= parseInt(minutosDescanso) || 0;
 
-    // Convertir a horas
-    return totalMinutos / 60;
+    return totalMinutos < 0 ? 0 : totalMinutos; 
+  };
+  
+  const validarHorasTurno = (horaInicio, horaFin, minutosDescanso) => {
+    const minutosTrabajados = calcularHorasTrabajadas(horaInicio, horaFin, minutosDescanso);
+    return minutosTrabajados <= (11 * 60); 
   };
 
-  // Función para validar las horas del turno
-  const validarHorasTurno = (horaInicio, horaFin, minutosDescanso) => {
-    const horasTrabajadas = calcularHorasTrabajadas(horaInicio, horaFin, minutosDescanso);
-    return horasTrabajadas <= 11;
+  //formato hh:mm
+  const formatearHoras = (totalMinutos) => {
+    const horas = Math.floor(totalMinutos / 60);
+    const minutos = totalMinutos % 60;
+    return `${horas} horas ${minutos} minutos`;
   };
 
   const eventosFiltrados = eventos.filter(ev => {
@@ -316,10 +318,10 @@ function CalendarioTurnos() {
         nuevoTurno.horaFin,
         nuevoTurno.minutosDescanso
       );
+
+
       alert(
-        `No se puede crear el turno. Las horas trabajadas (${horasTrabajadas.toFixed(
-          2
-        )} horas) exceden el máximo permitido de 11 horas.`
+        `No se puede crear el turno. Las horas trabajadas (${horasTrabajadas} horas) exceden el máximo permitido de 11 horas.`
       );
       return;
     }
@@ -706,14 +708,14 @@ function CalendarioTurnos() {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label className="form-label">Hora inicio descanso:</label>
             <select
               className="form-select"
               name="inicioDescanso"
               value={nuevoTurno.inicioDescanso}
-              onChange={(e) => setNuevoTurno({ ...nuevoTurno, inicioDescanso: e.target.value })}              
+              onChange={(e) => setNuevoTurno({ ...nuevoTurno, inicioDescanso: e.target.value })}
             >
               <option value="" className="hora-option">Seleccione hora inicio</option>
               {generarOpcionesDescanso(nuevoTurno.horaInicio, nuevoTurno.horaFin).map((hora) => (
@@ -722,22 +724,22 @@ function CalendarioTurnos() {
             </select>
           </div>
 
-          {/* Mostrar las horas trabajadas calculadas */}
           {nuevoTurno.horaInicio && nuevoTurno.horaFin && (
             <div className="form-group">
               <label className="form-label">
                 Horas trabajadas:
                 <span style={{
-                  color: getHorasTrabajadasActual() > 11 ? 'red' : 'green',
+                  color: calcularHorasTrabajadas(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso) > 660 ? 'red' : 'green',
                   fontWeight: 'bold',
                   marginLeft: '5px'
                 }}>
-                  {getHorasTrabajadasActual().toFixed(2)} horas
-                  {getHorasTrabajadasActual() > 11 && ' (Excede el máximo de 11 horas)'}
+                  {formatearHoras(calcularHorasTrabajadas(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso))}
+                  {calcularHorasTrabajadas(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso) > 660 && ' (Excede el máximo de 11 horas)'}
                 </span>
               </label>
             </div>
           )}
+
 
           <div className="form-buttons">
             <button type="button" onClick={() => setModalOpen(false)} className="btn-secondary">
@@ -746,7 +748,7 @@ function CalendarioTurnos() {
             <button
               type="submit"
               className="btn-primary"
-              disabled={empleados.length === 0 || getHorasTrabajadasActual() > 11}
+              disabled={empleados.length === 0 || getHorasTrabajadasActual() > 660}
             >
               {modalType === "create" ? "Crear turno" : "Guardar cambios"}
             </button>
