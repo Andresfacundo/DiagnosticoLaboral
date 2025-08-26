@@ -23,6 +23,8 @@ import NoDisponible from './components/Ui/NoDisponible/NoDisponible.jsx'
 import EditarConstantes from './components/Ui/EditarConstantes.jsx/EditarConstantes.jsx'
 import TerminosCondiciones from './components/Pages/TerminosCondiciones/TerminosCondiciones.jsx'
 import CategoriasRecomendaciones from './components/Pages/CategoriasRecomendaciones/CategoriasRecomendaciones.jsx'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Importa el layout y las páginas internas del módulo de horarios
 import EmpleadosPage from '../src/components/Ui/EmpleadosPage/EmpeladosPage.jsx'

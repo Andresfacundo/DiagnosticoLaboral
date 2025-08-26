@@ -12,7 +12,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 const HORA_NOCTURNA_INICIO = 21;
 const HORA_NOCTURNA_FIN = 6;
 const HORAS_SEMANALES_MAXIMAS = 44;
-
+const HORAS_DIARIAS_MAXIMAS = 9;
+const MAX_HORAS_EXTRA_DIARIAS = 2;
+const MAX_HORAS_EXTRA_SEMANALES = 12;
 
 const formatearFechaHora = (fecha, hora) => {
   if (!fecha || !hora) return '-';
@@ -39,130 +41,250 @@ function agruparTurnosPorSemanaYTrabajador(turnos, empleado) {
   return semanas;
 }
 
-function calcularHorasExtrasPorDia(turnosFiltrados, empleado) {
+function calcularHorasExtrasPorTurno(turno) {
+  const [hiH, hiM] = turno.horaInicio.split(":").map(Number);
+  const [hfH, hfM] = turno.horaFin.split(":").map(Number);
+  const horaInicio = hiH + hiM / 60;
+  const horaFin = hfH + hfM / 60;
+  const minutosDescanso = Number(turno.minutosDescanso) || 0;
+
+  let inicioDescanso = null;
+  if (turno.inicioDescanso) {
+    const [hdH, hdM] = turno.inicioDescanso.split(":").map(Number);
+    inicioDescanso = hdH + hdM / 60;
+  }
+
+  let inicio = horaInicio * 60;
+  let fin = horaFin * 60;
+  if (fin <= inicio) fin += 24 * 60;
+
+  // Si no se especifica cuándo inicia el descanso, se asume al final del turno
+  let inicioDescansoMinutos = inicioDescanso ? inicioDescanso * 60 : (fin - minutosDescanso);
+  let finDescansoMinutos = inicioDescansoMinutos + minutosDescanso;
+
+  const duracionTotal = fin - inicio;
+  const tiempoTrabajado = (duracionTotal - minutosDescanso) / 60;
+
+  return {
+    tiempoTrabajado,
+    inicio,
+    fin,
+    inicioDescansoMinutos,
+    finDescansoMinutos,
+    horaInicio,
+    horaFin
+  };
+}
+
+function calcularHorasExtrasDesdeMinuto(inicio, fin, inicioDescansoMinutos, finDescansoMinutos, minutosHastaExtra) {
+  let minutosContados = 0;
+  let extrasNocturnasLocal = 0;
+  let extrasDiurnasLocal = 0;
+  let horaInicioExtras = null;
+  let horaFinExtras = null;
+
+  for (let minuto = inicio; minuto < fin; minuto++) {
+    if (minuto >= inicioDescansoMinutos && minuto < finDescansoMinutos) {
+      continue;
+    }
+
+    if (minutosContados >= minutosHastaExtra) {
+      const horaReal = (minuto / 60) % 24;
+
+      if (horaInicioExtras === null) {
+        const horas = Math.floor(horaReal);
+        const mins = Math.round((horaReal - horas) * 60);
+        horaInicioExtras = `${horas.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+      }
+
+      if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) {
+        extrasNocturnasLocal++;
+      } else {
+        extrasDiurnasLocal++;
+      }
+    }
+    minutosContados++;
+  }
+
+  if (extrasNocturnasLocal > 0 || extrasDiurnasLocal > 0) {
+    const totalMinutosExtras = extrasNocturnasLocal + extrasDiurnasLocal;
+    if (horaInicioExtras) {
+      const [horaInicioH, horaInicioM] = horaInicioExtras.split(':').map(Number);
+      const minutosInicioExtras = horaInicioH * 60 + horaInicioM;
+      const minutosFinExtras = minutosInicioExtras + totalMinutosExtras;
+      const horaFinReal = (minutosFinExtras / 60) % 24;
+      const horasFinH = Math.floor(horaFinReal);
+      const minutosFinM = Math.round((horaFinReal - horasFinH) * 60);
+      horaFinExtras = `${horasFinH.toString().padStart(2, '0')}:${minutosFinM.toString().padStart(2, '0')}`;
+    }
+  }
+
+  return {
+    extrasNocturnas: extrasNocturnasLocal / 60,
+    extrasDiurnas: extrasDiurnasLocal / 60,
+    horaInicioExtras,
+    horaFinExtras
+  };
+}
+
+// NUEVA FUNCIÓN: Calcula TODOS los tipos de horas extras para un turno específico
+function calcularHorasExtrasCompletasPorTurno(turno, empleado, horasAcumuladasSemana = 0) {
+  if (empleado.esTrabajadorDireccion) return [];
+
+  const { tiempoTrabajado, inicio, fin, inicioDescansoMinutos, finDescansoMinutos, horaInicio, horaFin } = calcularHorasExtrasPorTurno(turno);
+
+  const registrosExtras = [];
+
+  // PASO 1: Calcular horas extras DIARIAS (máximo 2 por día)
+  const horasExtrasDiarias = Math.min(
+    Math.max(0, tiempoTrabajado - HORAS_DIARIAS_MAXIMAS),
+    MAX_HORAS_EXTRA_DIARIAS // Máximo legal
+  );
+
+  let horasExtraDiariasRegistradas = 0;
+
+  if (horasExtrasDiarias > 0) {
+    const minutosHastaExtraDiaria = HORAS_DIARIAS_MAXIMAS * 60;
+    const { extrasNocturnas, extrasDiurnas, horaInicioExtras, horaFinExtras } =
+      calcularHorasExtrasDesdeMinuto(inicio, fin, inicioDescansoMinutos, finDescansoMinutos, minutosHastaExtraDiaria);
+
+    // Limitar a máximo 2 horas extra diarias
+    const totalExtrasDiarias = extrasNocturnas + extrasDiurnas;
+    let extrasNocturnasLimitadas = extrasNocturnas;
+    let extrasDiurnasLimitadas = extrasDiurnas;
+
+    if (totalExtrasDiarias > MAX_HORAS_EXTRA_DIARIAS) {
+      const factor = MAX_HORAS_EXTRA_DIARIAS / totalExtrasDiarias;
+      extrasNocturnasLimitadas = extrasNocturnas * factor;
+      extrasDiurnasLimitadas = extrasDiurnas * factor;
+    }
+
+    horasExtraDiariasRegistradas = extrasNocturnasLimitadas + extrasDiurnasLimitadas;
+
+    if (extrasNocturnasLimitadas > 0 || extrasDiurnasLimitadas > 0) {
+      let fechaInicio = turno.diaInicio;
+      let fechaFin = turno.diaFin;
+
+      if (horaFin < horaInicio) {
+        const fechaInicioObj = new Date(`${turno.diaInicio}T00:00:00`);
+        const fechaFinObj = new Date(fechaInicioObj);
+        fechaFinObj.setDate(fechaFinObj.getDate() + 1);
+        fechaFin = fechaFinObj.toISOString().split('T')[0];
+      }
+
+      registrosExtras.push({
+        empleado: `${empleado.nombre} ${empleado.apellido}`,
+        cc: empleado.cc,
+        area: empleado.area,
+        fechaInicio: fechaInicio,
+        fechaFin: fechaFin,
+        horaInicioExtras: horaInicioExtras,
+        horaFinExtras: horaFinExtras,
+        fechaHoraInicio: formatearFechaHora(fechaInicio, horaInicioExtras),
+        fechaHoraFin: formatearFechaHora(fechaFin, horaFinExtras),
+        horasExtrasDiurnas: extrasDiurnasLimitadas.toFixed(2),
+        horasExtrasNocturnas: extrasNocturnasLimitadas.toFixed(2),
+        actividad: turno.actividad || 'No especificada',
+        tipo: 'Diaria',
+        turnoCompleto: {
+          horaInicio: turno.horaInicio,
+          horaFin: turno.horaFin,
+          minutosDescanso: turno.minutosDescanso
+        }
+      });
+    }
+  }
+
+  // PASO 2: Calcular horas extras SEMANALES
+  // Solo las horas que NO fueron contabilizadas como extras diarias
+  const horasOrdinariasDelTurno = tiempoTrabajado - horasExtraDiariasRegistradas;
+  const espacioDisponibleSemanal = Math.max(0, HORAS_SEMANALES_MAXIMAS - horasAcumuladasSemana);
+  const horasExtrasSemanales = Math.max(0, horasOrdinariasDelTurno - espacioDisponibleSemanal);
+
+  if (horasExtrasSemanales > 0) {
+    // Calcular desde qué minuto empiezan las extras semanales
+    const minutosOrdinariosSemanal = Math.min(horasOrdinariasDelTurno, espacioDisponibleSemanal) * 60;
+    const minutosExtrasDiarias = horasExtraDiariasRegistradas * 60;
+    const minutosHastaExtraSemanal = minutosOrdinariosSemanal + minutosExtrasDiarias;
+
+    const { extrasNocturnas, extrasDiurnas, horaInicioExtras, horaFinExtras } =
+      calcularHorasExtrasDesdeMinuto(inicio, fin, inicioDescansoMinutos, finDescansoMinutos, minutosHastaExtraSemanal);
+
+    if (extrasNocturnas > 0 || extrasDiurnas > 0) {
+      let fechaInicio = turno.diaInicio;
+      let fechaFin = turno.diaFin;
+
+      if (horaFin < horaInicio) {
+        const fechaInicioObj = new Date(`${turno.diaInicio}T00:00:00`);
+        const fechaFinObj = new Date(fechaInicioObj);
+        fechaFinObj.setDate(fechaFinObj.getDate() + 1);
+        fechaFin = fechaFinObj.toISOString().split('T')[0];
+      }
+
+      registrosExtras.push({
+        empleado: `${empleado.nombre} ${empleado.apellido}`,
+        cc: empleado.cc,
+        area: empleado.area,
+        fechaInicio: fechaInicio,
+        fechaFin: fechaFin,
+        horaInicioExtras: horaInicioExtras,
+        horaFinExtras: horaFinExtras,
+        fechaHoraInicio: formatearFechaHora(fechaInicio, horaInicioExtras),
+        fechaHoraFin: formatearFechaHora(fechaFin, horaFinExtras),
+        horasExtrasDiurnas: extrasDiurnas.toFixed(2),
+        horasExtrasNocturnas: extrasNocturnas.toFixed(2),
+        actividad: turno.actividad || 'No especificada',
+        tipo: 'Semanal',
+        turnoCompleto: {
+          horaInicio: turno.horaInicio,
+          horaFin: turno.horaFin,
+          minutosDescanso: turno.minutosDescanso
+        }
+      });
+    }
+  }
+
+  return registrosExtras;
+}
+
+function calcularTodasLasHorasExtrasCorregidas(turnosFiltrados, empleado) {
   if (empleado.esTrabajadorDireccion) {
     return [];
   }
 
   const semanasTurnos = agruparTurnosPorSemanaYTrabajador(turnosFiltrados, empleado);
-  const registrosExtras = [];
+  const todosLosRegistros = [];
 
   for (const claveSemana in semanasTurnos) {
     let horasAcumuladasSemana = 0;
-    
+
     const turnosSemana = semanasTurnos[claveSemana].sort((a, b) => {
       const fechaA = new Date(`${a.diaInicio}T${a.horaInicio}`);
       const fechaB = new Date(`${b.diaInicio}T${b.horaInicio}`);
       return fechaA - fechaB;
     });
-    
+
     turnosSemana.forEach(turno => {
-      const [hiH, hiM] = turno.horaInicio.split(":").map(Number);
-      const [hfH, hfM] = turno.horaFin.split(":").map(Number);
-      const horaInicio = hiH + hiM / 60;
-      const horaFin = hfH + hfM / 60;
-      const minutosDescanso = Number(turno.minutosDescanso) || 0;
-            
-      let inicioDescanso = null;
-      if (turno.inicioDescanso) {
-        const [hdH, hdM] = turno.inicioDescanso.split(":").map(Number);
-        inicioDescanso = hdH + hdM / 60;
-      }
+      const registrosDelTurno = calcularHorasExtrasCompletasPorTurno(turno, empleado, horasAcumuladasSemana);
+      todosLosRegistros.push(...registrosDelTurno);
 
-      let inicio = horaInicio * 60;
-      let fin = horaFin * 60;
-      if (fin <= inicio) fin += 24 * 60;
-      
-      // Si no se especifica cuándo inicia el descanso, se asume al final del turno
-      let inicioDescansoMinutos = inicioDescanso ? inicioDescanso * 60 : (fin - minutosDescanso);
-      let finDescansoMinutos = inicioDescansoMinutos + minutosDescanso;
+      const { tiempoTrabajado } = calcularHorasExtrasPorTurno(turno);
 
-      const duracionTotal = fin - inicio;
-      const tiempoTrabajado = (duracionTotal - minutosDescanso) / 60;
+      // Solo contar como ordinarias las horas que no son extras diarias
+      const horasExtrasDiariasDelTurno = registrosDelTurno
+        .filter(reg => reg.tipo === 'Diaria')
+        .reduce((sum, reg) => sum + parseFloat(reg.horasExtrasDiurnas) + parseFloat(reg.horasExtrasNocturnas), 0);
 
-      const espacioDisponible = Math.max(0, HORAS_SEMANALES_MAXIMAS - horasAcumuladasSemana);
-      const horasExcedentes = Math.max(0, tiempoTrabajado - espacioDisponible);
+      const horasOrdinariasSemana = Math.min(
+        tiempoTrabajado - horasExtrasDiariasDelTurno,
+        Math.max(0, HORAS_SEMANALES_MAXIMAS - horasAcumuladasSemana)
+      );
 
-      if (horasExcedentes > 0) {
-        const minutosHastaExtra = espacioDisponible * 60;
-        let minutosContados = 0;
-        let extrasNocturnasLocal = 0;
-        let extrasDiurnasLocal = 0;
-        let horaInicioExtras = null;
-        let horaFinExtras = null;
-
-        for (let minuto = inicio; minuto < fin; minuto++) {          
-          if (minuto >= inicioDescansoMinutos && minuto < finDescansoMinutos) {
-            continue;
-          }
-
-          if (minutosContados >= minutosHastaExtra) {
-            const horaReal = (minuto / 60) % 24;
-                        
-            if (horaInicioExtras === null) {
-              const horas = Math.floor(horaReal);
-              const mins = Math.round((horaReal - horas) * 60);
-              horaInicioExtras = `${horas.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-            }
-                        
-            if (horaReal >= HORA_NOCTURNA_INICIO || horaReal < HORA_NOCTURNA_FIN) {
-              extrasNocturnasLocal++;
-            } else {
-              extrasDiurnasLocal++;
-            }
-          }
-          minutosContados++;
-        }
-        
-        if (extrasNocturnasLocal > 0 || extrasDiurnasLocal > 0) {
-          const totalMinutosExtras = extrasNocturnasLocal + extrasDiurnasLocal;
-          const [horaInicioH, horaInicioM] = horaInicioExtras.split(':').map(Number);
-          const minutosInicioExtras = horaInicioH * 60 + horaInicioM;
-          const minutosFinExtras = minutosInicioExtras + totalMinutosExtras;
-          const horaFinReal = (minutosFinExtras / 60) % 24;
-          const horasFinH = Math.floor(horaFinReal);
-          const minutosFinM = Math.round((horaFinReal - horasFinH) * 60);
-          horaFinExtras = `${horasFinH.toString().padStart(2, '0')}:${minutosFinM.toString().padStart(2, '0')}`;
-        }
-        
-        if (extrasNocturnasLocal > 0 || extrasDiurnasLocal > 0) {          
-          let fechaInicio = turno.diaInicio;
-          let fechaFin = turno.diaFin;
-                    
-          if (horaFin < horaInicio) {            
-            const fechaInicioObj = new Date(`${turno.diaInicio}T00:00:00`);
-            const fechaFinObj = new Date(fechaInicioObj);
-            fechaFinObj.setDate(fechaFinObj.getDate() + 1);
-            fechaFin = fechaFinObj.toISOString().split('T')[0];
-          }
-
-          registrosExtras.push({
-            empleado: `${empleado.nombre} ${empleado.apellido}`,
-            cc: empleado.cc,
-            area: empleado.area,
-            fechaInicio: fechaInicio,
-            fechaFin: fechaFin,
-            horaInicioExtras: horaInicioExtras,
-            horaFinExtras: horaFinExtras,
-            fechaHoraInicio: formatearFechaHora(fechaInicio, horaInicioExtras),
-            fechaHoraFin: formatearFechaHora(fechaFin, horaFinExtras),
-            horasExtrasDiurnas: (extrasDiurnasLocal / 60).toFixed(2),
-            horasExtrasNocturnas: (extrasNocturnasLocal / 60).toFixed(2),
-            actividad: turno.actividad || 'No especificada',
-            turnoCompleto: {
-              horaInicio: turno.horaInicio,
-              horaFin: turno.horaFin,
-              minutosDescanso: turno.minutosDescanso
-            }
-          });
-        }
-      }
-      
-      horasAcumuladasSemana += Math.min(tiempoTrabajado, espacioDisponible);
+      horasAcumuladasSemana += horasOrdinariasSemana;
     });
   }
 
-  return registrosExtras;
+  return todosLosRegistros;
 }
 
 function RegistroHorasExtras({ actualizar }) {
@@ -170,6 +292,7 @@ function RegistroHorasExtras({ actualizar }) {
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroDocumento, setFiltroDocumento] = useState("");
   const [filtroArea, setFiltroArea] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState("");
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
   const [registrosExtras, setRegistrosExtras] = useState([]);
@@ -177,6 +300,11 @@ function RegistroHorasExtras({ actualizar }) {
   const [actividadesEditables, setActividadesEditables] = useState({});
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const modalRef = React.useRef(null);
+
+  const handleFiltroChange = (setterFunction, value) => {
+    setterFunction(value);
+    setTimeout(() => setMostrarFiltros(false), 100);
+  };
 
   useEffect(() => {
     if (!mostrarFiltros) return;
@@ -211,10 +339,9 @@ function RegistroHorasExtras({ actualizar }) {
 
         setResumen(data);
 
-        // Generar todos los registros de horas extras por día
         const todosLosRegistros = [];
         data.resumenEmpleados.forEach(empleado => {
-          const registros = calcularHorasExtrasPorDia(empleado.detalleTurnos, empleado);
+          const registros = calcularTodasLasHorasExtrasCorregidas(empleado.detalleTurnos, empleado);
           todosLosRegistros.push(...registros);
         });
 
@@ -245,34 +372,37 @@ function RegistroHorasExtras({ actualizar }) {
         });
       }
 
-      const registros = calcularHorasExtrasPorDia(turnosFiltrados, empleado);
+      const registros = calcularTodasLasHorasExtrasCorregidas(turnosFiltrados, empleado);
       todosLosRegistros.push(...registros);
     });
-    
+
     const registrosFiltrados = todosLosRegistros.filter(registro => {
       const nombreCompleto = registro.empleado.toLowerCase();
       return (
         nombreCompleto.includes(filtroNombre.toLowerCase()) &&
         registro.cc.toString().includes(filtroDocumento) &&
-        registro.area.toLowerCase().includes(filtroArea.toLowerCase())
+        registro.area.toLowerCase().includes(filtroArea.toLowerCase()) &&
+        (filtroTipo === "" || registro.tipo === filtroTipo)
       );
     });
 
     setRegistrosExtras(registrosFiltrados);
 
-  }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta, resumen]);
+  }, [filtroNombre, filtroArea, filtroDocumento, filtroTipo, fechaDesde, fechaHasta, resumen]);
 
   const limpiarFiltros = () => {
     setFiltroNombre("");
     setFiltroDocumento("");
     setFiltroArea("");
+    setFiltroTipo("");
     setFechaDesde("");
     setFechaHasta("");
+    setMostrarFiltros(false);
 
     if (resumen) {
       const todosLosRegistros = [];
       resumen.resumenEmpleados.forEach(empleado => {
-        const registros = calcularHorasExtrasPorDia(empleado.detalleTurnos, empleado);
+        const registros = calcularTodasLasHorasExtrasCorregidas(empleado.detalleTurnos, empleado);
         todosLosRegistros.push(...registros);
       });
       setRegistrosExtras(todosLosRegistros);
@@ -308,7 +438,7 @@ function RegistroHorasExtras({ actualizar }) {
     );
     guardarActividadesEnLocalStorage(actividadesEditables);
   };
-  
+
   const nombresUnicos = Array.from(
     new Set(
       registrosExtras.map(registro => registro.empleado)
@@ -320,7 +450,7 @@ function RegistroHorasExtras({ actualizar }) {
       registrosExtras.map(registro => registro.area || "")
     )
   ).filter(a => a);
-  
+
   if (mostrarSpinner || !resumen) return <SpinnerTimed />;
 
   return (
@@ -344,7 +474,7 @@ function RegistroHorasExtras({ actualizar }) {
               <div className="filtros-calendario-box">
                 <select
                   value={filtroNombre}
-                  onChange={e => setFiltroNombre(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroNombre, e.target.value)}
                 >
                   <option value="">Todos los nombres</option>
                   {nombresUnicos.map(nombre => (
@@ -353,12 +483,20 @@ function RegistroHorasExtras({ actualizar }) {
                 </select>
                 <select
                   value={filtroArea}
-                  onChange={e => setFiltroArea(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroArea, e.target.value)}
                 >
                   <option value="">Todas las áreas</option>
                   {areasUnicas.map(area => (
                     <option key={area} value={area}>{area}</option>
                   ))}
+                </select>
+                <select
+                  value={filtroTipo}
+                  onChange={e => handleFiltroChange(setFiltroTipo, e.target.value)}
+                >
+                  <option value="">Todos los tipos</option>
+                  <option value="Diaria">Horas extras diarias</option>
+                  <option value="Semanal">Horas extras semanales</option>
                 </select>
                 <input
                   type="text"
@@ -399,25 +537,38 @@ function RegistroHorasExtras({ actualizar }) {
               <th>Trabajador</th>
               <th>CC</th>
               <th>Área</th>
+              <th>Tipo</th>
               <th>Fecha y Hora Inicio</th>
               <th>Fecha y Hora Fin</th>
               <th>Horas extras diurnas</th>
               <th>Horas extras nocturnas</th>
-              <th>Total horas extras</th>
+              {/* <th>Total horas extras</th> */}
               <th>Actividad</th>
             </tr>
           </thead>
           <tbody>
             {registrosExtras.map((registro, index) => (
-              <tr key={index}>
+              <tr key={index} style={{ backgroundColor: registro.tipo === 'Diaria' ? '#f0f9ff' : '#fff7ed' }}>
                 <td>{registro.empleado}</td>
                 <td>{parseFloat(registro.cc).toLocaleString('es-CO')}</td>
                 <td>{registro.area}</td>
+                <td>
+                  <span style={{
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    backgroundColor: registro.tipo === 'Diaria' ? '#e0f2fe' : '#fef3c7',
+                    color: registro.tipo === 'Diaria' ? '#0c4a6e' : '#92400e'
+                  }}>
+                    {registro.tipo}
+                  </span>
+                </td>
                 <td>{registro.fechaHoraInicio}</td>
                 <td>{registro.fechaHoraFin}</td>
                 <td>{registro.horasExtrasDiurnas}</td>
                 <td>{registro.horasExtrasNocturnas}</td>
-                <td>{(parseFloat(registro.horasExtrasDiurnas) + parseFloat(registro.horasExtrasNocturnas)).toFixed(2)}</td>
+                {/* <td>{(parseFloat(registro.horasExtrasDiurnas) + parseFloat(registro.horasExtrasNocturnas)).toFixed(2)}</td> */}
                 <td className="actividad-editable">
                   <input
                     type="text"
@@ -432,16 +583,16 @@ function RegistroHorasExtras({ actualizar }) {
           {registrosExtras.length > 0 && (
             <tfoot>
               <tr style={{ background: "#f8fafc", fontWeight: "bold" }}>
-                <td colSpan={5}>Totales</td>
+                <td colSpan={6}>Totales</td>
                 <td>
                   {registrosExtras.reduce((sum, reg) => sum + Number(reg.horasExtrasDiurnas), 0).toFixed(2)}
                 </td>
                 <td>
                   {registrosExtras.reduce((sum, reg) => sum + Number(reg.horasExtrasNocturnas), 0).toFixed(2)}
                 </td>
-                <td>
+                {/* <td>
                   {registrosExtras.reduce((sum, reg) => sum + Number(reg.horasExtrasDiurnas) + Number(reg.horasExtrasNocturnas), 0).toFixed(2)}
-                </td>
+                </td> */}
                 <td>-</td>
               </tr>
             </tfoot>

@@ -12,6 +12,9 @@ import filtrar from "../../../assets/filtrar.svg";
 import quitarFiltro from "../../../assets/quitarFiltro.svg";
 import getColombianHolidays from "colombian-holidays";
 import generarOpcionesDescanso from "../../../utils/OpcionesHoraDescanso.js";
+import { toast } from "react-toastify";
+import { generarOpcionesHora } from "../../../utils/GenerarOpcionesHora.js";
+
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -53,21 +56,8 @@ function CalendarioTurnos() {
   const [filtroFechaHasta, setFiltroFechaHasta] = useState("");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const modalRef = useRef(null);
-
-
-  const generarOpcionesHora = () => {
-    const opciones = [];
-    for (let h = 0; h < 24; h++) {
-      for (let m = 0; m < 60; m += 30) {
-        const hora = h.toString().padStart(2, "0");
-        const minuto = m.toString().padStart(2, "0");
-        opciones.push(`${hora}:${minuto}`);
-      }
-    }
-    return opciones;
-  };
   const opcionesHora = generarOpcionesHora();
-
+  
   useEffect(() => {
     if (!mostrarFiltros) return;
     const handleClickOutside = (event) => {
@@ -118,6 +108,7 @@ function CalendarioTurnos() {
     const minutosTrabajados = calcularHorasTrabajadas(horaInicio, horaFin, minutosDescanso);
     return minutosTrabajados <= (11 * 60); 
   };
+  
 
   //formato hh:mm
   const formatearHoras = (totalMinutos) => {
@@ -255,7 +246,7 @@ function CalendarioTurnos() {
 
   const handleSelectSlot = (slotInfo) => {
     if (empleados.length === 0) {
-      alert("Primero debes agregar empleados antes de crear turnos.");
+      toast.warning("Primero debes agregar trabajadores antes de crear turnos.");
       return;
     }
 
@@ -306,21 +297,20 @@ function CalendarioTurnos() {
     const random = Math.random().toString(36).substring(2, 8);
     return `${turno.empleadoId}_${turno.diaInicio}_${turno.horaInicio}_${timestamp}_${random}`;
   };
-
-
+  
   const handleGuardarTurno = (e) => {
     e.preventDefault();
 
     // Validar que las horas trabajadas no excedan las 11 horas
     if (!validarHorasTurno(nuevoTurno.horaInicio, nuevoTurno.horaFin, nuevoTurno.minutosDescanso)) {
-      const horasTrabajadas = calcularHorasTrabajadas(
+      const minutosTrabajados = calcularHorasTrabajadas(
         nuevoTurno.horaInicio,
         nuevoTurno.horaFin,
         nuevoTurno.minutosDescanso
       );
-
-
-      alert(
+      const horasTrabajadas = (minutosTrabajados / 60);
+       
+      toast.error(
         `No se puede crear el turno. Las horas trabajadas (${horasTrabajadas} horas) exceden el máximo permitido de 11 horas.`
       );
       return;
@@ -335,6 +325,7 @@ function CalendarioTurnos() {
       };
       actualizarTurnoPorId(turnoEditado);
       setModalOpen(false);
+      toast.success("Turno actualizado exitosamente.");
       return;
     }
 
@@ -343,6 +334,7 @@ function CalendarioTurnos() {
 
     const [horaInicioHoras, horaInicioMinutos] = nuevoTurno.horaInicio.split(":").map(Number);
     const [horaFinHoras, horaFinMinutos] = nuevoTurno.horaFin.split(":").map(Number);
+    toast.success("Turno(s) creado(s) exitosamente.");
 
     const cruzaMedianoche =
       horaFinHoras < horaInicioHoras ||
@@ -409,6 +401,7 @@ function CalendarioTurnos() {
     setModalOpen(false);
     setTurnoSeleccionado(null);
     recargarEventosDesdeLS();
+    toast.success("Turno eliminado exitosamente.");
   };
 
   const actualizarTurno = (eventId, cambios) => {
@@ -424,8 +417,9 @@ function CalendarioTurnos() {
     const horaFin = format(end, "HH:mm");
 
     if (!validarHorasTurno(horaInicio, horaFin, event.minutosDescanso)) {
-      const horasTrabajadas = calcularHorasTrabajadas(horaInicio, horaFin, event.minutosDescanso);
-      alert(`No se puede mover el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) excederían el máximo permitido de 11 horas.`);
+      const minutosTrabajados = calcularHorasTrabajadas(horaInicio, horaFin, event.minutosDescanso);
+      const horasTrabajadas = (minutosTrabajados / 60);
+      toast.error(`No se puede mover el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) excederían el máximo permitido de 11 horas.`);
       return;
     }
 
@@ -443,8 +437,9 @@ function CalendarioTurnos() {
     const horaFin = format(end, "HH:mm");
 
     if (!validarHorasTurno(horaInicio, horaFin, event.minutosDescanso)) {
-      const horasTrabajadas = calcularHorasTrabajadas(horaInicio, horaFin, event.minutosDescanso);
-      alert(`No se puede redimensionar el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) excederían el máximo permitido de 11 horas.`);
+      const minutosTrabajados = calcularHorasTrabajadas(horaInicio, horaFin, event.minutosDescanso);
+      const horasTrabajadas = (minutosTrabajados / 60);
+      toast.error(`No se puede redimensionar el turno. Las horas trabajadas (${horasTrabajadas.toFixed(2)} horas) excederían el máximo permitido de 11 horas.`);
       return;
     }
 

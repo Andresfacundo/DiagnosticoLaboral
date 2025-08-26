@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import './ListaEmpleados.css';
 import deleteIcon from '../../../assets/delete.png';
 import editar from '../../../assets/editar.svg'
+import { toast } from "react-toastify";
 
 function ListaEmpleados() {
   const [empleados, setEmpleados] = useState([]);
@@ -54,7 +55,9 @@ function ListaEmpleados() {
     window.dispatchEvent(new Event("localStorageUpdated"));
     setShowEditModal(false);
     setEmpleadoEdit(null);
+    toast.success("Empleado actualizado con éxito");
   };
+  
 
   const handleDeleteConfirm = () => {
     const empleadosGuardados = JSON.parse(localStorage.getItem("empleados")) || [];
@@ -73,12 +76,14 @@ function ListaEmpleados() {
     window.dispatchEvent(new Event("localStorageUpdated"));
     setShowModal(false);
     setDeleteIndex(null);
+    toast.success("Empleado y sus turnos asociados eliminados con éxito");
   };
 
   const handleDeleteCancel = () => {
     setShowModal(false);
     setDeleteIndex(null);
   };
+  
 
   return (
     <div className="lista-empleados-container">
@@ -138,7 +143,7 @@ function ListaEmpleados() {
       {showEditModal && empleadoEdit && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h3>Editar Empleado</h3>
+            <h3>Editar trabajador</h3>
             <form className="edit-form-emp">
               <input
                 type="text"
@@ -181,12 +186,18 @@ function ListaEmpleados() {
                 placeholder="Salario Base"
                 onWheel={e => e.target.blur()}
               />
-              <input
-                type="color"
-                name="color"
-                value={empleadoEdit.color || '#000000'}
-                onChange={handleEditChange}
-              />
+              <label className="color-label">
+                Color del trabajador
+                <div className="color-input-wrapper">
+                  <input
+                    type="color"
+                    name="color"
+                    value={empleadoEdit.color}
+                    onChange={handleEditChange}
+                  />
+                  <span></span> {/* Esto actúa como “placeholder” visible */}
+                </div>
+              </label>
             </form>
             <div className="modal-actions">
               <button onClick={handleEditSave} className="save-button">Guardar</button>
@@ -196,8 +207,8 @@ function ListaEmpleados() {
         </div>
       )}
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-confirmacion">
+          <div className="modal-content-confirmacion">
             <p>¿Estás seguro que deseas borrar este trabajador?</p>
             <div className="modal-actions">
               <button onClick={handleDeleteConfirm} className="save-button">Sí, borrar</button>

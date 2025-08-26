@@ -253,6 +253,11 @@ function ResumenNomina({ actualizar }) {
   const [datosListos, setDatosListos] = useState(false);
   const modalRef = useRef(null);
 
+  const handleFiltroChange = (setterFunction, value) => {
+    setterFunction(value);
+    setTimeout(() => setMostrarFiltros(false), 100);
+  };
+
   useEffect(() => {
     if (!mostrarFiltros) return;
     const handleClickOutside = (event) => {
@@ -350,6 +355,7 @@ function ResumenNomina({ actualizar }) {
     setFiltroArea("");
     setFechaDesde("");
     setFechaHasta("");
+    setMostrarFiltros(false);
 
     if (resumen && datosListos) {
       const filtrados = resumen.resumenEmpleados
@@ -397,7 +403,7 @@ function ResumenNomina({ actualizar }) {
               <div className="filtros-calendario-box">
                 <select
                   value={filtroNombre}
-                  onChange={e => setFiltroNombre(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroNombre, e.target.value)}
                 >
                   <option value="">Todos los nombres</option>
                   {nombresUnicos.map(nombre => (
@@ -406,7 +412,7 @@ function ResumenNomina({ actualizar }) {
                 </select>
                 <select
                   value={filtroArea}
-                  onChange={e => setFiltroArea(e.target.value)}
+                  onChange={e => handleFiltroChange(setFiltroArea, e.target.value)}
                 >
                   <option value="">Todas las áreas</option>
                   {areasUnicas.map(area => (
@@ -432,7 +438,8 @@ function ResumenNomina({ actualizar }) {
                 type="date"
                 placeholder="Hasta"
                 value={fechaHasta}
-                onChange={(e) => setFechaHasta(e.target.value)}
+                onChange={(e) => setFechaHasta(e.target.value)}       
+                
               />
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
@@ -461,7 +468,7 @@ function ResumenNomina({ actualizar }) {
               <th>Horas extras diurnas</th>
               <th>Horas extras nocturnas</th>
               <th>Horas recargo nocturno</th>
-              <th>Horas recargo festivo</th>              
+              <th>Horas recargo festivo</th>
               <th>Valor horas extras</th>
               <th>Valor recargo nocturno</th>
               <th>Valor recargo festivo</th>
@@ -480,7 +487,7 @@ function ResumenNomina({ actualizar }) {
                 <td>{emp.horas?.horasExtraDiurnas ?? "0.00"}</td>
                 <td>{emp.horas?.horasExtraNocturnas ?? "0.00"}</td>
                 <td>{emp.horas?.recargoNocturno ?? "0.00"}</td>
-                <td>{emp.horas?.horasFestivas ?? "0.00"}</td>                
+                <td>{emp.horas?.horasFestivas ?? "0.00"}</td>
                 <td>${emp.pagoExtra?.toLocaleString('es-CO') ?? "0"}</td>
                 <td>${emp.valores?.recargoNocturno?.toLocaleString('es-CO') ?? "0"}</td>
                 <td>${emp.pagoFestivo?.toLocaleString('es-CO') ?? "0"}</td>

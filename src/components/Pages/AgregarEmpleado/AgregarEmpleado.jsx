@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 import './AgregarEmpleado.css';
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,25 +22,20 @@ const validarEmpleado = (empleado) => {
   if (!empleado.nombre || empleado.nombre.trim() === '') {
     errores.push('Nombre es requerido');
   }
-
   if (!empleado.apellido || empleado.apellido.trim() === '') {
     errores.push('Apellido es requerido');
   }
-
   if (!empleado.cc || empleado.cc.toString().trim() === '') {
     errores.push('Cédula es requerida');
   }
-
   if (!empleado.clasificacionPersonal || empleado.clasificacionPersonal.trim() === '') {
     errores.push('Clasificación del personal es requerida');
   } else if (!['Ordinario', 'Direccion, confianza o manejo'].includes(empleado.clasificacionPersonal)) {
     errores.push('Clasificación del personal debe ser "Ordinario" o "Direccion, confianza o manejo"');
   }
-
   if (!empleado.area || empleado.area.trim() === '') {
     errores.push('Área es requerida');
   }
-
   if (!empleado.salarioBase || empleado.salarioBase.toString().trim() === '') {
     errores.push('Salario base es requerido');
   }
@@ -83,12 +79,12 @@ const generarPlantillaExcel = () => {
   const worksheet = XLSX.utils.json_to_sheet(encabezados);
 
   const colWidths = [
-    { wch: 12 }, // Nombre del Empleado
-    { wch: 12 }, // Apellido del Empleado
-    { wch: 20 }, // Cédula de Identidad
-    { wch: 22 }, // Clasificación del Personal
-    { wch: 15 }, // Área de Trabajo
-    { wch: 20 }  // Salario Base Mensual
+    { wch: 12 },
+    { wch: 12 },
+    { wch: 20 },
+    { wch: 22 },
+    { wch: 15 },
+    { wch: 20 }
   ];
   worksheet['!cols'] = colWidths;
 
@@ -115,8 +111,6 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
     color: getRandomColor(),
   });
 
-
-
   const [cargando, setCargando] = useState(false);
   const dropRef = useRef();
   const fileInputRef = useRef();
@@ -133,7 +127,6 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
     try {
       const response = await fetch(`${API_URL}/api/empleados`, {
         method: "POST",
@@ -146,7 +139,6 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       }
 
       const nuevoEmpleado = await response.json();
-
       const empleadosGuardados = JSON.parse(localStorage.getItem("empleados")) || [];
       localStorage.setItem("empleados", JSON.stringify([...empleadosGuardados, nuevoEmpleado]));
       window.dispatchEvent(new Event("localStorageUpdated"));
@@ -162,56 +154,64 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       });
 
       onEmpleadoAgregado();
-      alert("Empleado agregado exitosamente");
+      toast.success("Empleado agregado exitosamente");
     } catch (error) {
       console.error('Error al agregar empleado:', error);
-      alert(`Error al agregar empleado: ${error.message}`);
+      toast.error(`Error al agregar empleado: ${error.message}`);
     }
   };
 
   const procesarArchivo = async (file) => {
     if (!file || !file.name.endsWith(".xlsx")) {
-      alert("Por favor, selecciona un archivo Excel (.xlsx)");
+      toast.warning("Por favor, selecciona un archivo Excel (.xlsx)");
       return;
     }
-
 
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data);
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const empleadosRaw = XLSX.utils.sheet_to_json(sheet);
 
-
     if (empleadosRaw.length === 0) {
-      alert("El archivo Excel está vacío o no tiene datos válidos");
+      toast.error("El archivo Excel está vacío o no tiene datos válidos");
+      return;
+    }
+
+    const columnasArchivo = Object.keys(empleadosRaw[0] || {});
+    const columnasRequeridas = Object.values(NOMBRES_COLUMNAS);
+    const faltantes = columnasRequeridas.filter(c => !columnasArchivo.includes(c));
+
+    if (faltantes.length > 0) {
+      toast.error(`El archivo Excel no tiene el formato correcto. Faltan columnas: ${faltantes.join(", ")}`);
       return;
     }
 
     // Limpiar y validar datos
     const empleadosLimpios = empleadosRaw.map(limpiarDatosEmpleado);
 
-    // Validar cada empleado
     const erroresValidacion = [];
     empleadosLimpios.forEach((empleado, index) => {
       const errores = validarEmpleado(empleado);
       if (errores.length > 0) {
-        erroresValidacion.push(`Fila ${index + 2}: ${errores.join(', ')}`);
+        erroresValidacion.push(
+          `Fila ${index + 2}:\n - ${errores.join("\n - ")}`
+        );
       }
     });
 
     if (erroresValidacion.length > 0) {
-      alert(`Errores de validación encontrados:\n\n${erroresValidacion.join('\n')}`);
+      toast.error(
+        `Errores de validación encontrados:\n\n${erroresValidacion.join('\n\n')}`,
+        { style: { whiteSpace: 'pre-line' } }
+      );
       return;
     }
-
-
 
     const res = await fetch(`${API_URL}/api/empleados/carga-masiva`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(empleadosLimpios)
     });
-
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -220,12 +220,11 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
     }
 
     const nuevos = await res.json();
-
     const actuales = JSON.parse(localStorage.getItem("empleados")) || [];
     localStorage.setItem("empleados", JSON.stringify([...actuales, ...nuevos]));
     window.dispatchEvent(new Event("localStorageUpdated"));
 
-    alert(`Se cargaron ${nuevos.length} empleados correctamente`);
+    toast.success(`Se cargaron ${nuevos.length} empleados correctamente`);
     onEmpleadoAgregado();
   };
 
@@ -238,10 +237,9 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       await procesarArchivo(file);
     } catch (error) {
       console.error('Error completo:', error);
-      alert(`Error al cargar empleados desde el archivo: ${error.message}`);
+      toast.error(`Error al cargar empleados desde el archivo: ${error.message}`);
     } finally {
       setCargando(false);
-      // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
       e.target.value = '';
     }
   };
@@ -256,7 +254,7 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
       await procesarArchivo(file);
     } catch (error) {
       console.error('Error completo:', error);
-      alert(`Error al cargar empleados desde el archivo: ${error.message}`);
+      toast.error(`Error al cargar empleados desde el archivo: ${error.message}`);
     } finally {
       setCargando(false);
     }
@@ -294,18 +292,19 @@ function AgregarEmpleado({ onEmpleadoAgregado }) {
           onWheel={e => e.target.blur()}
           required
         />
-        <label>
-          Color del empleador:
-          <input
-            type="color"
-            name="color"
-            value={form.color}
-            onChange={handleChange}
-            style={{ width: '100%' }}
-          />
+        <label className="color-label">
+          Color del trabajador
+          <div className="color-input-wrapper">
+            <input
+              type="color"
+              name="color"
+              value={form.color}
+              onChange={handleChange}
+            />
+            <span></span>
+          </div>
         </label>
         <button type="submit">Agregar</button>
-
       </form>
 
       <div

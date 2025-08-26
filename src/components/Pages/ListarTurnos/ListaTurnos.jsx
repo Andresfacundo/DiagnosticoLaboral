@@ -7,7 +7,9 @@ import del from "../../../assets/delete.png";
 import editar from '../../../assets/editar.svg';
 import filtrar from '../../../assets/filtrar.svg';
 import quitarFiltro from '../../../assets/quitarFiltro.svg';
-import  generarOpcionesDescanso  from "../../../utils/OpcionesHoraDescanso";
+import generarOpcionesDescanso from "../../../utils/OpcionesHoraDescanso";
+import { generarOpcionesHora } from "../../../utils/GenerarOpcionesHora.js";
+import { toast } from "react-toastify";
 
 function ListaTurnos({ actualizar }) {
   const [turnos, setTurnos] = useState([]);
@@ -21,6 +23,7 @@ function ListaTurnos({ actualizar }) {
   const [turnoEditando, setTurnoEditando] = useState(null);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const modalRef = useRef(null);
+  const opcionesHora = generarOpcionesHora();
 
   useEffect(() => {
     if (!mostrarFiltros) return;
@@ -68,6 +71,7 @@ function ListaTurnos({ actualizar }) {
     setTurnos(nuevosTurnos);
     localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
     setTurnoEditando(null);
+    toast.success("Turno actualizado correctamente");
   };
 
   // Cálculo de horas trabajadas
@@ -299,41 +303,60 @@ function ListaTurnos({ actualizar }) {
         <div className="modal-overlay-turnos">
           <div className="modal-content">
             <h3>Editar Turno</h3>
-            <label>
-              Hora Inicio:
-              <input
-                type="time"
+            <div className="overlay-group-turnos">
+              <label className="form-label-turnos">Hora inicio:</label>
+              <select
+                className="form-select-turnos"
+                name="horaInicio"
                 value={turnoEditando.horaInicio}
-                onChange={e => setTurnoEditando({ ...turnoEditando, horaInicio: e.target.value })}
-              />
-            </label>
-            <label>
-              Hora Fin:
-              <input
-                type="time"
+                onChange={(e) => setTurnoEditando({ ...turnoEditando, horaInicio: e.target.value })}
+                required
+              >
+                <option value="" className="">Seleccione hora inicio</option>
+                {opcionesHora.map((hora) => (
+                  <option key={hora} value={hora} className="">{hora}</option>
+                ))}
+              </select>
+            </div>
+            <div className="overlay-group-turnos">
+              <label className="form-label-turnos">Hora fin</label>
+              <select
+                className="form-select-turnos"
+                name="horafin"
                 value={turnoEditando.horaFin}
-                onChange={e => setTurnoEditando({ ...turnoEditando, horaFin: e.target.value })}
-              />
-            </label>
-            <label>
-              Minutos de descanso:
-              <input
-                type="number"
-                value={turnoEditando.minutosDescanso}
-                onChange={e => setTurnoEditando({ ...turnoEditando, minutosDescanso: e.target.value })}
-              />
-            </label>
-            <select
-              className="form-select"              
-              name="inicioDescanso"
-              value={turnoEditando.inicioDescanso}              
-              onChange={(e) => setTurnoEditando({ ...turnoEditando, inicioDescanso: e.target.value })}              
-            >
-              <option value="" className="hora-option">Seleccione hora inicio</option>
-              {generarOpcionesDescanso(turnoEditando.horaInicio, turnoEditando.horaFin).map((hora) => (
-                <option key={hora} value={hora} className="hora-option">{hora}</option>
-              ))}
-            </select>
+                onChange={(e) => setTurnoEditando({ ...turnoEditando, horaFin: e.target.value })}
+                required
+              >
+                <option value="">Seleccione hora fin</option>
+                {opcionesHora.map((hora) => (
+                  <option key={hora} value={hora}>{hora}</option>
+                ))}
+              </select>
+            </div>
+            <div className="overlay-group-turnos">
+              <label className="form-label-turnos">Minutos de descanso:</label>
+                <input
+                  className="form-select-turnos"
+                  type="number"
+                  value={turnoEditando.minutosDescanso}
+                  onChange={e => setTurnoEditando({ ...turnoEditando, minutosDescanso: e.target.value })}
+                />
+            
+            </div>
+            <div className="overlay-group-turnos">
+              <label className="form-label-turnos">Hora inicio descanso:</label>
+              <select
+                className="form-select-turnos"
+                name="inicioDescanso"
+                value={turnoEditando.inicioDescanso}
+                onChange={(e) => setTurnoEditando({ ...turnoEditando, inicioDescanso: e.target.value })}
+              >
+                <option value="" className="">Seleccione hora inicio</option>
+                {generarOpcionesDescanso(turnoEditando.horaInicio, turnoEditando.horaFin).map((hora) => (
+                  <option key={hora} value={hora} className="">{hora}</option>
+                ))}
+              </select>
+            </div>
             <div className="modal-actions">
               <button onClick={guardarEdicionTurno}>Guardar</button>
               <button onClick={() => setTurnoEditando(null)}>Cancelar</button>
