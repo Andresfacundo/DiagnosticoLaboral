@@ -1,0 +1,169 @@
+.titulo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.mensaje-error {
+  background: #ffe5e5;
+  color: #b00020;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.tabla-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-turnos {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.tabla-turnos thead {
+  background: #f4f6f8;
+}
+
+.tabla-turnos th {
+  background-color: #DFBD7C;
+  font-weight: 500;
+}
+
+.tabla-turnos td {
+  text-align: center;
+}
+
+.tabla-turnos th:nth-child(1) {
+  border-top-left-radius: 8px;
+}
+
+.tabla-turnos th:nth-child(11) {
+  border-top-right-radius: 8px;
+}
+
+.tabla-turnos th {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+.tabla-turnos tbody tr:hover {
+  background: #f9fafb;
+}
+
+.sin-turnos {
+  text-align: center;
+  padding: 1rem;
+  color: #666;
+}
+
+.acciones-turnos {
+  display: flex;
+  margin-top: 0.85rem;
+
+}
+
+.acciones-turnos .btn-editar-turnos,
+.acciones-turnos .btn-eliminar-turnos {
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+
+}
+
+.acciones-turnos .btn-editar-turnos img {
+  height: 20px;
+  width: 20px;
+}
+
+@media (max-width: 768px) {
+  .titulo {
+    font-size: 1.2rem;
+  }
+
+  .tabla-turnos th,
+  .tabla-turnos td {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+
+
+}
+
+@media (max-width: 480px) {
+  .tabla-turnos {
+    font-size: 0.75rem;
+    min-width: 600px;
+    /* scroll horizontal en móviles */
+  }
+}
+
+.no-turnos {
+  color: #888;
+  padding-bottom: 1rem;
+}
+
+.no-turnos p {
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.no-turnos span {
+  /* font-weight: 500; */
+  font-size: 14px;
+  color: #aaa;
+
+}
+.container-filtros-turnos{
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.btn-imprimir-turnos {
+  margin: 1rem 0;
+  background-color: #DFBD7C;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-imprimir-turnos:hover{
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+@media print {
+  @page {
+    size: A3 landscape;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .tabla-container-turnos,
+  .tabla-container-turnos * {
+    visibility: visible;
+  }
+
+  .tabla-container-turnos {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+  }
+
+}

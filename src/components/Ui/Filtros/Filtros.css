@@ -1,0 +1,79 @@
+.filtros-dropdown {
+  position: relative;
+  display: inline-block;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.filtros-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  margin: 1rem 0;
+  background: #DFBD7C;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.filtros-btn:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.filtros-menu {
+  position: absolute;
+  top: 80%;
+  left: 0%;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 16px;
+  z-index: 100;
+  min-width: 720px;
+}
+
+.filtros-campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.campo-item {
+  flex: 1;
+  min-width: 140px;
+}
+
+.campo-item input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.campo-item input[type="date"] {
+  color: #555;
+}
+
+.filtros-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  margin-top: 10px;
+}
+
+.btn-limpiar,
+.btn-aplicar {
+  background-color: #DFBD7C;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+
+}
+

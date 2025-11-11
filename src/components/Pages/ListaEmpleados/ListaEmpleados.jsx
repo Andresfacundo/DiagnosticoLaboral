@@ -1,89 +1,126 @@
 import React, { useEffect, useState } from "react";
-import './ListaEmpleados.css';
-import deleteIcon from '../../../assets/delete.png';
-import editar from '../../../assets/editar.svg'
+import "./ListaEmpleados.css";
+import deleteIcon from "../../../assets/delete.png";
+import editar from "../../../assets/editar.svg";
 import { toast } from "react-toastify";
+import axios, { all } from "axios";
 
-function ListaEmpleados() {
+const API_URL = import.meta.env.VITE_API_URL;
+
+function ListaEmpleados({actualizar}) {
   const [empleados, setEmpleados] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [deleteEmpleado, setDeleteEmpleado] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [empleadoEdit, setEmpleadoEdit] = useState(null);
 
-  const cargarEmpleados = () => {
-    const empleadosGuardados = localStorage.getItem("empleados");
-    if (empleadosGuardados) {
-      setEmpleados(JSON.parse(empleadosGuardados));
-    } else {
-      setEmpleados([]);
+  const cargarEmpleados = async () => {
+    try {
+      const storedSessionId = localStorage.getItem("sessionid");
+      const trabajadores = JSON.parse(localStorage.getItem("empleados"))
+
+      const trabajadoresLocales = trabajadores.map((t) => ({
+        ...t,
+        local: true,
+      }));
+
+      const response = await axios.get(`${API_URL}/api/empleados`, {
+        headers: { sessionId: storedSessionId },
+      });
+      const allTrabajadores = [...response.data, ...trabajadoresLocales]
+      setEmpleados(allTrabajadores);
+    } catch (err) {
+      toast.error(`Error cargando trabajadores: ${err.response?.data?.error || err.message}`);
     }
   };
 
   useEffect(() => {
     cargarEmpleados();
-    window.addEventListener("localStorageUpdated", cargarEmpleados);
-    return () => {
-      window.removeEventListener("localStorageUpdated", cargarEmpleados);
-    };
-  }, []);
+  }, [actualizar]);
 
-  const handleDeleteClick = (index) => {
-    setDeleteIndex(index);
+  const handleDeleteClick = (empleado) => {
+    setDeleteEmpleado(empleado);
     setShowModal(true);
   };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      if (deleteEmpleado.local) {
+        // viene de localStorage
+        const trabajadores = JSON.parse(localStorage.getItem("empleados")) || [];
+        const nuevos = trabajadores.filter((t) => t.id !== deleteEmpleado.id);
+        localStorage.setItem("empleados", JSON.stringify(nuevos));
+        toast.success("Trabajador eliminado con éxito");
+        setEmpleados((prev) => prev.filter((t) => t.id !== deleteEmpleado.id));
+      } else {
+        //  viene de la BD
+        const storedSessionId = localStorage.getItem("sessionid");
+        await axios.delete(`${API_URL}/api/empleados/${deleteEmpleado.id}`, {
+          headers: { sessionId: storedSessionId },
+        });
+        toast.success("Trabajador eliminado con éxito");
+        cargarEmpleados();
+      }
+      setShowModal(false);
+      setDeleteEmpleado(null);
+    } catch (err) {
+      toast.error(
+        `Error eliminando trabajador: ${err.response?.data?.error || err.message}`
+      );
+    }
+  };
+
+
+  const handleDeleteCancel = () => {
+    setShowModal(false);
+    setDeleteEmpleado(null);
+  };
+
   const handleEditClick = (empleado) => {
     setEmpleadoEdit({ ...empleado });
     setShowEditModal(true);
   };
+
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    if (name === "cc" || name === "salarioBase") {
-      const numericValue = value.replace(/[^0-9]/g, '');
-      setEmpleadoEdit((prev) => ({ ...prev, [name]: numericValue }));
-    } else {
-      setEmpleadoEdit((prev) => ({ ...prev, [name]: value }));
+    setEmpleadoEdit((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const handleEditSave = async () => {
+    try {
+      if (empleadoEdit.local) {
+        // editar en localStorage
+        const trabajadores = JSON.parse(localStorage.getItem("empleados")) || [];
+        const nuevos = trabajadores.map((t) =>
+          t.id === empleadoEdit.id ? empleadoEdit : t
+        );
+        localStorage.setItem("empleados", JSON.stringify(nuevos));
+        toast.success("Trabajador actualizado con éxito");
+        setEmpleados((prev) =>
+          prev.map((t) => (t.id === empleadoEdit.id ? empleadoEdit : t))
+        );
+      } else {
+        //  editar en la BD
+        const storedSessionId = localStorage.getItem("sessionid");
+        await axios.patch(
+          `${API_URL}/api/empleados/${empleadoEdit.id}`,
+          empleadoEdit,
+          { headers: { sessionId: storedSessionId } }
+        );
+        toast.success("Trabajador actualizado con éxito");
+        cargarEmpleados();
+      }
+
+      setShowEditModal(false);
+      setEmpleadoEdit(null);
+    } catch (err) {
+      toast.error(
+        `Error actualizando trabajador: ${err.response?.data?.error || err.message}`
+      );
     }
   };
-
-  const handleEditSave = () => {
-    const actualizados = empleados.map(emp =>
-      emp.id === empleadoEdit.id ? empleadoEdit : emp
-    );
-    setEmpleados(actualizados);
-    localStorage.setItem("empleados", JSON.stringify(actualizados));
-    window.dispatchEvent(new Event("localStorageUpdated"));
-    setShowEditModal(false);
-    setEmpleadoEdit(null);
-    toast.success("Empleado actualizado con éxito");
-  };
-  
-
-  const handleDeleteConfirm = () => {
-    const empleadosGuardados = JSON.parse(localStorage.getItem("empleados")) || [];
-    const empleadoEliminado = empleadosGuardados[deleteIndex];
-
-    const actualizados = empleados.filter((_, i) => i !== deleteIndex);
-    setEmpleados(actualizados);
-    localStorage.setItem("empleados", JSON.stringify(actualizados));
-
-    const turnosGuardados = JSON.parse(localStorage.getItem("turnos")) || [];
-    const turnosActualizados = turnosGuardados.filter(
-      (turno) => String(turno.empleadoId) !== String(empleadoEliminado.id)
-    );
-    localStorage.setItem("turnos", JSON.stringify(turnosActualizados));
-
-    window.dispatchEvent(new Event("localStorageUpdated"));
-    setShowModal(false);
-    setDeleteIndex(null);
-    toast.success("Empleado y sus turnos asociados eliminados con éxito");
-  };
-
-  const handleDeleteCancel = () => {
-    setShowModal(false);
-    setDeleteIndex(null);
-  };
-  
 
   return (
     <div className="lista-empleados-container">
@@ -102,32 +139,32 @@ function ListaEmpleados() {
             </tr>
           </thead>
           <tbody>
-            {empleados.map((emp, index) => (
-              <tr key={index}>
-                <td data-label="Nombre">{emp.nombre}</td>
-                <td data-label="Apellido">{emp.apellido}</td>
-                <td data-label="Cédula">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
-                <td data-label="Clasificación">{emp.clasificacionPersonal}</td>
-                <td data-label="Área">{emp.area}</td>
-                <td data-label="Salario Base">${parseFloat(emp.salarioBase).toLocaleString('es-CO')}</td>
-                <td data-label="Color">
-                  <div style={{
-                    backgroundColor: emp.color || '#ccc',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                  }} />
+            {empleados.map((emp) => (
+              <tr key={emp.id}>
+                <td>{emp.nombre}</td>
+                <td>{emp.apellido}</td>
+                <td>{parseFloat(emp.cc).toLocaleString("es-CO")}</td>
+                <td>{emp.clasificacionPersonal}</td>
+                <td>{emp.area}</td>
+                <td>${parseFloat(emp.salarioBase).toLocaleString("es-CO")}</td>
+                <td>
+                  <div
+                    style={{
+                      backgroundColor: emp.color || "#ccc",
+                      width: "20px",
+                      height: "20px",
+                      borderRadius: "50%",
+                    }}
+                  />
                 </td>
-
-                <td data-label="Acciones" className="acciones">
+                <td className="acciones">
                   <button onClick={() => handleEditClick(emp)} className="edit-button">
-                    <img className='editar-btn' src={editar} alt="" />
+                    <img className="editar-btn" src={editar} alt="Editar" />
                   </button>
-                  <button onClick={() => handleDeleteClick(index)} className="delete-button">
-                    <img src={deleteIcon} alt="" />
+                  <button onClick={() => handleDeleteClick(emp)} className="delete-button">
+                    <img src={deleteIcon} alt="Eliminar" />
                   </button>
                 </td>
-
               </tr>
             ))}
           </tbody>
@@ -139,80 +176,59 @@ function ListaEmpleados() {
         </div>
       )}
 
-      {/* Modal de confirmación */}
+      {/* Modal de edición */}
       {showEditModal && empleadoEdit && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Editar trabajador</h3>
             <form className="edit-form-emp">
-              <input
-                type="text"
-                name="nombre"
-                value={empleadoEdit.nombre}
+              <input type="text" name="nombre" value={empleadoEdit.nombre} onChange={handleEditChange} />
+              <input type="text" name="apellido" value={empleadoEdit.apellido} onChange={handleEditChange} />
+              <input type="text" name="cc" value={empleadoEdit.cc} onChange={handleEditChange} />
+              <select
+                name="clasificacionPersonal"
+                value={empleadoEdit.clasificacionPersonal}
                 onChange={handleEditChange}
-                placeholder="Nombre"
-              />
-              <input
-                type="text"
-                name="apellido"
-                value={empleadoEdit.apellido}
-                onChange={handleEditChange}
-                placeholder="Apellido"
-              />
-              <input
-                type="text"
-                name="cc"
-                value={parseFloat(empleadoEdit.cc).toLocaleString('es-CO')}
-                onChange={handleEditChange}
-                placeholder="Cédula"
-              />
-              <select name="clasificacionPersonal" value={empleadoEdit.clasificacionPersonal} onChange={handleEditChange}>
-                <option value="" disabled>Clasificación del personal</option>
+              >
+                <option value="" disabled>
+                  Clasificación del personal
+                </option>
                 <option value="Ordinario">Ordinario</option>
                 <option value="Direccion, confianza o manejo">Dirección, confianza o manejo</option>
               </select>
-              <input
-                type="text"
-                name="area"
-                value={empleadoEdit.area}
-                onChange={handleEditChange}
-                placeholder="Área"
-              />
-              <input
-                type="text"
-                name="salarioBase"
-                value={'$' + parseFloat(empleadoEdit.salarioBase).toLocaleString('es-CO')}
-                onChange={handleEditChange}
-                placeholder="Salario Base"
-                onWheel={e => e.target.blur()}
-              />
+              <input type="text" name="area" value={empleadoEdit.area} onChange={handleEditChange} />
+              <input type="number" name="salarioBase" value={empleadoEdit.salarioBase} onChange={handleEditChange} />
               <label className="color-label">
                 Color del trabajador
                 <div className="color-input-wrapper">
-                  <input
-                    type="color"
-                    name="color"
-                    value={empleadoEdit.color}
-                    onChange={handleEditChange}
-                  />
-                  <span></span> {/* Esto actúa como “placeholder” visible */}
+                  <input type="color" name="color" value={empleadoEdit.color} onChange={handleEditChange} />
                 </div>
               </label>
             </form>
             <div className="modal-actions">
-              <button onClick={handleEditSave} className="save-button">Guardar</button>
-              <button onClick={() => setShowEditModal(false)} className="cancel-button">Cancelar</button>
+              <button onClick={handleEditSave} className="save-button">
+                Guardar
+              </button>
+              <button onClick={() => setShowEditModal(false)} className="cancel-button">
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Modal de confirmación de eliminación */}
       {showModal && (
         <div className="modal-confirmacion">
           <div className="modal-content-confirmacion">
             <p>¿Estás seguro que deseas borrar este trabajador?</p>
             <div className="modal-actions">
-              <button onClick={handleDeleteConfirm} className="save-button">Sí, borrar</button>
-              <button onClick={handleDeleteCancel} className="cancel-button">Cancelar</button>
+              <button onClick={handleDeleteConfirm} className="save-button">
+                Sí, borrar
+              </button>
+              <button onClick={handleDeleteCancel} className="cancel-button">
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
