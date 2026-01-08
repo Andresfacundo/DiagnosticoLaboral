@@ -10,7 +10,7 @@ import configuracion from '../../../assets/configuraciones.svg'
 import { NavLink } from "react-router-dom";
 
 const FormularioCalculadora = () => {
-  const salarioMinimo = 1423500;
+  const salarioMinimo = 1750905;
 
   const [formData, setFormData] = useState({
     tipoSalario: "", 
