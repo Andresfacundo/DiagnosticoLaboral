@@ -31,9 +31,24 @@ export const calcularNomina = async (formData) => {
             }
         });
         return response.data
-        
+
     }catch(error){
         console.error('Error al calcular la nomina:', error);
+        throw error;
+    }
+}
+
+export const obtenerConstantes = async () => {
+    try {
+        const token = authService.getToken();
+        const response = await axios.get(`${API_URL}/api/constants`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener las constantes:', error);
         throw error;
     }
 }
