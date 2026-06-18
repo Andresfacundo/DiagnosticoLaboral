@@ -31,6 +31,7 @@
     "react-router-dom": "^7.4.0",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.1",
+    "socket": "^1.1.122",
     "socket.io-client": "^4.8.1",
     "swiper": "^11.2.8",
     "xlsx": "^0.18.5"
