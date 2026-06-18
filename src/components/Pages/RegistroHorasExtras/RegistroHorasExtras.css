@@ -3,6 +3,24 @@
   color: #000;
 
 }
+.btn-imprimir-registros {
+  display: flex;
+  gap: 1rem;
+
+}
+.btn-imprimir-registros button{
+  background-color: #DFBD7C;
+  border: none;
+  cursor: pointer;
+  padding:  8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  margin: 1rem 0;
+}
+.btn-imprimir-registros button:hover{
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.12);
+
+}
 
 .actividad-editable {
   padding: 0 16px;
@@ -26,8 +44,9 @@
 /* RegistroHorasExtras.css */
 
 .registro-horas-extras-container {
-  padding: 1.5rem;
+  /* padding: 1.5rem; */
   max-width: 100%;
+  height: 100vh;
   overflow-x: auto;
   background-color: #ffffff;
 }
@@ -90,8 +109,8 @@
 
 
 @media print {
-  .registro-horas-extras-table {
-    width: 100%;
+  .registro-horas-extras-table * {
+    visibility: visible;
 
   }
 

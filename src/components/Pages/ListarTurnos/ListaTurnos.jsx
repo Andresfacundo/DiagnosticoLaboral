@@ -1,371 +1,161 @@
-import React, { useEffect, useState, useRef } from "react";
-import './ListaTurnos.css';
-import { FaUserCircle, FaSearch, FaEraser } from "react-icons/fa";
-import { format } from "date-fns";
-import es from "date-fns/locale/es";
-import del from "../../../assets/delete.png";
-import editar from '../../../assets/editar.svg';
-import filtrar from '../../../assets/filtrar.svg';
-import quitarFiltro from '../../../assets/quitarFiltro.svg';
-import generarOpcionesDescanso from "../../../utils/OpcionesHoraDescanso";
-import { generarOpcionesHora } from "../../../utils/GenerarOpcionesHora.js";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { turnosFetch } from "../../../Services/useFetchTurnos";
+import EditarTurnoModal from "../../Ui/EditarTurnoModal/EditarTurnoModal";
+import "./ListadoTurnos.css";
+import editar from "../../../assets/editar.svg"
+import eliminar from "../../../assets/delete.png"
+import Filtros from "../../Ui/Filtros/Filtros";
 
-function ListaTurnos({ actualizar }) {
+const ListadoTurnos = () => {
   const [turnos, setTurnos] = useState([]);
-  const [empleados, setEmpleados] = useState([]);
-  const [filtroNombre, setFiltroNombre] = useState("");
-  const [filtroArea, setFiltroArea] = useState("");
-  const [filtroDocumento, setFiltroDocumento] = useState("");
-  const [fechaDesde, setFechaDesde] = useState("");
-  const [fechaHasta, setFechaHasta] = useState("");
-  const [turnosFiltrados, setTurnosFiltrados] = useState([]);
-  const [turnoEditando, setTurnoEditando] = useState(null);
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const modalRef = useRef(null);
-  const opcionesHora = generarOpcionesHora();
-
-  useEffect(() => {
-    if (!mostrarFiltros) return;
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setMostrarFiltros(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+  const [turnoEditar, setTurnoEditar] = useState(null);
+  const [error, setError] = useState("");
+  const [filtros, setFiltros] = useState({
+    nombre: "",
+    apellido: "",
+    area: "",
+    cc: "",
+    diaInicio: "",
+    diaFin: ""
+  });
 
 
+  const campos = [
+    { nombre: "nombre", tipo: "text", placeholder: "Nombre" },
+    { nombre: "apellido", tipo: "text", placeholder: "Apellido" },
+    { nombre: "area", tipo: "text", placeholder: "Área" },
+    { nombre: "cc", tipo: "text", placeholder: "Documento" },
+    { nombre: "diaInicio", tipo: "date", placeholder: "Día inicio" },
+    { nombre: "diaFin", tipo: "date", placeholder: "Día fin" },
+  ];
 
-  }, [mostrarFiltros]);
-
-  const handleFiltroChange = (setterFunction, value) => {
-    setterFunction(value);
-    setTimeout(() => setMostrarFiltros(false), 100);
-  };
-
-
-  const formatearFecha = (fechaString) => {
-    if (!fechaString) return '-';
+  const cargarTurnos = async (filtrosOpcionales = {}) => {
     try {
-      const fecha = new Date(fechaString + 'T00:00:00');
-      return format(fecha, "dd/MMM/yyyy", { locale: es }).replace('.', '').toLowerCase();
-    } catch (error) {
-      return fechaString;
+      const data = await turnosFetch.listar(filtrosOpcionales);
+      setTurnos(Array.isArray(data) ? data : data.turnos || []);
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al cargar turnos");
     }
   };
 
-  const getEmpleado = id => empleados.find(e => e.id === id);
-
-  const eliminarTurno = id => {
-    const nuevosTurnos = turnos.filter(t => t.id !== id);
-    setTurnos(nuevosTurnos);
-    localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
-  };
-  const guardarEdicionTurno = () => {
-    const nuevosTurnos = turnos.map(t =>
-      t.id === turnoEditando.id ? turnoEditando : t
-    );
-    setTurnos(nuevosTurnos);
-    localStorage.setItem("turnos", JSON.stringify(nuevosTurnos));
-    setTurnoEditando(null);
-    toast.success("Turno actualizado correctamente");
+  const eliminarTurno = async (id) => {
+    if (!window.confirm("¿Seguro que deseas eliminar este turno?")) return;
+    await turnosFetch.eliminar(id);
+    cargarTurnos();
   };
 
-  // Cálculo de horas trabajadas
-  function calcularHorasTrabajadas(turno) {
-    if (!turno.horaInicio || !turno.horaFin) return "";
-    const [hIni, mIni] = turno.horaInicio.split(":").map(Number);
-    const [hFin, mFin] = turno.horaFin.split(":").map(Number);
-    const inicio = new Date(0, 0, 0, hIni, mIni);
-    const fin = new Date(0, 0, 0, hFin, mFin);
-    let diffMs = fin - inicio;
-    if (diffMs < 0) diffMs += 24 * 60 * 60 * 1000;
-    const minutosTrabajados = diffMs / 60000 - parseInt(turno.minutosDescanso || 0);
-    const horas = Math.floor(minutosTrabajados / 60);
-    const minutos = minutosTrabajados % 60;
-    return `${horas}h ${minutos}min`;
-  }
-
+  const guardarCambios = async (id, form) => {
+    try {
+      await turnosFetch.actualizar(id, form);
+      alert("Turno actualizado correctamente");
+      setTurnoEditar(null);
+      cargarTurnos();
+    } catch (err) {
+      alert(err.response?.data?.error || "Error al actualizar turno");
+    }
+  };
 
   useEffect(() => {
-    const filtrados = turnos.filter(turno => {
-      const emp = getEmpleado(turno.empleadoId) || {};
-      const nombreCompleto = `${emp.nombre || ""} ${emp.apellido || ""}`.toLowerCase();
-      const area = (emp.area || "").toLowerCase();
-      const documento = emp.cc || "";
-      const fecha = turno.diaInicio || "";
+    cargarTurnos();
+  }, []);
 
-      let cumpleFecha = true;
-      if (fechaDesde && fecha < fechaDesde) cumpleFecha = false;
-      if (fechaHasta && fecha > fechaHasta) cumpleFecha = false;
-
-      return (
-        nombreCompleto.includes(filtroNombre.toLowerCase()) &&
-        area.includes(filtroArea.toLowerCase()) &&
-        documento.toString().includes(filtroDocumento) &&
-        cumpleFecha
-      );
-    });
-    setTurnosFiltrados(filtrados);
-  }, [filtroNombre, filtroArea, filtroDocumento, fechaDesde, fechaHasta, turnos]);
-
-
-  const limpiarFiltros = () => {
-    setFiltroNombre("");
-    setFiltroArea("");
-    setFiltroDocumento("");
-    setFechaDesde("");
-    setFechaHasta("");
-    setTurnosFiltrados(turnos);
-    setMostrarFiltros(false);
-  };
-
-  // Carga inicial
-  useEffect(() => {
-    const empleadosGuardados = localStorage.getItem("empleados");
-    const turnosGuardados = localStorage.getItem("turnos");
-    setEmpleados(empleadosGuardados ? JSON.parse(empleadosGuardados) : []);
-    setTurnos(turnosGuardados ? JSON.parse(turnosGuardados) : []);
-  }, [actualizar]);
-
-
-  const nombresUnicos = Array.from(
-    new Set(
-      turnos.map(t => {
-        const emp = getEmpleado(t.empleadoId) || {};
-        return `${emp.nombre || ""} ${emp.apellido || ""}`.trim();
-      })
-    )
-  ).filter(n => n);
-
-  const areasUnicas = Array.from(
-    new Set(
-      turnos.map(t => {
-        const emp = getEmpleado(t.empleadoId) || {};
-        return emp.area || "";
-      })
-    )
-  ).filter(a => a);
-
-  // Render
   return (
-    <div className="turnos-section-card">
-      {/* <h2>Lista de Turnos</h2> */}
-      <button className="btn-imprimir" onClick={() => window.print()}>
-        Generar PDF
-      </button>
-      <div className="filtros-calendario">
-        <div className="filtros-calendario-header">
-          <span className="filtros-calendario-titulo">Filtros</span>
-          <span>
-            <button type="button" onClick={() => setMostrarFiltros((v) => !v)}>
-              <img src={filtrar} alt="filtro" />
-            </button>
-          </span>
-        </div>
-        {mostrarFiltros && (
-          <div className="filtros-dropdown" ref={modalRef}>
-            <div className="filtros-calendario-container" >
-              <div className="filtros-calendario-box">
-                <select
-                  value={filtroNombre}
-                  onChange={e => handleFiltroChange(setFiltroNombre, e.target.value)}
-                >
-                  <option value="">Todos los nombres</option>
-                  {nombresUnicos.map(nombre => (
-                    <option key={nombre} value={nombre}>{nombre}</option>
-                  ))}
-                </select>
-                <select
-                  value={filtroArea}
-                  onChange={e => handleFiltroChange(setFiltroArea, e.target.value)}
-                >
-                  <option value="">Todas las áreas</option>
-                  {areasUnicas.map(area => (
-                    <option key={area} value={area}>{area}</option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Filtrar por documento"
-                  value={filtroDocumento}
-                  onChange={e => setFiltroDocumento(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="filtros-calendario-fechas">
-              <input
-                type="date"
-                placeholder="Desde"
-                value={fechaDesde}
-                onChange={(e) => setFechaDesde(e.target.value)}
-              />
-              <input
-                type="date"
-                placeholder="Hasta"
-                value={fechaHasta}
-                onChange={(e) => setFechaHasta(e.target.value)}
-              />
-            </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
-              <button type="button" onClick={limpiarFiltros} className="btn-limpiar-filtros">
-                <img src={quitarFiltro} alt="Quitar filtros" style={{ marginRight: 6 }} />
-                Limpiar filtros
-              </button>
-            </div>
-          </div>
-        )}
+    <section className="listado-turnos">
+      <div className="container-filtros-turnos">
+        <button className="btn-imprimir-turnos" onClick={() => window.print()}>Generar PDF</button>
+
+        <Filtros
+          titulo="Filtros"
+          campos={campos}
+          filtros={filtros}
+          setFiltros={setFiltros}
+          onAplicar={(f) => cargarTurnos(f)}
+          onLimpiar={() => {
+            const vacios = {
+              nombre: "",
+              apellido: "",
+              area: "",
+              cc: "",
+              diaInicio: "",
+              diaFin: "",
+            };
+            setFiltros(vacios)
+            cargarTurnos({})
+          }}
+        />
       </div>
 
-      {/* Tabla de turnos */}
-      <table className="lista-turnos-table">
-        <thead>
-          <tr>
-            <th>Empleado</th>
-            <th>CC</th>
-            <th>Área</th>
-            <th>Fecha inicio</th>
-            <th>Fecha fin</th>
-            <th>Hora inicio</th>
-            <th>Hora fin</th>
-            <th>Minutos descanso</th>
-            <th>Inicio minutos descanso</th>
-            <th>Horas trabajadas</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {turnosFiltrados
-            .slice()
-            .sort((a, b) => {
-              // Ordena por fecha de inicio ascendente
-              if (a.diaInicio < b.diaInicio) return -1;
-              if (a.diaInicio > b.diaInicio) return 1;
+      {error && <p className="mensaje-error">{error}</p>}
 
-              if (a.horaInicio && b.horaInicio) {
-                return a.horaInicio.localeCompare(b.horaInicio);
-              }
-              return 0;
-            })
-            .map(turno => {
-              const emp = getEmpleado(turno.empleadoId) || {};
-              const horasTrabajadas = calcularHorasTrabajadas(turno);
-              return (
+      <div className="tabla-container-turnos">
+        <table className="tabla-turnos">
+          <thead>
+            <tr>
+              <th>Trabajador</th>
+              <th>CC</th>
+              <th>Área</th>
+              <th>Fecha inicio</th>
+              <th>Fecha fin</th>
+              <th>Hora inicio</th>
+              <th>Hora fin</th>
+              <th>Descanso (min)</th>
+              <th>Inicio descanso</th>
+              <th>Horas trabajadas</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {turnos.length > 0 ? (
+              turnos.map((turno) => (
                 <tr key={turno.id}>
-                  <td data-label="Empleado">
-                    <span className="empleado-icon"><FaUserCircle /></span>
-                    {emp.nombre} {emp.apellido}
-                  </td>
-                  <td data-label="CC">{parseFloat(emp.cc).toLocaleString('es-CO')}</td>
-                  <td data-label="Área">{emp.area}</td>
-                  <td data-label="Fecha">{formatearFecha(turno.diaInicio)}</td>
-                  <td data-label="Fecha">{formatearFecha(turno.diaFin)}</td>
-                  <td data-label="Hora Inicio">
-                    {turno.horaInicio
-                      ? format(new Date(`2020-01-01T${turno.horaInicio}`), "hh:mm a")
-                      : ""}
-                  </td>
-                  <td data-label="Hora Fin">
-                    {turno.horaFin
-                      ? format(new Date(`2020-01-01T${turno.horaFin}`), "hh:mm a")
-                      : ""}
-                  </td>
-                  <td data-label="Minutos Descanso">{turno.minutosDescanso}</td>
-                  <td data-label="Minutos Descanso">{turno.inicioDescanso || "Sin asignar"}</td>
-                  <td data-label="Horas Trabajadas">{horasTrabajadas}</td>
-                  <td data-label="Acciones">
+                  <td>{turno.Trabajador.nombre} {turno.Trabajador.apellido}</td>
+                  <td>{turno.Trabajador.cc}</td>
+                  <td>{turno.Trabajador.area}</td>
+                  <td>{turno.diaInicio}</td>
+                  <td>{turno.diaFin}</td>
+                  <td>{turno.horaInicio}</td>
+                  <td>{turno.horaFin}</td>
+                  <td>{turno.minutosDescanso}</td>
+                  <td>{turno.inicioDescanso || 0}</td>
+                  <td>{turno.tiempoTrabajado}</td>
+                  <td className="acciones-turnos">
                     <button
-                      className="btn-editar-turno"
-                      onClick={() => setTurnoEditando(turno)}
-                      title="Editar turno"
+                      className="btn-editar-turnos"
+                      onClick={() => setTurnoEditar(turno)}
                     >
                       <img src={editar} alt="" />
+                      {/* Editar */}
                     </button>
                     <button
-                      className="btn-eliminar-turno"
+                      className="btn-eliminar-turnos"
                       onClick={() => eliminarTurno(turno.id)}
-                      title="Eliminar turno"
                     >
-                      <img src={del} alt="btn-eliminar" />
+                      <img src={eliminar} alt="" />
                     </button>
                   </td>
                 </tr>
-              );
-            })}
-        </tbody>
-      </table>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="18" className="no-turnos">
+                  <p>No hay turnos registrados</p>
+                  <span>Modifica los filtros o agrega trabajadores para visualizar turnos</span>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-      {/* Modal de edición */}
-      {turnoEditando && (
-        <div className="modal-overlay-turnos">
-          <div className="modal-content">
-            <h3>Editar Turno</h3>
-            <div className="overlay-group-turnos">
-              <label className="form-label-turnos">Hora inicio:</label>
-              <select
-                className="form-select-turnos"
-                name="horaInicio"
-                value={turnoEditando.horaInicio}
-                onChange={(e) => setTurnoEditando({ ...turnoEditando, horaInicio: e.target.value })}
-                required
-              >
-                <option value="" className="">Seleccione hora inicio</option>
-                {opcionesHora.map((hora) => (
-                  <option key={hora} value={hora} className="">{hora}</option>
-                ))}
-              </select>
-            </div>
-            <div className="overlay-group-turnos">
-              <label className="form-label-turnos">Hora fin</label>
-              <select
-                className="form-select-turnos"
-                name="horafin"
-                value={turnoEditando.horaFin}
-                onChange={(e) => setTurnoEditando({ ...turnoEditando, horaFin: e.target.value })}
-                required
-              >
-                <option value="">Seleccione hora fin</option>
-                {opcionesHora.map((hora) => (
-                  <option key={hora} value={hora}>{hora}</option>
-                ))}
-              </select>
-            </div>
-            <div className="overlay-group-turnos">
-              <label className="form-label-turnos">Minutos de descanso:</label>
-                <input
-                  className="form-select-turnos"
-                  type="number"
-                  value={turnoEditando.minutosDescanso}
-                  onChange={e => setTurnoEditando({ ...turnoEditando, minutosDescanso: e.target.value })}
-                />
-            
-            </div>
-            <div className="overlay-group-turnos">
-              <label className="form-label-turnos">Hora inicio descanso:</label>
-              <select
-                className="form-select-turnos"
-                name="inicioDescanso"
-                value={turnoEditando.inicioDescanso}
-                onChange={(e) => setTurnoEditando({ ...turnoEditando, inicioDescanso: e.target.value })}
-              >
-                <option value="" className="">Seleccione hora inicio</option>
-                {generarOpcionesDescanso(turnoEditando.horaInicio, turnoEditando.horaFin).map((hora) => (
-                  <option key={hora} value={hora} className="">{hora}</option>
-                ))}
-              </select>
-            </div>
-            <div className="modal-actions">
-              <button onClick={guardarEdicionTurno}>Guardar</button>
-              <button onClick={() => setTurnoEditando(null)}>Cancelar</button>
-            </div>
-          </div>
-        </div>
+      {turnoEditar && (
+        <EditarTurnoModal
+          turno={turnoEditar}
+          onClose={() => setTurnoEditar(null)}
+          onSave={guardarCambios}
+        />
       )}
-    </div>
+    </section>
   );
-}
+};
 
-export default ListaTurnos;
+export default ListadoTurnos;

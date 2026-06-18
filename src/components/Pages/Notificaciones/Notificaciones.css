@@ -1,0 +1,142 @@
+.bell-container {
+  position: relative;
+  display: inline-block;
+}
+
+.bell-button {
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  color: #333;
+  transition: transform 0.2s ease;
+}
+
+
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  background: #dc3545;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  left: -150px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  width: 320px;
+  z-index: 10;
+  padding: 12px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown h4 {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+.lista-notificaciones {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.notificacion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 6px;
+  transition: background 0.2s;
+}
+
+.notificacion-item:hover {
+  background: #eef3ff;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+.info strong {
+  color: #222;
+}
+
+.info span {
+  color: #666;
+}
+
+.info small {
+  color: #888;
+  font-size: 12px;
+}
+
+.acciones button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.acciones button:hover {
+  transform: scale(1.2);
+}
+
+.btn-aprobar {
+  color: #28a745;
+}
+
+.btn-rechazar {
+  color: #dc3545;
+}
+
+.sin-pendientes {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+}
+
+.mensaje {
+  text-align: center;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  padding: 4px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}

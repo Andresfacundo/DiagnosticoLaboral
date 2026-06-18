@@ -11,17 +11,18 @@ import authService from '../../../Services/authService.js'
 import gap from '../../../../public/gap.png'
 import GAP from '../GAP/GAP.jsx'
 import LoggingOut from '../LogoutAutomatico/LoggingOut.jsx'
+import NotificacionesBell from '../../Pages/Notificaciones/Notificaciones.jsx'
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const Navbar = ({id}) => {
+const Navbar = ({ id }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userRole, setUserRole] = useState('invitado');
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const navigate = useNavigate();
-    
+
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     }
@@ -30,15 +31,15 @@ const Navbar = ({id}) => {
     const closeMenu = () => {
         if (menuOpen) setMenuOpen(false);
     }
-    
+
     useEffect(() => {
         // Close menu when location changes
         closeMenu();
-        
+
         // Verificar autenticación
         const authenticated = authService.isAuthenticated();
         setIsAuthenticated(authenticated);
-        
+
         // Obtener el rol del usuario si está autenticado
         if (authenticated) {
             const userData = authService.getUser();
@@ -86,76 +87,80 @@ const Navbar = ({id}) => {
         }
     };
 
-    
+
     return (
         <>
-        {isLoggingOut && <LoggingOut />}
-        <div id={id} className='navbar-container'>
-            <nav className='navbar'>
-                <div className='navbar-header'>
-                    <div className="navbar-logo">
-                        <GVA/>
-                        <GAP className='content-gap'/>
-                        
-                    </div>
-                    
-                    <div className="hamburger-menu">
-                        <button onClick={toggleMenu} className="menu-toggle">
-                            {menuOpen 
-                                ? <img src={closeIcon} alt="Cerrar menú" className="menu-icon" /> 
-                                : <img src={hamburgerIcon} alt="Abrir menú" className="menu-icon" />
-                            }
-                        </button>
-                    </div>
-                </div>
-                <div className='content-list-nav'>
-                    <ul className={`nav-list ${menuOpen ? 'nav-active' : ''}`}>
-                        <div className='content-nav-list'>       
-                            <li className='diagnostico'><NavLink to='/' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico laboral</NavLink></li>
-                            <li className='home'><NavLink to='/areas-servicio' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Áreas de servicio</NavLink></li>
-                            
-                            {/* Solo mostrar Gestión de preguntas para admin */}
-                            {hasAccess('admin') && (
-                                <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>                            
-                            )}
-                            {hasAccess('admin') && (
-                                <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
-                            )}
-                            {/* Solo mostrar Calculadora para asociado/admin */}
-                            {hasAccess('asociado') && (
-                                <li className='calculadora'><NavLink to="/form/calculadora" onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Calculadora</NavLink></li>
-                            )}
-                                                    
-                            {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
-                            <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros' className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>Nosotros</NavLink></li>
-                            <li className='horarios'>
-                                <NavLink to='/horarios' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>
-                                    Gestión de horarios
-                                </NavLink>
-                            </li>
+            {isLoggingOut && <LoggingOut />}
+            <div id={id} className='navbar-container'>
+                <nav className='navbar'>
+                    <div className='navbar-header'>
+                        <div className="navbar-logo">
+                            <GVA />
+                            <GAP className='content-gap' />
 
                         </div>
-                        
-                        {isAuthenticated ? (
-                            <li className='login'>
-                                <NavLink to='/cerrando-sesion' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
-                                    <img src='/cerrar-sesion.png' alt='icon-logout' className='logo-user' />
-                                    <span className="menu-text">Cerrar sesión</span>
-                                </NavLink>
-                            </li>
-                        ) : (
-                            <li className='login'>
-                                <NavLink to='login' onClick={closeMenu} className={({isActive}) => isActive ? 'botonActivo' : 'boton'}>
-                                    <img src='/usuario.png' alt='icon-user' className='logo-user' />
-                                    <span className="menu-text">Iniciar sesión</span>
-                                </NavLink>
-                            </li>
-                        )}
-                    </ul>
-                </div>
-            </nav>
-        </div>
-        </> 
+
+                        <div className="hamburger-menu">
+                            <button onClick={toggleMenu} className="menu-toggle">
+                                {menuOpen
+                                    ? <img src={closeIcon} alt="Cerrar menú" className="menu-icon" />
+                                    : <img src={hamburgerIcon} alt="Abrir menú" className="menu-icon" />
+                                }
+                            </button>
+                        </div>
+                    </div>
+                    <div className='content-list-nav'>
+                        <ul className={`nav-list ${menuOpen ? 'nav-active' : ''}`}>
+                            <div className='content-nav-list'>
+                                <li className='diagnostico'><NavLink to='/' onClick={closeMenu} className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>Diagnóstico laboral</NavLink></li>
+                                <li className='home'><NavLink to='/areas-servicio' onClick={closeMenu} className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>Áreas de servicio</NavLink></li>
+
+                                {/* Solo mostrar Gestión de preguntas para admin */}
+                                {hasAccess('admin') && (
+                                    <li className='preguntas'><NavLink to='questions' onClick={closeMenu} className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>Gestión de preguntas</NavLink></li>
+                                )}
+                                {hasAccess('admin') && (
+                                    <li className='preguntas'><NavLink to='historial' onClick={closeMenu} className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>Historial</NavLink></li>
+                                )}
+                                {/* Solo mostrar Calculadora para asociado/admin */}
+                                {hasAccess('asociado') && (
+                                    <li className='calculadora'><NavLink to="/form/calculadora" onClick={closeMenu} className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>Calculadora</NavLink></li>
+                                )}
+
+                                {/* <li className='contacto'><NavLink onClick={closeMenu}>Contacto</NavLink></li> */}
+                                <li className='nosotros'><NavLink onClick={closeMenu} to='/nosotros' className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>Nosotros</NavLink></li>
+                                {hasAccess('asociado') && (
+                                    <li className='horarios'>
+                                        <NavLink to='/horarios' onClick={closeMenu} className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>
+                                            Gestión de horarios
+                                        </NavLink>
+                                    </li>
+                                )}
+
+                                <li><NotificacionesBell /></li>
+
+                            </div>
+
+                            {isAuthenticated ? (
+                                <li className='login'>
+                                    <NavLink to='/cerrando-sesion' onClick={() => { handleLogout(); closeMenu(); }} className='logout-button boton'>
+                                        <img src='/cerrar-sesion.png' alt='icon-logout' className='logo-user' />
+                                        <span className="menu-text">Cerrar sesión</span>
+                                    </NavLink>
+                                </li>
+                            ) : (
+                                <li className='login'>
+                                    <NavLink to='login' onClick={closeMenu} className={({ isActive }) => isActive ? 'botonActivo' : 'boton'}>
+                                        <img src='/usuario.png' alt='icon-user' className='logo-user' />
+                                        <span className="menu-text">Iniciar sesión</span>
+                                    </NavLink>
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </>
     )
 }
 

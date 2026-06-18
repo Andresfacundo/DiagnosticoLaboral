@@ -12,7 +12,7 @@ function EmpleadosPage() {
     <section className="section-card">
       <AgregarEmpleado onEmpleadoAgregado={recargar} />
       <ToastContainer position="top-right" autoClose={4000} />
-      <ListaEmpleados actualizar={actualizar} />
+      {/* <ListaEmpleados actualizar={actualizar} /> */}
     </section>
   );
 }

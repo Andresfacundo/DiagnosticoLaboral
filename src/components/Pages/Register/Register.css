@@ -1,0 +1,396 @@
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f5f6fa;
+}
+
+.register-container {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  animation: slideUp 0.5s ease-out;
+}
+
+.register-container .box-tittle-register {
+  width: 100%;
+  text-align: center;
+
+}
+.box-tittle-register h2{
+  font-size: 22px;
+  font-weight: 600;
+}
+
+
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo */
+.logo-register {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo-icon-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #DFBD7C 0%, #DFBD7C 100%);
+  border-radius: 50%;
+  color: white;
+  font-size: 36px;
+  /* box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+
+
+/* Mensajes */
+.error-message,
+.success-message {
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  border-left: 4px solid #c33;
+}
+
+.success-message {
+  background-color: #efe;
+  color: #2a2;
+  border-left: 4px solid #2a2;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Formulario */
+.register-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group-register {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group-register label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-left: 4px;
+}
+
+.input-group-register input {
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+.fa-eye {
+  font-weight: 500;
+
+}
+
+.fa-eye-slash {
+  font-weight: 500;
+}
+
+.input-group-register input:focus {
+  outline: none;
+  border-color: #DFBD7C;
+  background-color: white;
+  /* box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1); */
+}
+
+.input-group-register input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Password wrapper */
+.password-wrapper-register {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper-register input {
+  width: 100%;
+  padding-right: 50px;
+}
+
+.toggle-password-register {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+
+.toggle-password-register:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Botón de registro */
+.register-btn-register {
+  padding: 16px;
+  background: linear-gradient(135deg, #DFBD7C 0%, #DFBD7C 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.register-btn-register:hover:not(:disabled) {
+  /* transform: translateY(-2px); */
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.register-btn-register:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.register-btn-register:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Redirect link */
+.redirect-login {
+  text-align: center;
+  margin-top: 24px;
+  /* font-size: 14px; */
+  color: #666;
+}
+
+.redirect-login span {
+  color: #3498db;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.redirect-login span:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .register-container {
+    padding: 32px 24px;
+    max-width: 420px;
+  }
+
+  .logo-icon-register {
+    width: 70px;
+    height: 70px;
+    font-size: 32px;
+  }
+
+  .input-group-register input {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  .register-btn-register {
+    padding: 14px;
+    font-size: 15px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+  .register-page {
+    padding: 15px;
+  }
+
+  .register-container {
+    padding: 28px 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .logo-register {
+    margin-bottom: 24px;
+  }
+
+  .logo-icon-register {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+
+
+
+  .input-group-register label {
+    font-size: 13px;
+  }
+
+  .input-group-register input {
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+
+  .password-wrapper-register input {
+    padding-right: 45px;
+  }
+
+  .toggle-password-register {
+    font-size: 18px;
+    right: 10px;
+  }
+
+  .register-btn-register {
+    padding: 13px;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+
+  .error-message,
+  .success-message {
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .redirect-login {
+    margin-top: 20px;
+    font-size: 13px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 360px) {
+  .register-page {
+    padding: 10px;
+  }
+
+  .register-container {
+    padding: 24px 16px;
+  }
+
+  .logo-icon-register {
+    width: 55px;
+    height: 55px;
+    font-size: 26px;
+  }
+
+  .input-group-register input {
+    padding: 11px;
+    font-size: 14px;
+  }
+
+  .register-btn-register {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+/* Landscape móvil */
+@media (max-height: 600px) and (orientation: landscape) {
+  .register-page {
+    padding: 15px;
+  }
+
+  .register-container {
+    padding: 20px;
+    margin: 10px 0;
+  }
+
+  .logo-register {
+    margin-bottom: 15px;
+  }
+
+  .logo-icon-register {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
+
+
+  .input-group-register input {
+    padding: 10px 12px;
+  }
+
+  .register-btn-register {
+    padding: 11px;
+    margin-top: 5px;
+  }
+
+  .redirect-login {
+    margin-top: 15px;
+  }
+}
+
+/* Accesibilidad - Modo alto contraste */
+@media (prefers-contrast: high) {
+  .input-group-register input {
+    border-width: 3px;
+  }
+
+  .register-btn-register {
+    border: 2px solid white;
+  }
+}
+
+/* Reducción de movimiento */

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
-import { FaUser, FaGoogle, FaFacebookF, FaTwitter } from 'react-icons/fa';
+import { FaUser,} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'; // Asegúrate de tener react-router-dom instalado
 const API_URL = import.meta.env.VITE_API_URL
 import authService from '../../../Services/authService';
@@ -81,7 +81,7 @@ const Login = () => {
         <div className="logo">
           <div className="logo-icon"><FaUser /></div>
         </div>
-        <h1>Iniciar Sesión</h1>
+        <h2>Iniciar Sesión</h2>
 
         {error && (
           <div className="error-message">
@@ -95,7 +95,7 @@ const Login = () => {
             <input
               type="email"
               id="email"
-              placeholder="Ingresa tu correo electrónico"
+              // placeholder="Ingresa tu correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -108,7 +108,7 @@ const Login = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                placeholder="Ingresa tu contraseña"
+                // placeholder="Ingresa tu contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -120,7 +120,7 @@ const Login = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                {showPassword ? <i className="fa-regular fa-eye-slash"></i> :  <i className="fa-regular fa-eye"></i> }
               </button>
             </div>
           </div>
@@ -144,7 +144,17 @@ const Login = () => {
             disabled={loading}
           >
             {loading ? 'Procesando...' : 'Iniciar Sesión'}
+          </button>    
+
+          O
+          <button
+            type="button"
+            className="register-btn"
+            onClick={() => navigate('/register')}
+          >
+            Registrarse
           </button>
+
         </form>
       </div>
     </div>

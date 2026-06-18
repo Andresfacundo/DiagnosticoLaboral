@@ -36,6 +36,10 @@ import Configuracion from './components/Ui/Configuracion/Configuracion.jsx'
 import PrivateRoute from './components/Ui/PrivateRoute/PrivateRoute.jsx'
 import NotAuthorized from './components/Ui/NotAuthorized/NotAuthorized.jsx'
 import RegistroHorasExtras from './components/Pages/RegistroHorasExtras/RegistroHorasExtras.jsx'
+import Register from './components/Pages/Register/Register.jsx'
+import Notificaciones from './components/Pages/Notificaciones/Notificaciones.jsx'
+// import Lovable from "./components/Pages/Lovable/Lovable.jsx"
+// import TurnosPages from './components/Pages/TurnosPage/TurnosPage.jsx'
 
 function App() {
   const navigate = useNavigate();
@@ -60,29 +64,31 @@ function App() {
     <>
       <Navbar id='navbar' />
       <Routes>
-        {/* Rutas del módulo de horarios */}
-        <Route path="/horarios" element={<Sidebar />}>
-          <Route path="empleados" element={<EmpleadosPage />} />
-          <Route path="calendario" element={<CalendarioPage />} />
-          <Route path="turnos" element={<TurnosPage />} />
-          <Route path="resumen" element={<ResumenPage />} />
-          <Route path="Configuracion" element={<Configuracion />} />
-          <Route index element={<EmpleadosPage />} />
-          <Route path="registro-extras" element={<RegistroHorasExtras />} />
-        </Route>
+
         {/* Rutas admin y asociados */}
-        <Route element={<PrivateRoute allowedRoles={['admin','asociado']} />}>
+        <Route element={<PrivateRoute allowedRoles={['admin', 'asociado']} />}>
           <Route path="/form/calculadora" element={<FormularioCalculadora />} />
           <Route path="Resultados/calculadora" element={<ResultadosCalculadora />} />
           <Route path="NoDisponible" element={<NoDisponible />} />
           <Route path="Comparar" element={<Comparar />} />
+
+          {/* Rutas del módulo de horarios */}
+          <Route path="/horarios" element={<Sidebar />}>
+            <Route path="empleados" element={<EmpleadosPage />} />
+            <Route path="calendario" element={<CalendarioPage />} />
+            <Route path="turnos" element={<TurnosPage />} />
+            <Route path="resumen" element={<ResumenPage />} />
+            <Route path="Configuracion" element={<Configuracion />} />
+            <Route index element={<EmpleadosPage />} />
+            <Route path="registro-extras" element={<RegistroHorasExtras />} />
+          </Route>
         </Route>
 
         {/* Rutas solo admin */}
         <Route element={<PrivateRoute allowedRoles={['admin']} />}>
           <Route path='questions' element={<Preguntas />} />
           <Route path="/questions/gestion-categorias" element={<CategoriasRecomendaciones />} />
-          <Route path="/form/configuracion" element={<EditarConstantes />} />          
+          <Route path="/form/configuracion" element={<EditarConstantes />} />
           <Route path='historial' element={<Registros />} />
         </Route>
 
@@ -93,12 +99,15 @@ function App() {
         <Route path='resultados' element={<Resultados />} />
         <Route path='cuestionario' element={<Cuestionario />} />
         <Route path='login' element={<Login />} />
+        <Route path='register' element={<Register />} />
+
         <Route path='/' element={<InfoDiagnostico />} />
         <Route path='nosotros' element={<AboutDiagnosis />} />
         <Route path="/cerrando-sesion" element={<LoggingOut />} />
         <Route path="/cargando" element={<Cargando />} />
         <Route path="/politica-datos" element={<TerminosCondiciones />} />
         <Route path="*" element={<NotFound />} />
+        {/* <Route path="/lovable" element={<Lovable />} /> */}
       </Routes>
       <Footer id='footer' />
     </>

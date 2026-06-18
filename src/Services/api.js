@@ -23,9 +23,9 @@ export const obtenerDiagnostico = async () => {
 };
 
 export const calcularNomina = async (formData) => {
-    try{
+    try {
         const token = authService.getToken();
-        const response = await axios.post(`${API_URL}/api/calcular`, formData,{
+        const response = await axios.post(`${API_URL}/api/calcular`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
