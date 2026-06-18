@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../components/SalaryCalculator.css";
 import "./FormularioCalculadora.css";
 import Calculadora from "../../../assets/calculator-line.png";
-import { calcularNomina } from "../../../Services/api.js";
+import { calcularNomina, obtenerConstantes } from "../../../Services/api.js";
 import NavbarCalculadora from "../../Ui/NavbarCalculadora/NavbarCalculadora.jsx";
 import "../../Ui/NavbarCalculadora/NavbarCalculadora.css";
 import ok from "../../../assets/ok.png";
@@ -10,7 +10,7 @@ import configuracion from '../../../assets/configuraciones.svg'
 import { NavLink } from "react-router-dom";
 
 const FormularioCalculadora = () => {
-  const salarioMinimo = 1423500;
+  const [salarioMinimo, setSalarioMinimo] = useState(0);
 
   const [formData, setFormData] = useState({
     tipoSalario: "", 
@@ -27,6 +27,21 @@ const FormularioCalculadora = () => {
   });
   const [showAlert, setShowAlert] = useState(false);
   const [formErrors, setFormErrors] = useState({}); // Add state for form errors
+
+  // Cargar el salario mínimo desde la base de datos al montar el componente
+  useEffect(() => {
+    const cargarConstantes = async () => {
+      try {
+        const constantes = await obtenerConstantes();
+        setSalarioMinimo(constantes.salarioMinimo);
+      } catch (error) {
+        console.error('Error al cargar las constantes:', error);
+        // Valor por defecto en caso de error
+        setSalarioMinimo(1750905);
+      }
+    };
+    cargarConstantes();
+  }, []);
 
   // Función para formatear números con separadores de miles
   const formatNumber = (value) => {

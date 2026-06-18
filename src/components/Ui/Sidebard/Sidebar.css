@@ -290,14 +290,3 @@
   outline-offset: 2px;
 }
 
-/* ===== MODO OSCURO (OPCIONAL) ===== */
-@media (prefers-color-scheme: dark) {
-  .main-horarios-content {
-    background: #1f2937;
-    color: #f9fafb;
-  }
-  
-  .gestion-horarios-layout {
-    background: #111827;
-  }
-}
